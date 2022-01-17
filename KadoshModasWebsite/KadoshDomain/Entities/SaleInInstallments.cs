@@ -3,6 +3,7 @@ using Flunt.Validations;
 using KadoshDomain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,25 +12,33 @@ namespace KadoshDomain.Entities
 {
     public class SaleInInstallments : Sale
     {
-        #region Constructor
+
+        #region Constructors
+        /// <summary>
+        /// Private constructor used from Entity Framework.
+        /// </summary>
+        private SaleInInstallments(int customerId, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation) : base(customerId, discountInPercentage, downPayment, saleDate, situation)
+        {
+
+        }
+
         public SaleInInstallments(
-            Customer customer,
+            int customerId,
             EFormOfPayment formOfPayment,
             decimal discountInPercentage,
-            decimal downPayment, 
+            decimal downPayment,
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             IReadOnlyCollection<Installment> installments,
-            decimal interestOnTheTotalSaleInPercentage) : base(customer, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
         {
-            Installments = installments;
-            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
-            ValidateSaleInInstallments();
+            InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }
 
         public SaleInInstallments(
-            Customer customer,
+            int customerId,
             EFormOfPayment formOfPayment,
             decimal discountInPercentage,
             decimal downPayment,
@@ -38,15 +47,48 @@ namespace KadoshDomain.Entities
             ESaleSituation situation,
             DateTime settlementDate,
             IReadOnlyCollection<Installment> installments,
-            decimal interestOnTheTotalSaleInPercentage) : base(customer, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
         {
-            Installments = installments;
-            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
-            ValidateSaleInInstallments();
+            InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }
-        #endregion Constructor
 
-        #region Properties
+        public SaleInInstallments(
+            int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            IReadOnlyCollection<SaleItem> saleItems,
+            ESaleSituation situation,
+            DateTime settlementDate,
+            IReadOnlyCollection<CustomerPosting> postings,
+            IReadOnlyCollection<Installment> installments,
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings)
+        {
+            InitiateClass(installments, interestOnTheTotalSaleInPercentage);
+        }
+
+        public SaleInInstallments(
+            int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            IReadOnlyCollection<SaleItem> saleItems,
+            ESaleSituation situation,
+            DateTime settlementDate,
+            IReadOnlyCollection<CustomerPosting> postings,
+            Customer? customer,
+            IReadOnlyCollection<Installment> installments,
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings, customer)
+        {
+            InitiateClass(installments, interestOnTheTotalSaleInPercentage);
+        }
+        #endregion Constructors
+
         public int NumberOfInstallments 
         { 
             get 
@@ -58,11 +100,21 @@ namespace KadoshDomain.Entities
                 
             } 
         }
-        public decimal InterestOnTheTotalSaleInPercentage { get; private set; }
-        public IReadOnlyCollection<Installment> Installments { get; private set; }
-        #endregion Properties
 
-        #region Methods
+        [Required]
+        public decimal InterestOnTheTotalSaleInPercentage { get; private set; }
+
+        [Required]
+        [MinLength(2)]
+        public IReadOnlyCollection<Installment> Installments { get; private set; }
+
+        private void InitiateClass(IReadOnlyCollection<Installment> installments, decimal interestOnTheTotalSaleInPercentage)
+        {
+            Installments = installments;
+            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
+            ValidateSaleInInstallments();
+        }
+
         private void ValidateSaleInInstallments()
         {
             if(Installments is null)
@@ -70,9 +122,8 @@ namespace KadoshDomain.Entities
             else
                 AddNotifications(new Contract<Notification>()
                     .Requires()
-                    .IsTrue(Installments.Any(), nameof(Installments), "É necessária pelo menos uma parcela em uma venda parcelada!")
+                    .IsGreaterOrEqualsThan(Installments.Count, 2, nameof(Installments), "É necessária pelo menos duas parcelas em uma venda parcelada!")
                 );
         }
-        #endregion Methods
     }
 }

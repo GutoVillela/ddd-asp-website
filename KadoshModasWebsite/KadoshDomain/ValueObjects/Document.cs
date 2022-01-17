@@ -2,12 +2,12 @@
 using Flunt.Validations;
 using KadoshDomain.Enums;
 using KadoshShared.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.ValueObjects
 {
     public class Document : ValueObject
     {
-        #region Constructor
         public Document(string number, EDocumentType type)
         {
             Number = number;
@@ -18,16 +18,15 @@ namespace KadoshDomain.ValueObjects
                 .IsTrue(ValidateDocument(), nameof(Number), $"{type} inválido.")
             );
         }
-        #endregion Constructor
 
-        #region Properties
-
+        [Required]
+        [MaxLength(18)]
         public string Number { get; private set; }
+
+        [Required]
         public EDocumentType Type { get; private set; }
 
-        #endregion Properties
-
-        #region Methods
+       
 
         private bool ValidateDocument()
         {
@@ -138,6 +137,5 @@ namespace KadoshDomain.ValueObjects
 
             return cnpj.EndsWith(digit);
         }
-        #endregion Methods
     }
 }

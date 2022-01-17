@@ -10,23 +10,34 @@ namespace KadoshTests.Entities
     [TestClass]
     public class SaleInInstallmentsTests
     {
+        private readonly Customer _customer;
+
+        private readonly ICollection<SaleItem> _saleItems;
+
+        private readonly ICollection<Installment> _installments;
+
+        public SaleInInstallmentsTests()
+        {
+            _customer = new("Bryam Adams");
+            _saleItems = CreateSaleItens(10);
+            _installments = CreateInstallments(10);
+        }
+
         [TestMethod]
         public void ShouldReturnErrorWhenSaleInInstallmentsHasNoInstallments()
         {
-            Customer customer = new("Bryam Adams");
             EFormOfPayment formOfPayment = EFormOfPayment.Cash;
             decimal discountInPercentage = 10;
             decimal downPayment = 100;
             DateTime saleDate = DateTime.Now;
-            List<SaleItem> saleItems = CreateSaleItens(10).ToList();
 
             var saleInInstallment = new SaleInInstallments(
-                customer: customer,
+                customerId: _customer.Id,
                 formOfPayment: formOfPayment,
                 discountInPercentage: discountInPercentage,
                 downPayment: downPayment,
                 saleDate: saleDate,
-                saleItems: saleItems,
+                saleItems: _saleItems.ToList(),
                 situation: ESaleSituation.Open,
                 installments: new List<Installment>(),// There's no installments for this sale
                 interestOnTheTotalSaleInPercentage: 2
@@ -38,22 +49,20 @@ namespace KadoshTests.Entities
         [TestMethod]
         public void ShouldReturnSuccessWhenSaleInInstallmentsHasAtLeastOneInstallment()
         {
-            Customer customer = new("Bryam Adams");
             EFormOfPayment formOfPayment = EFormOfPayment.Cash;
             decimal discountInPercentage = 10;
             decimal downPayment = 100;
             DateTime saleDate = DateTime.Now;
-            List<SaleItem> saleItems = CreateSaleItens(10).ToList();
 
             var saleInInstallment = new SaleInInstallments(
-                customer: customer,
+                customerId: _customer.Id,
                 formOfPayment: formOfPayment,
                 discountInPercentage: discountInPercentage,
                 downPayment: downPayment,
                 saleDate: saleDate,
-                saleItems: saleItems,
+                saleItems: _saleItems.ToList(),
                 situation: ESaleSituation.Open,
-                installments: CreateInstallments(10).ToList(),// There are installments for this sale
+                installments: _installments.ToList(),// There are installments for this sale
                 interestOnTheTotalSaleInPercentage: 2
                 );
 
@@ -72,9 +81,9 @@ namespace KadoshTests.Entities
                 decimal discount = 0;
                 Brand brand = new($"Brand {i}");
 
-                Product product = new($"Product {i}", barCode, price, category, brand);
+                Product product = new($"Product {i}", barCode, price, category.Id, brand.Id);
 
-                saleItems.Add(new SaleItem(product, amount, price, discount, ESaleItemSituation.AcquiredOnPurchase));
+                saleItems.Add(new SaleItem(0, product.Id, amount, price, discount, ESaleItemSituation.AcquiredOnPurchase));
             }
 
             return saleItems;
@@ -90,7 +99,7 @@ namespace KadoshTests.Entities
                 DateTime maturityDate = DateTime.Now;
                 EInstallmentSituation situation = EInstallmentSituation.Open;
 
-                installments.Add(new Installment(number, value, maturityDate, situation));
+                installments.Add(new Installment(number, value, maturityDate, situation, 0, null));
             }
 
             return installments;

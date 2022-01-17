@@ -2,12 +2,12 @@
 using Flunt.Validations;
 using Flunt.Notifications;
 using KadoshDomain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
     public class User : Entity
     {
-        #region Constructor
 
         public User(string username, string password, EUserRole role)
         {
@@ -18,16 +18,17 @@ namespace KadoshDomain.Entities
             ValidateUser();
         }
 
-        #endregion Constructor
-
-        #region Properties
+        [Required]
+        [MaxLength(20)]
         public string Username { get; private set; }
+
+        [Required]
         public string Password { get; private set; }
+
+        [Required]
         public EUserRole Role { get; private set; }
-        #endregion Properties
         
         
-        #region Methods
         private void ValidateUser()
         {
             AddNotifications(new Contract<Notification>()
@@ -36,7 +37,6 @@ namespace KadoshDomain.Entities
                 .IsNotNullOrEmpty(Password, nameof(Password), "Senha inválida!")
             );
         }
-        #endregion Methods
 
 
 

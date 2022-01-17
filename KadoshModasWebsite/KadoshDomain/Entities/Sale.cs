@@ -2,18 +2,22 @@
 using Flunt.Validations;
 using KadoshDomain.Enums;
 using KadoshShared.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
     public abstract class Sale : Entity
     {
-        #region Attributes
-        private readonly IList<CustomerPosting> _postings;
-        #endregion Attributes
+        private IList<CustomerPosting> _postings;
 
-        #region Constructor
+        #region Constructors
+        protected Sale(int customerId, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation)
+        {
+
+        }
+
         protected Sale(
-            Customer customer,
+            int customerId,
             EFormOfPayment formOfPayment, 
             decimal discountInPercentage, 
             decimal downPayment, 
@@ -22,7 +26,7 @@ namespace KadoshDomain.Entities
             ESaleSituation situation
             )
         {
-            Customer = customer;
+            CustomerId = customerId;
             FormOfPayment = formOfPayment;
             DiscountInPercentage = discountInPercentage;
             DownPayment = downPayment;
@@ -35,7 +39,7 @@ namespace KadoshDomain.Entities
         }
 
         protected Sale(
-            Customer customer,
+            int customerId,
             EFormOfPayment formOfPayment,
             decimal discountInPercentage,
             decimal downPayment,
@@ -43,29 +47,81 @@ namespace KadoshDomain.Entities
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             DateTime settlementDate
-            ) : this(customer, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
         {
             SettlementDate = settlementDate;
 
             ValidateSettlementDate();
         }
-        #endregion Constructor
 
-        #region Properties
-        public Customer Customer { get; private set; }
+        protected Sale(
+            int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            IReadOnlyCollection<SaleItem> saleItems,
+            ESaleSituation situation,
+            DateTime settlementDate,
+            IReadOnlyCollection<CustomerPosting> postings
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
+        {
+            Postings = postings;
+        }
+
+        protected Sale(
+            int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            IReadOnlyCollection<SaleItem> saleItems,
+            ESaleSituation situation,
+            DateTime settlementDate,
+            IReadOnlyCollection<CustomerPosting> postings,
+            Customer? customer
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings)
+        {
+            Customer = customer;
+        }
+        #endregion Constructors
+
+        [Required]
+        public Customer? Customer { get; private set; }
+
+        public int CustomerId { get; private set; }
+
+        [Required]
         public EFormOfPayment FormOfPayment { get; private set; }
+
+        [Required]
+        [Range(0, 100)]
         public decimal DiscountInPercentage { get; private set; }
+
+        [Required]
         public decimal DownPayment { get; private set; }
+
+        [Required]
         public DateTime SaleDate { get; private set; }
+
         public DateTime? SettlementDate { get; private set; }
+
+        [Required]
+        [MinLength(1)]
         public IReadOnlyCollection<SaleItem> SaleItems { get; private set; }
+
+        [Required]
         public ESaleSituation Situation { get; private set; }
+
+
+        public IReadOnlyCollection<CustomerPosting> Postings 
+        { 
+            get { return _postings.ToList(); } 
+            private set { _postings = value.ToList(); } 
+        }
+
         public decimal Total { get { return CalculateTotal(); } }
-        public IReadOnlyCollection<CustomerPosting> Postings { get { return _postings.ToList(); } }
 
-        #endregion Properties
-
-        #region Methods
         private void ValidateSaleWithNoSettlementDate()
         {
             AddNotifications(new Contract<Notification>()
@@ -118,6 +174,5 @@ namespace KadoshDomain.Entities
         {
             _postings.Add(posting);
         }
-        #endregion Methods
     }
 }

@@ -2,15 +2,17 @@
 using Flunt.Validations;
 using KadoshDomain.Enums;
 using KadoshShared.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
     public class SaleItem : Entity
     {
-        #region Constructor
-        public SaleItem(Product product, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation)
+        #region Constructors
+        public SaleItem(int saleId, int productId, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation)
         {
-            Product = product;
+            SaleId= saleId;
+            ProductId= productId;
             Amount = amount;
             Price = price;
             DiscountInPercentage = discountInPercentage;
@@ -18,17 +20,43 @@ namespace KadoshDomain.Entities
 
             ValidateSaleItem();
         }
-        #endregion Constructor
 
-        #region Properties
-        public Product Product { get; private set; }
+        public SaleItem(int saleId, int productId, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation, Sale? sale) 
+            : this(saleId, productId, amount, price, discountInPercentage, situation)
+        {
+            Sale = sale;
+        }
+
+        public SaleItem(int saleId, int productId, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation, Sale? sale, Product? product)
+            : this(saleId, productId, amount, price, discountInPercentage, situation, sale)
+        {
+            Product = product;
+        }
+        #endregion Constructors
+
+        [Required]
+        public int SaleId { get; private set; }
+
+        public Sale? Sale { get; private set; }  
+
+        [Required]
+        public int ProductId { get; private set; }
+
+        public Product? Product { get; private set; }
+
+        [Required]
         public int Amount { get; private set; }
-        public decimal Price { get; private set; }
-        public decimal DiscountInPercentage { get; private set; }
-        public ESaleItemSituation Situation { get; private set; }
-        #endregion Properties
 
-        #region Methods
+        [Required]
+        public decimal Price { get; private set; }
+
+        [Required]
+        [Range(0, 100)]
+        public decimal DiscountInPercentage { get; private set; }
+
+        [Required]
+        public ESaleItemSituation Situation { get; private set; }
+
         private void ValidateSaleItem()
         {
             AddNotifications(new Contract<Notification>()
@@ -38,6 +66,5 @@ namespace KadoshDomain.Entities
                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto do item da venda deve estar entre 0 e 100%!")
            );
         }
-        #endregion Methods
     }
 }

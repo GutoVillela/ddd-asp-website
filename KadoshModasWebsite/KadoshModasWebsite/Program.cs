@@ -1,7 +1,14 @@
+using KadoshRepository.Persistence.DataContexts;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+//Add repository
+string connectionString = builder.Configuration.GetConnectionString("AppMySQLDB");
+builder.Services.AddDbContext<StoreDataContext>(x => x.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
 

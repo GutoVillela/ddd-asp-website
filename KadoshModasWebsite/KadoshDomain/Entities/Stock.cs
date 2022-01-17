@@ -1,29 +1,37 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
 using KadoshShared.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
     public class Stock : Entity
     {
-        #region Constructor
-        public Stock(Product product, int amountInStock, int minimumAmountBeforeLowStock)
+        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock)
         {
-            Product = product;
+            ProductId = productId;
             AmountInStock = amountInStock;
             MinimumAmountBeforeLowStock = minimumAmountBeforeLowStock;
             
             ValidateStock();
         }
-        #endregion Constructor
 
-        #region Properties
-        public Product Product { get; private set; }
+        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock, Product? product) : this(productId, amountInStock, minimumAmountBeforeLowStock)
+        {
+            Product = product;
+        }
+
+        [Required]
+        public int ProductId { get; private set; }
+
+        public Product? Product { get; private set; }
+
+        [Required]
         public int AmountInStock { get; private set; }
-        public int MinimumAmountBeforeLowStock { get; private set; }
-        #endregion Properties
 
-        #region Methods
+        [Required]
+        public int MinimumAmountBeforeLowStock { get; private set; }
+
         private void ValidateStock()
         {
             AddNotifications(new Contract<Notification>()
@@ -32,6 +40,5 @@ namespace KadoshDomain.Entities
                 .IsGreaterOrEqualsThan(MinimumAmountBeforeLowStock, 0, nameof(MinimumAmountBeforeLowStock), "Não é possível um número negativo para mínimo aceitável em estoque!")
             );
         }
-        #endregion Methods
     }
 }

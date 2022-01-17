@@ -1,25 +1,30 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
 using KadoshShared.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
     public class Category : Entity
     {
-        #region Constructor
         public Category(string name)
         {
             Name = name;
 
             ValidateCategory();
         }
-        #endregion Constructor
 
-        #region Properties
+        public Category(string name, IReadOnlyCollection<Product> products) : this(name)
+        {
+            Products = products;
+        }
+
+        [Required]
+        [MaxLength(100)]
         public string Name { get; private set; }
-        #endregion Properties
 
-        #region Methods
+        public IReadOnlyCollection<Product> Products { get; private set; } = new List<Product>();
+
         private void ValidateCategory()
         {
             AddNotifications(new Contract<Notification>()
@@ -27,6 +32,5 @@ namespace KadoshDomain.Entities
                 .IsNotNullOrEmpty(Name, nameof(Name), "Categoria inválida!")
             );
         }
-        #endregion Methods
     }
 }
