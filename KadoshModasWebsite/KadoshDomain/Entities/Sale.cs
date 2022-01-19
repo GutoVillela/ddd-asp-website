@@ -11,9 +11,15 @@ namespace KadoshDomain.Entities
         private IList<CustomerPosting> _postings;
 
         #region Constructors
-        protected Sale(int customerId, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation)
+        protected Sale(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, string sellerId)
         {
-
+            CustomerId = customerId;
+            FormOfPayment = formOfPayment;
+            DiscountInPercentage = discountInPercentage;
+            DownPayment = downPayment;
+            SaleDate = saleDate;
+            Situation = situation;
+            SellerId = sellerId;
         }
 
         protected Sale(
@@ -23,7 +29,8 @@ namespace KadoshDomain.Entities
             decimal downPayment, 
             DateTime saleDate, 
             IReadOnlyCollection<SaleItem> saleItems, 
-            ESaleSituation situation
+            ESaleSituation situation,
+            string sellerId
             )
         {
             CustomerId = customerId;
@@ -33,6 +40,7 @@ namespace KadoshDomain.Entities
             SaleDate = saleDate;
             SaleItems = saleItems;
             Situation = situation;
+            SellerId = sellerId;
             _postings = new List<CustomerPosting>();
 
             ValidateSaleWithNoSettlementDate();
@@ -46,8 +54,9 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
         {
             SettlementDate = settlementDate;
 
@@ -62,9 +71,10 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
         {
             Postings = postings;
         }
@@ -77,10 +87,11 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             Customer? customer
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings)
         {
             Customer = customer;
         }
@@ -104,6 +115,11 @@ namespace KadoshDomain.Entities
         [Required]
         public DateTime SaleDate { get; private set; }
 
+        [Required]
+        public string SellerId { get; private set; }
+
+        public User? Seller { get; private set; }
+
         public DateTime? SettlementDate { get; private set; }
 
         [Required]
@@ -126,10 +142,11 @@ namespace KadoshDomain.Entities
         {
             AddNotifications(new Contract<Notification>()
                 .Requires()
-                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%!")
-                .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0!")
-                .IsLowerThan(DownPayment, CalculateTotal(), nameof(DownPayment), "O valor da entrada precisa ser menor que o valor total da venda!")
-                .IsTrue(SaleItems.Any(), nameof(SaleItems), "É obrigatório pelo menos um item da venda!")
+                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%")
+                .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
+                .IsLowerThan(DownPayment, CalculateTotal(), nameof(DownPayment), "O valor da entrada precisa ser menor que o valor total da venda")
+                .IsTrue(SaleItems.Any(), nameof(SaleItems), "É obrigatório pelo menos um item da venda")
+                .IsNotNullOrEmpty(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
             );
 
             ValidateSaleItems();

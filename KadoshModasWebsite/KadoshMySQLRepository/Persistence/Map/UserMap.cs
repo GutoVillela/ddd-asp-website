@@ -12,6 +12,7 @@ namespace KadoshRepository.Persistence.Map
             builder.Property(x => x.Username).IsRequired().HasMaxLength(20);
             builder.Property(x => x.Password).IsRequired();
             builder.Property(x => x.Role).IsRequired();
+            builder.HasOne(x => x.Store).WithMany(x => x.Users).HasForeignKey(x => x.StoreId).IsRequired();
             builder.Ignore(x => x.Notifications);
             builder.Ignore(x => x.Id);
         }

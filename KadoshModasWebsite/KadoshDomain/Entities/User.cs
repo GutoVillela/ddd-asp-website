@@ -9,13 +9,19 @@ namespace KadoshDomain.Entities
     public class User : Entity
     {
 
-        public User(string username, string password, EUserRole role)
+        public User(string username, string password, EUserRole role, int storeId)
         {
             Username = username;
             Password = password;
             Role = role;
+            StoreId = storeId;
 
             ValidateUser();
+        }
+
+        public User(string username, string password, EUserRole role, int storeId, Store store) : this(username, password, role, storeId)
+        {
+            Store = store;
         }
 
         [Required]
@@ -27,6 +33,13 @@ namespace KadoshDomain.Entities
 
         [Required]
         public EUserRole Role { get; private set; }
+
+        [Required]
+        public int StoreId { get; private set; }
+
+        public Store? Store { get; private set; }
+
+        public IReadOnlyCollection<Sale> Sales { get; private set; }
         
         
         private void ValidateUser()

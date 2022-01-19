@@ -12,6 +12,7 @@ namespace KadoshRepository.Persistence.Map
             builder.Property(x => x.AmountInStock).IsRequired();
             builder.Property(x => x.MinimumAmountBeforeLowStock).IsRequired();
             builder.HasOne(x => x.Product);
+            builder.HasOne(x => x.Store).WithMany(x => x.Stocks).HasForeignKey(x => x.StoreId).IsRequired();
             builder.Ignore(x => x.Notifications);
         }
     }

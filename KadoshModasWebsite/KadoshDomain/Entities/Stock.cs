@@ -7,18 +7,24 @@ namespace KadoshDomain.Entities
 {
     public class Stock : Entity
     {
-        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock)
+        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock, int storeId)
         {
             ProductId = productId;
             AmountInStock = amountInStock;
             MinimumAmountBeforeLowStock = minimumAmountBeforeLowStock;
+            StoreId = storeId;
             
             ValidateStock();
         }
 
-        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock, Product? product) : this(productId, amountInStock, minimumAmountBeforeLowStock)
+        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock, int storeId, Product? product) : this(productId, amountInStock, minimumAmountBeforeLowStock, storeId)
         {
             Product = product;
+        }
+
+        public Stock(int productId, int amountInStock, int minimumAmountBeforeLowStock, int storeId, Product? product, Store? store) : this(productId, amountInStock, minimumAmountBeforeLowStock, storeId, product)
+        {
+            Store = store;
         }
 
         [Required]
@@ -31,6 +37,11 @@ namespace KadoshDomain.Entities
 
         [Required]
         public int MinimumAmountBeforeLowStock { get; private set; }
+
+        [Required]
+        public int StoreId { get; private set; }
+
+        public Store? Store { get; private set; }
 
         private void ValidateStock()
         {

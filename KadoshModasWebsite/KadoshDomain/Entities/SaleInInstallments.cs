@@ -17,7 +17,7 @@ namespace KadoshDomain.Entities
         /// <summary>
         /// Private constructor used from Entity Framework.
         /// </summary>
-        private SaleInInstallments(int customerId, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation) : base(customerId, discountInPercentage, downPayment, saleDate, situation)
+        private SaleInInstallments(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, string sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
         {
 
         }
@@ -30,9 +30,10 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             IReadOnlyCollection<Installment> installments,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
         {
             InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }
@@ -45,10 +46,11 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<Installment> installments,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
         {
             InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }
@@ -61,11 +63,12 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             IReadOnlyCollection<Installment> installments,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings)
         {
             InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }
@@ -78,12 +81,13 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             Customer? customer,
             IReadOnlyCollection<Installment> installments,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings, customer)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings, customer)
         {
             InitiateClass(installments, interestOnTheTotalSaleInPercentage);
         }

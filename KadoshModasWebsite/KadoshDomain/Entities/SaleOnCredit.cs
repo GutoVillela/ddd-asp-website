@@ -14,7 +14,7 @@ namespace KadoshDomain.Entities
         /// <summary>
         /// Private constructor used from Entity Framework.
         /// </summary>
-        private SaleOnCredit(int customerId, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation) : base(customerId, discountInPercentage, downPayment, saleDate, situation)
+        private SaleOnCredit(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, string sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
         {
 
         }
@@ -26,8 +26,9 @@ namespace KadoshDomain.Entities
             decimal downPayment,
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
-            ESaleSituation situation
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation)
+            ESaleSituation situation,
+            string sellerId
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
         {
 
         }
@@ -40,8 +41,9 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
         {
 
         }
@@ -54,9 +56,10 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings)
         {
         }
 
@@ -68,10 +71,11 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
+            string sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             Customer? customer
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, settlementDate, postings, customer)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings, customer)
         {
         }
         #endregion Constructors

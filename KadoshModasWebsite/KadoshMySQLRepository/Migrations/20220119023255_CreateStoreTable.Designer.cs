@@ -3,6 +3,7 @@ using System;
 using KadoshRepository.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KadoshRepository.Migrations
 {
     [DbContext(typeof(StoreDataContext))]
-    partial class StoreDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220119023255_CreateStoreTable")]
+    partial class CreateStoreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

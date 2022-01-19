@@ -40,6 +40,7 @@ namespace KadoshRepository.Persistence.DataContexts
             modelBuilder.ApplyConfiguration(new SaleOnCreditMap());
             modelBuilder.ApplyConfiguration(new StockMap());
             modelBuilder.ApplyConfiguration(new UserMap());
+            modelBuilder.ApplyConfiguration(new StoreMap());
         }
 
     }
