@@ -43,6 +43,8 @@ namespace KadoshDomain.Entities
 
         public Brand? Brand { get; private set; }
 
+        public IReadOnlyCollection<SaleItem> SaleItems { get; private set; }
+
         private void ValidateProduct()
         {
             AddNotifications(new Contract<Notification>()

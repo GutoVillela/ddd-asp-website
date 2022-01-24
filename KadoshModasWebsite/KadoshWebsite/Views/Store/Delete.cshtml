@@ -1,0 +1,96 @@
+﻿@model StoreViewModel
+@{
+    ViewData["Title"] = $"Tem certeza que deseja apagar a loja: {Model.Name}";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+            Atenção! Esta ação não poderá ser desfeita!
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3>Tem certeza que deseja apagar a loja: @Model.Name?</h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Delete" method="post" class="row">
+                    <input asp-for="Id" type="hidden" />
+                    <div class="col-12 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-store icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="Name" class="form-control" placeholder="Nome da loja" readonly />
+                                <label asp-for="Name"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Endereço da Loja
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-md-8 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Street" class="form-control" placeholder="Rua da loja"  readonly />
+                                        <label asp-for="Street"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Number" class="form-control" placeholder="Número"  readonly />
+                                        <label asp-for="Number"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="State" class="form-control" placeholder="Estado"  readonly />
+                                        <label asp-for="State"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="City" class="form-control" placeholder="Cidade"  readonly />
+                                        <label asp-for="City"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Neighborhood" class="form-control" placeholder="Bairro"  readonly />
+                                        <label asp-for="Neighborhood"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="ZipCode" class="form-control" placeholder="CEP"  readonly />
+                                        <label asp-for="ZipCode"></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="Complement" class="form-control" placeholder="Complemento. Ex: Casa 2"  readonly />
+                                        <label asp-for="Complement"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="submit" value="Apagar loja" class="btn btn-danger" />
+                        <a class="btn btn-light" asp-action="Index">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

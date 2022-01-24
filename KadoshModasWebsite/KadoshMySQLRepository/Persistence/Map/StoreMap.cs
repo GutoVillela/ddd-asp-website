@@ -13,13 +13,13 @@ namespace KadoshRepository.Persistence.Map
             builder.OwnsOne(x => x.Address,
                 address =>
                 {
-                    address.Property(a => a.Street);
-                    address.Property(a => a.Number);
-                    address.Property(a => a.Neighborhood);
-                    address.Property(a => a.City);
-                    address.Property(a => a.State);
-                    address.Property(a => a.ZipCode);
-                    address.Property(a => a.Complement);
+                    address.Property(a => a.Street).IsRequired(false);
+                    address.Property(a => a.Number).IsRequired(false);
+                    address.Property(a => a.Neighborhood).IsRequired(false);
+                    address.Property(a => a.City).IsRequired(false);
+                    address.Property(a => a.State).IsRequired(false);
+                    address.Property(a => a.ZipCode).IsRequired(false);
+                    address.Property(a => a.Complement).IsRequired(false);
                     address.Ignore(a => a.Notifications);
                 });
             builder.HasMany(x => x.Users).WithOne(x => x.Store).HasForeignKey(x => x.StoreId);

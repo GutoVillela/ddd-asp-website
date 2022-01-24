@@ -1,9 +1,9 @@
 ﻿using KadoshDomain.Entities;
+using KadoshShared.Repositories;
 
 namespace KadoshDomain.Repositories
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IRepository<Customer>
     {
-        void CreateCustomer(Customer customer);
     }
 }

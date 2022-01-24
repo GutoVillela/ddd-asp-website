@@ -1,4 +1,10 @@
+using KadoshDomain.Repositories;
+using KadoshDomain.Services;
+using KadoshDomain.Services.Interfaces;
 using KadoshRepository.Persistence.DataContexts;
+using KadoshRepository.Repositories;
+using KadoshWebsite.Services;
+using KadoshWebsite.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +15,15 @@ builder.Services.AddControllersWithViews();
 // Add repository
 string connectionString = builder.Configuration.GetConnectionString("AppMySQLDB");
 builder.Services.AddDbContext<StoreDataContext>(x => x.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+// Application Services Injection
+builder.Services.AddScoped<IStoreApplicationService, StoreApplicationService>();
+
+// Domain Services Injection
+builder.Services.AddScoped<IStoreService, StoreService>();
+
+// Domain Repositories Injections
+builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
 var app = builder.Build();
 
@@ -29,6 +44,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Store}/{action=Index}/{id?}");
 
 app.Run();

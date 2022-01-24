@@ -1,4 +1,6 @@
 ﻿using Flunt.Notifications;
+using Flunt.Validations;
+using KadoshShared.Constants.ValidationErrors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,12 +25,27 @@ namespace KadoshShared.Entities
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int Id { get; protected set; }
 
-        public bool IsActive { get; private set; } = true;
+        public bool IsActive { get; protected set; } = true;
 
-        public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
+        public DateTime CreationDate { get; protected set; } = DateTime.UtcNow;
 
-        public DateTime? LastUpdateDate { get; private set; }
+        public DateTime? LastUpdateDate { get; protected set; }
+
+        public void SetLastUpdateDate(DateTime lastUpdateDate)
+        {
+            LastUpdateDate = lastUpdateDate;
+            ValidateLastUpdateDate();
+        }
+
+        private void ValidateLastUpdateDate()
+        {
+            if(LastUpdateDate.HasValue)
+                AddNotifications(new Contract<Notification>()
+                    .Requires()
+                    .IsGreaterThan(LastUpdateDate.Value, CreationDate, nameof(LastUpdateDate), EntityValidationErrors.LAST_UPDATE_DATETIME_BEFORE_CREATION_TIME_ERROR)
+                );
+        }
     }
 }

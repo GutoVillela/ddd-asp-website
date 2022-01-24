@@ -3,6 +3,7 @@ using System;
 using KadoshRepository.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KadoshRepository.Migrations
 {
     [DbContext(typeof(StoreDataContext))]
-    partial class StoreDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220122133328_CorrectingAddressesRequiredFields")]
+    partial class CorrectingAddressesRequiredFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,10 +276,8 @@ namespace KadoshRepository.Migrations
 
             modelBuilder.Entity("KadoshDomain.Entities.SaleItem", b =>
                 {
-                    b.Property<int>("SaleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("Amount")
@@ -289,10 +289,6 @@ namespace KadoshRepository.Migrations
                     b.Property<decimal>("DiscountInPercentage")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
@@ -302,12 +298,20 @@ namespace KadoshRepository.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Situation")
                         .HasColumnType("int");
 
-                    b.HasKey("SaleId", "ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SaleId");
 
                     b.ToTable("SalesItems");
                 });
@@ -624,7 +628,7 @@ namespace KadoshRepository.Migrations
             modelBuilder.Entity("KadoshDomain.Entities.SaleItem", b =>
                 {
                     b.HasOne("KadoshDomain.Entities.Product", "Product")
-                        .WithMany("SaleItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -732,11 +736,6 @@ namespace KadoshRepository.Migrations
                     b.Navigation("CustomerPostings");
 
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("KadoshDomain.Entities.Product", b =>
-                {
-                    b.Navigation("SaleItems");
                 });
 
             modelBuilder.Entity("KadoshDomain.Entities.Sale", b =>

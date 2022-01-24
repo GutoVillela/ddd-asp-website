@@ -16,31 +16,24 @@ namespace KadoshDomain.ValueObjects
             Complement = complement;
         }
 
-        [Required]
         [MaxLength(255)]
         public string Street { get; private set; }
 
-        [Required]
         [MaxLength(20)]
         public string Number { get; private set; }
 
-        [Required]
         [MaxLength(255)]
         public string Neighborhood { get; private set; }
 
-        [Required]
         [MaxLength(50)]
         public string City { get; private set; }
 
-        [Required]
         [MaxLength(20)]
         public string State { get; private set; }
 
-        [Required]
         [MaxLength(10)]
         public string ZipCode { get; private set; }
 
-        [Required]
         [MaxLength(255)]
         public string Complement { get; private set; }
     }

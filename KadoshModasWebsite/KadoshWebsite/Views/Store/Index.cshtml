@@ -1,0 +1,52 @@
+﻿@model IEnumerable<StoreViewModel>
+@{
+    ViewData["Title"] = "Cadastro de lojas";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <a class="btn btn-success  float-end" asp-action="Create" title="Cadastrar um nova loja no sistema">Nova loja <i class="uil uil-plus"></i></a>
+        </div>
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover table-responsive">
+                <caption>Listando @Model.Count() lojas</caption>
+                <thead>
+                    <tr class="table-primary">
+                        <th>Loja</th>
+                        <th>Endereço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model is null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">Nenhuma loja cadastrada</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach(var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Street</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar loja @item.Name">
+                                        <i class="uil uil-edit-alt"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Apagar loja @item.Name">
+                                        <i class="uil uil-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

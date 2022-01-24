@@ -17,7 +17,7 @@ namespace KadoshDomain.Handlers
             _repository = repository;
         }
 
-        public ICommandResult Handle(CreateCustomerCommand command)
+        public async Task<ICommandResult> HandleAsync(CreateCustomerCommand command)
         {
             // Fail Fast Validations
             command.Validate();
@@ -66,7 +66,7 @@ namespace KadoshDomain.Handlers
                 return new CommandResult(false, "Não foi possível cadastrar o cliente");
 
             // Create register
-            _repository.CreateCustomer(customer);
+            await _repository.CreateAsync(customer);
 
             return new CommandResult(true, "Cliente cadastrado com sucesso");
         }

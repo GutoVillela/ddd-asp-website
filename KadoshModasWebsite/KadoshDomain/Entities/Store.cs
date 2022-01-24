@@ -20,6 +20,11 @@ namespace KadoshDomain.Entities
             Address = address;
         }
 
+        public Store(int id, string name, Address address) : this(name, address)
+        {
+            Id = id;
+        }
+
         [Required]
         [MaxLength(255)]
         public string Name { get; private set; }
