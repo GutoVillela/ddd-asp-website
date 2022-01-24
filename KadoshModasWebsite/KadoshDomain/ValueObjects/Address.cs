@@ -36,5 +36,29 @@ namespace KadoshDomain.ValueObjects
 
         [MaxLength(255)]
         public string Complement { get; private set; }
+
+        public override int GetHashCode()
+        {
+            return  Street.GetHashCode()
+                    + Number.GetHashCode()
+                    + Neighborhood.GetHashCode()
+                    + City.GetHashCode()
+                    + State.GetHashCode()
+                    + ZipCode.GetHashCode()
+                    + Complement.GetHashCode();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not Address other) return false;
+
+            return Street.Equals(other.Street)
+                    && Number.Equals(other.Number)
+                    && Neighborhood.Equals(other.Neighborhood)
+                    && City.Equals(other.City)
+                    && State.Equals(other.State)
+                    && ZipCode.Equals(other.ZipCode)
+                    && Complement.Equals(other.Complement);
+        }
     }
 }
