@@ -5,7 +5,9 @@ using KadoshDomain.Repositories;
 using KadoshDomain.ValueObjects;
 using KadoshShared.Commands;
 using KadoshShared.Constants.CommandMessages;
+using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.Handlers;
+using KadoshShared.ValueObjects;
 
 namespace KadoshDomain.Handlers
 {
@@ -26,7 +28,9 @@ namespace KadoshDomain.Handlers
             if (!command.IsValid)
             {
                 AddNotifications(command);
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_CREATE_COMMAND);
+
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_CREATE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_CREATE_COMMAND, errors);
             }
 
             // Create Value Objects
@@ -46,8 +50,19 @@ namespace KadoshDomain.Handlers
             AddNotifications(store, storeAddress);
 
             // Check validations
-            if(!IsValid)
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_CREATE_COMMAND);
+            if (!IsValid)
+            {
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_CREATE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_CREATE_COMMAND, errors);
+            }
+
+            // Check for repeated Address
+            if(await _storeRepository.AddressExists(store.Address))
+            {
+                AddNotification(nameof(store.Address), StoreCommandMessages.REPEATED_STORE_ADDRESS);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_REPEATED_STORE_ADDRESS);
+                return new CommandResult(false, StoreCommandMessages.REPEATED_STORE_ADDRESS, errors);
+            }
 
             // Persist data
             await _storeRepository.CreateAsync(store);
@@ -62,7 +77,8 @@ namespace KadoshDomain.Handlers
             if (!command.IsValid)
             {
                 AddNotifications(command);
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_UPDATE_COMMAND);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_UPDATE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_UPDATE_COMMAND, errors);
             }
 
             // Create Value Objects
@@ -84,7 +100,18 @@ namespace KadoshDomain.Handlers
 
             // Check validations
             if (!IsValid)
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_UPDATE_COMMAND);
+            {
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_UPDATE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_UPDATE_COMMAND, errors);
+            }
+
+            // Check for repeated Address
+            if (await _storeRepository.AddressExistsExceptForGivenStore(store.Address, store.Id))
+            {
+                AddNotification(nameof(store.Address), StoreCommandMessages.REPEATED_STORE_ADDRESS);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_REPEATED_STORE_ADDRESS);
+                return new CommandResult(false, StoreCommandMessages.REPEATED_STORE_ADDRESS, errors);
+            }
 
             // Persist data
             await _storeRepository.UpdateAsync(store);
@@ -99,7 +126,8 @@ namespace KadoshDomain.Handlers
             if (!command.IsValid)
             {
                 AddNotifications(command);
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_DELETE_COMMAND);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_DELETE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_DELETE_COMMAND, errors);
             }
 
             // Get Entity
@@ -111,12 +139,26 @@ namespace KadoshDomain.Handlers
 
             // Check validations
             if (!IsValid)
-                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_DELETE_COMMAND);
+            {
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_DELETE_COMMAND);
+                return new CommandResult(false, StoreCommandMessages.INVALID_STORE_DELETE_COMMAND, errors);
+            }
 
             // Persist data
             await _storeRepository.DeleteAsync(store);
 
             return new CommandResult(true, StoreCommandMessages.SUCCESS_ON_DELETE_STORE_COMMAND);
+        }
+
+        private ICollection<Error> GetErrorsFromNotifications(int errorCode)
+        {
+            HashSet<Error> errors = new();
+            foreach(var error in Notifications)
+            {
+                errors.Add(new Error(errorCode, error.Message));
+            }
+
+            return errors;
         }
     }
 }

@@ -2,7 +2,10 @@
 using KadoshDomain.Entities;
 using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
+using KadoshDomain.Services.Exceptions;
 using KadoshDomain.Services.Interfaces;
+using KadoshShared.Commands;
+using KadoshShared.Constants.CommandMessages;
 
 namespace KadoshDomain.Services
 {
@@ -15,13 +18,10 @@ namespace KadoshDomain.Services
             _storeRepository = storeRepository;
         }
 
-        public async Task CreateStoreAsync(CreateStoreCommand command)
+        public async Task<ICommandResult> CreateStoreAsync(CreateStoreCommand command)
         {
             StoreHandler storeHandler = new(_storeRepository);
-            await storeHandler.HandleAsync(command);
-
-            if (!storeHandler.IsValid)
-                throw new ApplicationException(storeHandler.Notifications.ToString());
+            return await storeHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<Store>> GetAllStoresAsync()
@@ -34,22 +34,17 @@ namespace KadoshDomain.Services
             return await _storeRepository.ReadAsync(id);
         }
 
-        public async Task UpdateStoreAsync(UpdateStoreCommand command)
+        public async Task<ICommandResult> UpdateStoreAsync(UpdateStoreCommand command)
         {
             StoreHandler storeHandler = new(_storeRepository);
-            await storeHandler.HandleAsync(command);
-
-            if (!storeHandler.IsValid)
-                throw new ApplicationException(storeHandler.Notifications.ToString());
+            return await storeHandler.HandleAsync(command);
         }
 
-        public async Task DeleteStoreAsync(DeleteStoreCommand command)
+        public async Task<ICommandResult> DeleteStoreAsync(DeleteStoreCommand command)
         {
             StoreHandler storeHandler = new(_storeRepository);
-            await storeHandler.HandleAsync(command);
-
-            if (!storeHandler.IsValid)
-                throw new ApplicationException(storeHandler.Notifications.ToString());
+            return await storeHandler.HandleAsync(command);
+            
         }
     }
 }

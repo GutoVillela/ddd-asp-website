@@ -1,5 +1,6 @@
 ﻿using KadoshDomain.Commands;
 using KadoshDomain.Services.Interfaces;
+using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -15,7 +16,7 @@ namespace KadoshWebsite.Services
             _storeService = storeService;
         }
 
-        public async Task CreateStoreAsync(StoreViewModel store)
+        public async Task<ICommandResult> CreateStoreAsync(StoreViewModel store)
         {
             CreateStoreCommand command = new();
             command.Name = store.Name;
@@ -27,7 +28,7 @@ namespace KadoshWebsite.Services
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement  = store.Complement;
 
-            await _storeService.CreateStoreAsync(command);
+            return  await _storeService.CreateStoreAsync(command);
         }
 
         public async Task<IEnumerable<StoreViewModel>> GetAllStoresAsync()
@@ -76,7 +77,7 @@ namespace KadoshWebsite.Services
             return viewModel;
         }
 
-        public async Task UpdateStoreAsync(StoreViewModel store)
+        public async Task<ICommandResult> UpdateStoreAsync(StoreViewModel store)
         {
             UpdateStoreCommand command = new();
             command.Id = store.Id;
@@ -88,16 +89,17 @@ namespace KadoshWebsite.Services
             command.AddressState = store.State;
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement = store.Complement;
+            
+            return await _storeService.UpdateStoreAsync(command);
 
-            await _storeService.UpdateStoreAsync(command);
         }
 
-        public async Task DeleteStoreAsync(int id)
+        public async Task<ICommandResult> DeleteStoreAsync(int id)
         {
             DeleteStoreCommand command = new();
             command.Id = id;
 
-            await _storeService.DeleteStoreAsync(command);
+            return await _storeService.DeleteStoreAsync(command);
         }
     }
 }
