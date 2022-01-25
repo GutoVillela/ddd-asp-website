@@ -2,6 +2,7 @@
 using KadoshShared.ValueObjects;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
+using KadoshWebsite.Util;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
@@ -36,8 +37,11 @@ namespace KadoshWebsite.Controllers
             {
                 var result = await _service.CreateStoreAsync(model);
 
-                if(result.Success)
+                if (result.Success)
+                {
+                    ViewAlerts.SuccessAlert(TempData, result.Message);
                     return RedirectToAction(nameof(Index));
+                }
 
                 AddErrorsToModelState(errors: result.Errors);
                 return View(model);
@@ -68,7 +72,10 @@ namespace KadoshWebsite.Controllers
                 var result = await _service.UpdateStoreAsync(model);
 
                 if (result.Success)
+                {
+                    ViewAlerts.SuccessAlert(TempData, result.Message);
                     return RedirectToAction(nameof(Index));
+                }
 
                 AddErrorsToModelState(errors: result.Errors);
                 return View(model);
@@ -97,8 +104,16 @@ namespace KadoshWebsite.Controllers
             if (!model.Id.HasValue)
                 return NotFound();
 
-            await _service.DeleteStoreAsync(model.Id.Value);
-            return RedirectToAction(nameof(Index));
+            var result = await _service.DeleteStoreAsync(model.Id.Value);
+
+            if (result.Success)
+            {
+                ViewAlerts.SuccessAlert(TempData, result.Message);
+                return RedirectToAction(nameof(Index));
+            }
+
+            AddErrorsToModelState(errors: result.Errors);
+            return View(model);
         }
 
         private void AddErrorsToModelState(ICollection<Error> errors)

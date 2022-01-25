@@ -11,6 +11,9 @@
             <a class="btn btn-success  float-end" asp-action="Create" title="Cadastrar um nova loja no sistema">Nova loja <i class="uil uil-plus"></i></a>
         </div>
         <div class="col-md-12">
+            @{
+                await Html.RenderPartialAsync("_CheckForAlert");
+            }
             <table class="table table-bordered table-striped table-hover table-responsive">
                 <caption>Listando @Model.Count() lojas</caption>
                 <thead>

@@ -1,0 +1,9 @@
+﻿@using KadoshWebsite.Util
+
+@if(TempData[ViewConstants.VIEW_TEMP_MESSAGE] is not null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="uil uil-info-circle"></i> @TempData[ViewConstants.VIEW_TEMP_MESSAGE]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar aviso"></button>
+    </div>
+}
