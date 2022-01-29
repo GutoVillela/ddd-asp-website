@@ -91,8 +91,17 @@ namespace KadoshDomain.Handlers
                 command.AddressZipCode,
                 command.AddressComplement);
 
-            // Create Entity
-            Store store = new(command.Id.Value, command.Name, storeAddress);
+            // Retrieve Entity
+            Store store = await _storeRepository.ReadAsync(command.Id.Value);
+
+            if (store is null)
+            {
+                AddNotification(nameof(command.Id), StoreCommandMessages.ERROR_STORE_NOT_FOUND);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_STORE_NOT_FOUND);
+                return new CommandResult(false, StoreCommandMessages.ERROR_STORE_NOT_FOUND, errors);
+            }
+
+            store.UpdateStoreInfo(command.Name, storeAddress);
             store.SetLastUpdateDate(DateTime.UtcNow);
 
             // Entity validations

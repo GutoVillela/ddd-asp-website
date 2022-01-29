@@ -1,0 +1,229 @@
+﻿@using KadoshDomain.Enums
+@model CustomerViewModel
+@{
+    ViewData["Title"] = "Cadastrar novo cliente";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Edit" method="post" class="row">
+                <input asp-for="Id" type="hidden" />
+                <!-- Name -->
+                <div class="col-md-8 mb-3">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping"><i class="uil uil-user icon-size-1-5"></i></span>
+                        <div class="form-floating w-100">
+                            <input asp-for="Name" class="form-control" placeholder="Nome do cliente" />
+                            <label asp-for="Name"></label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <!-- Gender -->
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating">
+                        @Html.DropDownListFor(m => m.Gender, Html.GetEnumSelectList(typeof(EGender)), new { Class = "form-select" })
+                        <label asp-for="Gender"></label>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-8 mb-3">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping"><i class="uil uil-at icon-size-1-5"></i></span>
+                        <div class="form-floating w-100">
+                            <input asp-for="Email" class="form-control" placeholder="E-mail do cliente" />
+                            <label asp-for="Email"></label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Document -->
+                <div class="col-md-4 mb-3">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="form-floating">
+                                @Html.DropDownListFor(m => m.DocumentType, Html.GetEnumSelectList(typeof(EDocumentType)), new { Class = "form-select" })
+                                <label asp-for="DocumentType"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group mb-3">
+                                <div class="form-floating w-100">
+                                    <input asp-for="DocumentNumber" class="form-control" placeholder="Documento do cliente" />
+                                    <label asp-for="DocumentNumber"></label>
+                                </div>
+                                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-map-marker-plus icon-size-1-5"></i> Endereço do Cliente
+                        </div>
+                        <div class="card-body row">
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="Street" class="form-control" placeholder="Rua da loja" />
+                                    <label asp-for="Street"></label>
+                                </div>
+                                <span asp-validation-for="Street" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="Number" class="form-control" placeholder="Número" />
+                                    <label asp-for="Number"></label>
+                                </div>
+                                <span asp-validation-for="Number" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="State" class="form-control" placeholder="Estado" />
+                                    <label asp-for="State"></label>
+                                </div>
+                                <span asp-validation-for="State" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="City" class="form-control" placeholder="Cidade" />
+                                    <label asp-for="City"></label>
+                                </div>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="Neighborhood" class="form-control" placeholder="Bairro" />
+                                    <label asp-for="Neighborhood"></label>
+                                </div>
+                                <span asp-validation-for="Neighborhood" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="ZipCode" class="form-control" placeholder="CEP" />
+                                    <label asp-for="ZipCode"></label>
+                                </div>
+                                <span asp-validation-for="ZipCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="Complement" class="form-control" placeholder="Complemento. Ex: Casa 2" />
+                                    <label asp-for="Complement"></label>
+                                </div>
+                                <span asp-validation-for="Complement" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phones -->
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-phone-alt icon-size-1-5"></i> Telefones do cliente
+                        </div>
+                        <div class="card-body row">
+                            <div class="col-md-12 mb-3 repeater">
+                                <div data-repeater-list="@nameof(Model.Phones)">
+                                    @if (Model.Phones.Any())
+                                    {
+                                        @foreach (var phone in Model.Phones)
+                                        {
+                                            <div data-repeater-item>
+                                                <div class="row">
+                                                    <div class="col-md-3 mb-3">
+                                                        <input type="hidden" name="@nameof(PhoneViewModel.Id)" value="@phone.Id" />
+                                                        <div class="form-floating">
+                                                            @{
+                                                                var selectItems = Html.GetEnumSelectList(typeof(EPhoneType));
+                                                                if(selectItems.Any(x => x.Value == ((int)phone.PhoneType).ToString()))
+                                                                    selectItems.Where(x => x.Value == ((int)phone.PhoneType).ToString()).FirstOrDefault().Selected = true;
+                                                            }
+                                                            @Html.DropDownList(nameof(PhoneViewModel.PhoneType),@selectItems, new { Class = "form-select", Name= nameof(PhoneViewModel.PhoneType), Value = (int)phone.PhoneType } )
+                                                            <label for="@nameof(PhoneViewModel.PhoneType)">Tipo de telefone</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" name="@nameof(PhoneViewModel.PhoneNumber)" class="form-control" value="@phone.PhoneNumber" required />
+                                                            <label for="@nameof(PhoneViewModel.PhoneNumber)">Telefone</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="form-floating">
+                                                            <input type="text" name="@nameof(PhoneViewModel.TalkTo)" class="form-control" value="@phone.TalkTo" required />
+                                                            <label for="@nameof(PhoneViewModel.TalkTo)">Falar com</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 mb-3">
+                                                        <a data-repeater-delete class="btn btn-danger" title="Apagar este telefone do cliente"><i class="uil uil-times"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div data-repeater-item>
+                                            <div class="row">
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="form-floating">
+                                                        @Html.DropDownList(nameof(PhoneViewModel.PhoneType),Html.GetEnumSelectList(typeof(EPhoneType)), new { Class = "form-select", Name= nameof(PhoneViewModel.PhoneType)} )
+                                                        <label for="@nameof(PhoneViewModel.PhoneType)">Tipo de telefone</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <div class="form-floating">
+                                                        <input type="text" name="@nameof(PhoneViewModel.PhoneNumber)" class="form-control" required />
+                                                        <label for="@nameof(PhoneViewModel.PhoneNumber)">Telefone</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <div class="form-floating">
+                                                        <input type="text" name="@nameof(PhoneViewModel.TalkTo)" class="form-control" required />
+                                                        <label for="@nameof(PhoneViewModel.TalkTo)">Falar com</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1 mb-3">
+                                                    <a data-repeater-delete class="btn btn-danger" title="Apagar este telefone do cliente"><i class="uil uil-times"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                                <a data-repeater-create class="btn btn-success" title="Adicionar outro telefone"><i class="uil uil-plus"></i> Adicionar um telefone ao cliente</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                    <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+<script src="~/lib/jquery.repeater/jquery.repeater.min.js"></script>
+<script src="~/js/createCustomerView.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

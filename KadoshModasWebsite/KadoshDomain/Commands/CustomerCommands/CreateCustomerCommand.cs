@@ -3,6 +3,7 @@ using Flunt.Validations;
 using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
 using KadoshShared.Commands;
+using KadoshShared.Constants.ValidationErrors;
 
 namespace KadoshDomain.Commands
 {
@@ -11,7 +12,7 @@ namespace KadoshDomain.Commands
         public string? Name { get; set; }
         public string? EmailAddress { get; set; }
         public string? DocumentNumber { get; set; }
-        public EDocumentType DocumentType { get; set; }
+        public EDocumentType? DocumentType { get; set; }
         public EGender? Gender { get; set; }
         public string? AddressStreet { get; set; }
         public string? AddressNumber { get; set; }
@@ -26,7 +27,7 @@ namespace KadoshDomain.Commands
         {
             AddNotifications(new Contract<Notification>()
                 .Requires()
-                .IsNotNullOrEmpty(Name, nameof(Name), "Nome do cliente inválido!")
+                .IsNotNullOrEmpty(Name, nameof(Name), CustomerValidationsErrors.INVALID_CUSTOMER_NAME)
             );
         }
     }

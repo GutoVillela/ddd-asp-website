@@ -18,12 +18,15 @@ builder.Services.AddDbContext<StoreDataContext>(x => x.UseMySql(connectionString
 
 // Application Services Injection
 builder.Services.AddScoped<IStoreApplicationService, StoreApplicationService>();
+builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationService>();
 
 // Domain Services Injection
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 // Domain Repositories Injections
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 var app = builder.Build();
 

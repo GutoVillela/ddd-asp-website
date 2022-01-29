@@ -11,6 +11,7 @@ namespace KadoshDomain.Commands
         {
             Success = success;
             Message = message;
+            Errors = new List<Error>();
         }
 
         public CommandResult(bool success, string message, ICollection<Error> errors)
@@ -23,7 +24,7 @@ namespace KadoshDomain.Commands
 
         #region Properties
         public bool Success { get; set; }
-        public string? Message { get; set; }
+        public string Message { get; set; }
         public ICollection<Error> Errors { get; set; }
         #endregion Properties
     }

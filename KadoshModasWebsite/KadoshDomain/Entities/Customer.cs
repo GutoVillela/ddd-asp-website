@@ -56,6 +56,19 @@ namespace KadoshDomain.Entities
             Sales = sales;
             CustomerPostings = customerPostings;
         }
+
+        public Customer(
+            int id,
+            string name,
+            Email? email,
+            Document? document,
+            EGender? gender,
+            Address? address,
+            IReadOnlyCollection<Phone>? phones
+            ) : this(name, email, document, gender, address, phones)
+        {
+            Id = id;
+        }
         #endregion Constructors
 
         [Required]
@@ -72,6 +85,22 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<CustomerPosting> CustomerPostings { get; private set; } = new List<CustomerPosting>();
 
+        public void UpdateCustomerInfo(
+            string name,
+            Email? email,
+            Document? document,
+            EGender? gender,
+            Address? address,
+            IReadOnlyCollection<Phone>? phones)
+        {
+            Name = name;
+            Email = email;
+            Document = document;
+            Gender = gender;
+            Address = address;
+            Phones = phones;
+            ValidateCustomer();
+        }
 
         private void ValidateCustomer()
         {

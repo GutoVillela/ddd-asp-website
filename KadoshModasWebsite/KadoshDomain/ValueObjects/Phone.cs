@@ -15,11 +15,15 @@ namespace KadoshDomain.ValueObjects
             Type = type;
             TalkTo = talkTo;
 
-            AddNotifications(new Contract<Notification>()
-                .Requires()
-                .IsTrue(ValidateNumber(), nameof(Number), $"Telefone inválido.")
-            );
+            ValidatePhone();
         }
+
+        public Phone(int id, string areaCode, string number, EPhoneType type, string talkTo) : this(areaCode, number, type, talkTo)
+        {
+            Id = id;
+        }
+
+        public int? Id { get; private set; }
 
         [Required]
         [MaxLength(3)]
@@ -33,6 +37,14 @@ namespace KadoshDomain.ValueObjects
         public EPhoneType Type { get; private set; }
 
         public string? TalkTo { get; private set; }
+
+        private void ValidatePhone()
+        {
+            AddNotifications(new Contract<Notification>()
+                .Requires()
+                .IsTrue(ValidateNumber(), nameof(Number), $"Telefone inválido.")
+            );
+        }
 
         private bool ValidateNumber()
         {

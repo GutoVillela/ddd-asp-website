@@ -36,6 +36,13 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<Stock> Stocks { get; private set; }
 
+        public void UpdateStoreInfo(string name, Address address)
+        {
+            Name = name;
+            Address = address;
+            ValidateStore();
+        }
+
         private void ValidateStore()
         {
             AddNotifications(new Contract<Notification>()
