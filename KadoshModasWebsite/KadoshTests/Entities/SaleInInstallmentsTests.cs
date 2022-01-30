@@ -23,7 +23,7 @@ namespace KadoshTests.Entities
             _customer = new("Bryam Adams");
             _saleItems = CreateSaleItens(10);
             _installments = CreateInstallments(10);
-            _seller = new("Vendedor", "senha", EUserRole.Seller, 1);
+            _seller = new("Vendedor", "Vendedor", "senha", EUserRole.Seller, 1);
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace KadoshTests.Entities
                 saleDate: saleDate,
                 saleItems: _saleItems.ToList(),
                 situation: ESaleSituation.Open,
-                sellerId: _seller.Username,
+                sellerId: _seller.Id,
                 installments: new List<Installment>(),// There's no installments for this sale
                 interestOnTheTotalSaleInPercentage: 2
                 );
@@ -66,7 +66,7 @@ namespace KadoshTests.Entities
                 saleDate: saleDate,
                 saleItems: _saleItems.ToList(),
                 situation: ESaleSituation.Open,
-                sellerId: _seller.Username,
+                sellerId: _seller.Id,
                 installments: _installments.ToList(),// There are installments for this sale
                 interestOnTheTotalSaleInPercentage: 2
                 );

@@ -1,0 +1,83 @@
+﻿@using KadoshDomain.Enums
+@using KadoshWebsite.Util
+@model UserViewModel
+@{
+    ViewData["Title"] = "Cadastrar um novo usuário";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post" class="row">
+            <div class="col-md-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-user icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="Name" class="form-control" placeholder="Nome" />
+                        <label asp-for="Name"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-chat-bubble-user icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="UserName" class="form-control" placeholder="Nome de usuário" />
+                        <label asp-for="UserName"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.Role, Html.GetEnumSelectList(typeof(EUserRole)), new { Class = "form-select" })
+                    <label asp-for="Role"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.StoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                    <label asp-for="StoreId"></label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="Password" class="form-control" placeholder="Senha" />
+                        <label asp-for="Password"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirmar senha" />
+                        <label asp-for="ConfirmPassword"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12">
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

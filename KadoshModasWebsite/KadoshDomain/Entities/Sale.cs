@@ -11,7 +11,7 @@ namespace KadoshDomain.Entities
         private IList<CustomerPosting> _postings;
 
         #region Constructors
-        protected Sale(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, string sellerId)
+        protected Sale(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId)
         {
             CustomerId = customerId;
             FormOfPayment = formOfPayment;
@@ -30,7 +30,7 @@ namespace KadoshDomain.Entities
             DateTime saleDate, 
             IReadOnlyCollection<SaleItem> saleItems, 
             ESaleSituation situation,
-            string sellerId
+            int sellerId
             )
         {
             CustomerId = customerId;
@@ -54,7 +54,7 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
-            string sellerId,
+            int sellerId,
             DateTime settlementDate
             ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
         {
@@ -71,7 +71,7 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
-            string sellerId,
+            int sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings
             ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
@@ -87,7 +87,7 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
-            string sellerId,
+            int sellerId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             Customer? customer
@@ -116,7 +116,7 @@ namespace KadoshDomain.Entities
         public DateTime SaleDate { get; private set; }
 
         [Required]
-        public string SellerId { get; private set; }
+        public int SellerId { get; private set; }
 
         public User? Seller { get; private set; }
 
@@ -146,7 +146,7 @@ namespace KadoshDomain.Entities
                 .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
                 .IsLowerThan(DownPayment, CalculateTotal(), nameof(DownPayment), "O valor da entrada precisa ser menor que o valor total da venda")
                 .IsTrue(SaleItems.Any(), nameof(SaleItems), "É obrigatório pelo menos um item da venda")
-                .IsNotNullOrEmpty(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
+                .IsNotNull(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
             );
 
             ValidateSaleItems();

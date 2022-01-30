@@ -9,27 +9,27 @@ namespace KadoshDomain.Entities
     public class User : Entity
     {
 
-        public User(string username, string password, EUserRole role, int storeId)
+        public User(string name, string username, string passwordHash, EUserRole role, int storeId)
         {
+            Name = name;
             Username = username;
-            Password = password;
+            PasswordHash = passwordHash;
             Role = role;
             StoreId = storeId;
 
             ValidateUser();
         }
 
-        public User(string username, string password, EUserRole role, int storeId, Store store) : this(username, password, role, storeId)
-        {
-            Store = store;
-        }
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; private set; }
 
         [Required]
         [MaxLength(20)]
         public string Username { get; private set; }
 
         [Required]
-        public string Password { get; private set; }
+        public string PasswordHash { get; private set; }
 
         [Required]
         public EUserRole Role { get; private set; }
@@ -39,19 +39,27 @@ namespace KadoshDomain.Entities
 
         public Store? Store { get; private set; }
 
-        public IReadOnlyCollection<Sale> Sales { get; private set; }
-        
-        
+        public IReadOnlyCollection<Sale>? Sales { get; private set; }
+
+        public void UpdateUserInfo(string name, string username, string passwordHash, EUserRole role, int storeId)
+        {
+            Name = name;
+            Username = username;
+            PasswordHash = passwordHash;
+            Role = role;
+            StoreId = storeId;
+
+            ValidateUser();
+        }
         private void ValidateUser()
         {
             AddNotifications(new Contract<Notification>()
                 .Requires()
-                .IsNotNullOrEmpty(Username, nameof(Username), "Nome de usuário inválido!")
-                .IsNotNullOrEmpty(Password, nameof(Password), "Senha inválida!")
+                .IsNotNullOrEmpty(Name, nameof(Name), "Nome inválido")
+                .IsNotNullOrEmpty(Username, nameof(Username), "Nome de usuário inválido")
+                .IsNotNullOrEmpty(PasswordHash, nameof(PasswordHash), "Senha inválida")
             );
         }
-
-
 
     }
 }
