@@ -31,6 +31,7 @@ namespace KadoshWebsite.Controllers
 
                 if (result.Success)
                 {
+                    _userService.LoginAuthenticatedUser(model.UserName);
                     return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", ""));
                 }
 

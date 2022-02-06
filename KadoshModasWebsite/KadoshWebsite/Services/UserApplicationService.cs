@@ -7,6 +7,7 @@ using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
 using KadoshShared.Constants.ServicesMessages;
 using KadoshDomain.Entities;
+using KadoshWebsite.Util;
 
 namespace KadoshWebsite.Services
 {
@@ -14,9 +15,13 @@ namespace KadoshWebsite.Services
     {
         private readonly IUserService _userService;
 
-        public UserApplicationService(IUserService userService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private ISession? _session => _httpContextAccessor.HttpContext?.Session;
+
+        public UserApplicationService(IUserService userService, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ICommandResult> CreateUserAsync(UserViewModel user)
@@ -100,6 +105,14 @@ namespace KadoshWebsite.Services
 
             var result = await _userService.AuthenticateUserAsync(command);
             return result;
+        }
+
+        public void LoginAuthenticatedUser(string authenticatedUsername)
+        {
+            if (_session is null)
+                throw new ApplicationException("Não existe sessão habilitada para validar usuário");
+
+            _session.SetString(AuthorizationConstants.LOGGED_IN_USERNAME_SESSION, authenticatedUsername);
         }
     }
 }

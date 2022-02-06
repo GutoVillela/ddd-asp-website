@@ -3,8 +3,12 @@ using KadoshDomain.Services;
 using KadoshDomain.Services.Interfaces;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
+using KadoshWebsite.Infrastructure;
+using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Services;
 using KadoshWebsite.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +35,24 @@ builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// HttpContext
+builder.Services.AddHttpContextAccessor();
+
+// Authorization Handler
+builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationManager>();
+
+// Add Authorizations Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(nameof(LoggedInAuthorization), policy => policy.Requirements.Add(new LoggedInAuthorization()));
+});
+
+// Sessions
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,10 +68,33 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
+// Authorization Scheme (must come before app.UseAuthorization() )
+app.Use(async (context, next) =>
+{
+    var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
+    var authAttr = endpoint?.Metadata?.GetMetadata<AuthorizeAttribute>();
+    if (authAttr is not null && authAttr.Policy == nameof(LoggedInAuthorization))
+    {
+        var authService = context.RequestServices.GetRequiredService<IAuthorizationService>();
+        var result = await authService.AuthorizeAsync(context.User, context.GetRouteData(), authAttr.Policy);
+        if (!result.Succeeded)
+        {
+            var path = $"/Login";
+            context.Response.Redirect(path);
+            return;
+        }
+    }
+    await next();
+});
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Index}");
+
+
 
 app.Run();

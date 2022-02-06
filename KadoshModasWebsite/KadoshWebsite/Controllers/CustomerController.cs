@@ -1,12 +1,15 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
+using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshWebsite.Util;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
 {
+    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class CustomerController : BaseController
     {
         private readonly ICustomerApplicationService _service;

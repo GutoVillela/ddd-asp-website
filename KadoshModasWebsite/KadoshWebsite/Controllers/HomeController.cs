@@ -1,9 +1,12 @@
-﻿using KadoshWebsite.Models;
+﻿using KadoshWebsite.Infrastructure.Authorization;
+using KadoshWebsite.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace KadoshWebsite.Controllers
 {
+    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -13,6 +16,8 @@ namespace KadoshWebsite.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        //[Authorize]
         public IActionResult Index()
         {
             return View();

@@ -5,6 +5,11 @@ namespace KadoshWebsite.Controllers
 {
     public abstract class BaseController : Controller
     {
+        protected void RedirectToLoginIfUserIsNotAuthenticated()
+        {
+
+        }
+
         protected abstract void AddErrorsToModelState(ICollection<Error> errors);
 
         protected string GetErrorMessagesFromSpecificErrorCode(ICollection<Error> errors, int errorCodeToSearch)
