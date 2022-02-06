@@ -11,7 +11,7 @@ using KadoshShared.ValueObjects;
 
 namespace KadoshDomain.Handlers
 {
-    public class UserHandler : Notifiable<Notification>, IHandler<CreateUserCommand>, IHandler<UpdateUserCommand>, IHandler<DeleteUserCommand>
+    public class UserHandler : Notifiable<Notification>, IHandler<CreateUserCommand>, IHandler<UpdateUserCommand>, IHandler<DeleteUserCommand>, IHandler<AuthenticateUserCommand>
     {
         private readonly IUserRepository _repository;
 
@@ -42,14 +42,16 @@ namespace KadoshDomain.Handlers
                 return new CommandResult(false, UserCommandMessages.ERROR_USERNAME_ALREADY_TAKEN, errors);
             }
 
-            // Hash password
-            string passwordHash = _repository.GetPasswordHashed(command.Password);
+            // Get password encrypted
+            (string passwordHash, byte[] salt, int iterations) = _repository.GetPasswordHashed(command.Password);
 
             // Create Entity
             User user = new(
                 name: command.Name,
                 username: command.Username,
-                passwordHash: passwordHash, 
+                passwordHash: passwordHash,
+                passwordSalt: salt,
+                passwordSaltIterations: iterations,
                 role: command.Role.Value,
                 storeId: command.StoreId.Value
                 );
@@ -102,13 +104,15 @@ namespace KadoshDomain.Handlers
                 return new CommandResult(false, UserCommandMessages.ERROR_USERNAME_NOT_FOUND, errors);
             }
 
-            // Hash password
-            string passwordHash = _repository.GetPasswordHashed(command.Password);
+            // Get password encrypted
+            (string passwordHash, byte[] salt, int iterations) = _repository.GetPasswordHashed(command.Password);
 
             user.UpdateUserInfo(
                 name: command.Name,
                 username: command.NewUsername,
                 passwordHash: passwordHash,
+                passwordSalt: salt,
+                passwordSaltIterations: iterations,
                 role: command.Role.Value,
                 storeId: command.StoreId.Value
                 );
@@ -141,11 +145,11 @@ namespace KadoshDomain.Handlers
             }
 
             // Get Entity
-            User store = await _repository.ReadAsync(command.Id ?? 0);
+            User user = await _repository.ReadAsync(command.Id ?? 0);
 
             // Entity validations
-            if (store is null)
-                AddNotification(nameof(store), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
+            if (user is null)
+                AddNotification(nameof(user), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
 
             // Check validations
             if (!IsValid)
@@ -155,8 +159,47 @@ namespace KadoshDomain.Handlers
             }
 
             // Persist data
-            await _repository.DeleteAsync(store);
+            await _repository.DeleteAsync(user);
 
+            return new CommandResult(true, UserCommandMessages.SUCCESS_ON_DELETE_USER_COMMAND);
+        }
+
+        public async Task<ICommandResult> HandleAsync(AuthenticateUserCommand command)
+        {
+            // Fail Fast Validations
+            command.Validate();
+            if (!command.IsValid)
+            {
+                AddNotifications(command);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_USER_AUTHENTICATE_COMMAND);
+                return new CommandResult(false, UserCommandMessages.INVALID_USER_AUTHENTICATE_COMMAND, errors);
+            }
+
+            // Get user by username
+            User? user = await _repository.GetUserByUsername(command.Username ?? string.Empty);
+
+            // Entity validations
+            if (user is null)
+                AddNotification(nameof(user), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
+
+            // Check validations
+            if (!IsValid)
+            {
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_USER_AUTHENTICATE_COMMAND);
+                return new CommandResult(false, UserCommandMessages.INVALID_USER_AUTHENTICATE_COMMAND, errors);
+            }
+
+            // Hash password
+            string passwordHash = _repository.GetPasswordHashed(command.Password, user.PasswordSalt, user.PasswordSaltIterations);
+
+            // Compare passwords
+            if (passwordHash != user.PasswordHash)
+            {
+                AddNotification(nameof(command.Username), UserCommandMessages.ERROR_AUTHENTICATION_FAILED);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_AUTHENTICATION_FAILED);
+                return new CommandResult(false, UserCommandMessages.ERROR_AUTHENTICATION_FAILED, errors);
+            }
+            
             return new CommandResult(true, UserCommandMessages.SUCCESS_ON_DELETE_USER_COMMAND);
         }
 

@@ -43,5 +43,11 @@ namespace KadoshDomain.Services
             UserHandler userHandler = new(_userRepository);
             return await userHandler.HandleAsync(command);
         }
+
+        public async Task<ICommandResult> AuthenticateUserAsync(AuthenticateUserCommand command)
+        {
+            UserHandler userHandler = new(_userRepository);
+            return await userHandler.HandleAsync(command);
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace KadoshWebsite.Services.Interfaces
         Task<UserViewModel> GetUserAsync(int id);
         Task<ICommandResult> UpdateUserAsync(UserViewModel user);
         Task<ICommandResult> DeleteUserAsync(int id);
+        Task<ICommandResult> AuthenticateUserAsync(string username, string password);
     }
 }

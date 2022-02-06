@@ -15,21 +15,25 @@ namespace KadoshRepository.Repositories
             
         }
 
-        public string GetPasswordHashed(string password)
+        public (string hash, byte[] salt, int iterations) GetPasswordHashed(string password)
         {
             // Generate 128-bit salt
             byte[] salt = new byte[128 / 8];
-            using (var randomNumberGenerator = RandomNumberGenerator.Create())
-            {
-                randomNumberGenerator.GetNonZeroBytes(salt);
-            }
+            RandomNumberGenerator.Fill(salt);
 
+            int iterations = RandomNumberGenerator.GetInt32(10000, 100000);
+
+            return (GetPasswordHashed(password, salt, iterations), salt, iterations);
+        }
+
+        public string GetPasswordHashed(string password, byte[] salt, int iterations)
+        {
             // Hash password
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
+                iterationCount: iterations,
                 numBytesRequested: 256 / 8)
             );
 
@@ -50,5 +54,11 @@ namespace KadoshRepository.Repositories
         {
             return await _dbSet.AnyAsync(UserQueries.GetUserByUsernameExceptForGivenOne(username, usernameToIgnore));
         }
+
+        public async Task<User?> GetUserByUsername(string username)
+        {
+            return await _dbSet.FirstOrDefaultAsync(UserQueries.GetUserByUsername(username));
+        }
+        
     }
 }

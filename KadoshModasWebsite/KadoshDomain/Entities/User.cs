@@ -9,11 +9,13 @@ namespace KadoshDomain.Entities
     public class User : Entity
     {
 
-        public User(string name, string username, string passwordHash, EUserRole role, int storeId)
+        public User(string name, string username, string passwordHash, byte[] passwordSalt, int passwordSaltIterations, EUserRole role, int storeId)
         {
             Name = name;
             Username = username;
             PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            PasswordSaltIterations = passwordSaltIterations;
             Role = role;
             StoreId = storeId;
 
@@ -32,6 +34,12 @@ namespace KadoshDomain.Entities
         public string PasswordHash { get; private set; }
 
         [Required]
+        public byte[] PasswordSalt { get; private set; }
+
+        [Required]
+        public int PasswordSaltIterations { get; private set; }
+
+        [Required]
         public EUserRole Role { get; private set; }
 
         [Required]
@@ -41,14 +49,16 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<Sale>? Sales { get; private set; }
 
-        public void UpdateUserInfo(string name, string username, string passwordHash, EUserRole role, int storeId)
+        public void UpdateUserInfo(string name, string username, string passwordHash, byte[] passwordSalt, int passwordSaltIterations, EUserRole role, int storeId)
         {
             Name = name;
             Username = username;
             PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            PasswordSaltIterations = passwordSaltIterations;
             Role = role;
             StoreId = storeId;
-
+            LastUpdateDate = DateTime.UtcNow;
             ValidateUser();
         }
         private void ValidateUser()

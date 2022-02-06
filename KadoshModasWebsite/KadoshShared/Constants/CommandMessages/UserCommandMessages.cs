@@ -10,5 +10,8 @@
         public const string SUCCESS_ON_DELETE_USER_COMMAND = "Usuário apagado com sucesso";
         public const string ERROR_USERNAME_ALREADY_TAKEN = "O nome de usuário já está sendo usado";
         public const string ERROR_USERNAME_NOT_FOUND = "O usuário não foi encontrado";
+        public const string INVALID_USER_AUTHENTICATE_COMMAND = "As credenciais para autenticar o usuário não foram preenchidas corretamente";
+        public const string SUCCESS_ON_AUTHENTICATE_USER_COMMAND = "Usuário autenticado com sucesso";
+        public const string ERROR_AUTHENTICATION_FAILED = "O nome de usuário ou senha estão incorretos";
     }
 }

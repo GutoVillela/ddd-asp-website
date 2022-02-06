@@ -91,5 +91,15 @@ namespace KadoshWebsite.Services
 
             return await _userService.UpdateUserAsync(command);
         }
+
+        public async Task<ICommandResult> AuthenticateUserAsync(string username, string password)
+        {
+            AuthenticateUserCommand command = new();
+            command.Username = username;
+            command.Password = password;
+
+            var result = await _userService.AuthenticateUserAsync(command);
+            return result;
+        }
     }
 }

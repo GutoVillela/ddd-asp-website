@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KadoshWebsite.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserApplicationService _userService;
         private readonly IStoreApplicationService _storeService;
@@ -144,7 +144,7 @@ namespace KadoshWebsite.Controllers
             return storeListItems;
         }
 
-        private void AddErrorsToModelState(ICollection<Error> errors)
+        protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_USER_CREATE_COMMAND))
                 ModelState.AddModelError(nameof(UserViewModel.Name), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_USER_CREATE_COMMAND));
@@ -157,16 +157,6 @@ namespace KadoshWebsite.Controllers
 
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_USERNAME_ALREADY_TAKEN))
                 ModelState.AddModelError(nameof(UserViewModel.UserName), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_USERNAME_ALREADY_TAKEN));
-        }
-
-        private string GetErrorMessagesFromSpecificErrorCode(ICollection<Error> errors, int errorCodeToSearch)
-        {
-            string errorMessage = string.Empty;
-            foreach (var error in errors.Where(x => x.Code == errorCodeToSearch))
-            {
-                errorMessage += error.Message + ". ";
-            }
-            return errorMessage;
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
 {
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
         private readonly ICustomerApplicationService _service;
 
@@ -116,7 +116,7 @@ namespace KadoshWebsite.Controllers
             return View(model);
         }
 
-        private void AddErrorsToModelState(ICollection<Error> errors)
+        protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_CUSTOMER_CREATE_COMMAND))
                 ModelState.AddModelError(nameof(StoreViewModel.Name), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_CUSTOMER_CREATE_COMMAND));
@@ -126,16 +126,6 @@ namespace KadoshWebsite.Controllers
 
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_CUSTOMER_DELETE_COMMAND))
                 ModelState.AddModelError(nameof(StoreViewModel.Name), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_CUSTOMER_DELETE_COMMAND));
-        }
-
-        private string GetErrorMessagesFromSpecificErrorCode(ICollection<Error> errors, int errorCodeToSearch)
-        {
-            string errorMessage = string.Empty;
-            foreach (var error in errors.Where(x => x.Code == errorCodeToSearch))
-            {
-                errorMessage += error.Message + ". ";
-            }
-            return errorMessage;
         }
     }
 }

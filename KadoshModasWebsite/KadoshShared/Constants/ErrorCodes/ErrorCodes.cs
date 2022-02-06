@@ -16,5 +16,7 @@
         public const int ERROR_INVALID_USER_DELETE_COMMAND = 12;
         public const int ERROR_USERNAME_ALREADY_TAKEN = 13;
         public const int ERROR_USERNAME_NOT_FOUND = 14;
+        public const int ERROR_INVALID_USER_AUTHENTICATE_COMMAND = 15;
+        public const int ERROR_AUTHENTICATION_FAILED = 16;
     }
 }

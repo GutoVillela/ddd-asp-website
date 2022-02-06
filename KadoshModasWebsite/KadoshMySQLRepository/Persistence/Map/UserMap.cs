@@ -13,6 +13,8 @@ namespace KadoshRepository.Persistence.Map
             builder.Property(x => x.Username).IsRequired().HasMaxLength(20);
             builder.HasIndex(x => x.Username).IsUnique();
             builder.Property(x => x.PasswordHash).IsRequired();
+            builder.Property(x => x.PasswordSalt).IsRequired();
+            builder.Property(x => x.PasswordSaltIterations).IsRequired();
             builder.Property(x => x.Role).IsRequired();
             builder.HasOne(x => x.Store).WithMany(x => x.Users).HasForeignKey(x => x.StoreId).IsRequired();
             builder.Ignore(x => x.Notifications);            

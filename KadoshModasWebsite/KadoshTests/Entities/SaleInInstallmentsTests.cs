@@ -23,7 +23,7 @@ namespace KadoshTests.Entities
             _customer = new("Bryam Adams");
             _saleItems = CreateSaleItens(10);
             _installments = CreateInstallments(10);
-            _seller = new("Vendedor", "Vendedor", "senha", EUserRole.Seller, 1);
+            _seller = new("Vendedor", "Vendedor", "senha", new byte[1], 0, EUserRole.Seller, 1);
         }
 
         [TestMethod]

@@ -11,5 +11,6 @@ namespace KadoshDomain.Services.Interfaces
         Task<User?> GetUserAsync(int id);
         Task<ICommandResult> UpdateUserAsync(UpdateUserCommand command);
         Task<ICommandResult> DeleteUserAsync(DeleteUserCommand command);
+        Task<ICommandResult> AuthenticateUserAsync(AuthenticateUserCommand command);
     }
 }
