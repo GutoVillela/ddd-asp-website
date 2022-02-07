@@ -45,6 +45,17 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<SaleItem> SaleItems { get; private set; }
 
+        public void UpdateProductInfo(string name, string barCode, decimal price, int categoryId, int brandId)
+        {
+            Name = name;
+            BarCode = barCode;
+            Price = price;
+            CategoryId = categoryId;
+            BrandId = brandId;
+
+            ValidateProduct();
+        }
+
         private void ValidateProduct()
         {
             AddNotifications(new Contract<Notification>()

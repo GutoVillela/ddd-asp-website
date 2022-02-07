@@ -26,5 +26,9 @@
         public const int ERROR_INVALID_CATEGORY_UPDATE_COMMAND = 22;
         public const int ERROR_INVALID_CATEGORY_DELETE_COMMAND = 23;
         public const int ERROR_CATEGORY_NOT_FOUND = 24;
+        public const int ERROR_INVALID_PRODUCT_CREATE_COMMAND = 25;
+        public const int ERROR_INVALID_PRODUCT_UPDATE_COMMAND = 26;
+        public const int ERROR_INVALID_PRODUCT_DELETE_COMMAND = 27;
+        public const int ERROR_PRODUCT_NOT_FOUND = 28;
     }
 }

@@ -26,6 +26,7 @@ builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationServi
 builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
 builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
 builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationService>();
+builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 
 // Domain Services Injection
 builder.Services.AddScoped<IStoreService, StoreService>();
@@ -33,6 +34,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Domain Repositories Injections
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
@@ -40,6 +42,7 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();
@@ -100,7 +103,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Index}");
-
-
 
 app.Run();

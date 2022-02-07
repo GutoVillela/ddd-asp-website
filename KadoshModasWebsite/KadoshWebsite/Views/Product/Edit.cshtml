@@ -1,0 +1,80 @@
+﻿@using KadoshWebsite.Util
+@model ProductViewModel
+@{
+    ViewData["Title"] = $"Editando a loja {Model.Name}";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit" method="post" class="row">
+            <input asp-for="Id" type="hidden" />
+            <!-- Name -->
+            <div class="col-12 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-box icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="Name" class="form-control" placeholder="Nome do Produto" />
+                        <label asp-for="Name"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <!-- Price -->
+            <div class="col-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bill icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="Price" id="txtPrice" class="form-control" placeholder="Preço" />
+                        <label asp-for="Price"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <!-- BarCode -->
+            <div class="col-6 mb-3">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bars icon-size-1-5"></i></span>
+                    <div class="form-floating w-100">
+                        <input asp-for="BarCode" class="form-control" placeholder="Código de Barras" />
+                        <label asp-for="BarCode"></label>
+                    </div>
+                </div>
+                <span asp-validation-for="BarCode" class="text-danger"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.CategoryId, ViewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                    <label asp-for="CategoryId"></label>
+                </div>
+            </div>
+
+            <!-- Brand -->
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    @Html.DropDownListFor(m => m.BrandId, ViewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                    <label asp-for="CategoryId"></label>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <input type="submit" value="Salvar" id="btnCadastrar" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/createProductView.js"></script>
+    <script src="~/js/numberValidationWithComma.js"></script>
+
+}
