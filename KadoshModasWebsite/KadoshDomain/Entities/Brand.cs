@@ -25,6 +25,13 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<Product> Products { get; private set; } = new List<Product>();
 
+        public void UpdateBrandInfo(string name)
+        {
+            Name = name;
+            LastUpdateDate = DateTime.UtcNow;
+            ValidateBrand();
+        }
+
         private void ValidateBrand()
         {
             AddNotifications(new Contract<Notification>()

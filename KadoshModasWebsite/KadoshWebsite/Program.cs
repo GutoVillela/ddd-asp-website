@@ -24,16 +24,19 @@ builder.Services.AddDbContext<StoreDataContext>(x => x.UseMySql(connectionString
 builder.Services.AddScoped<IStoreApplicationService, StoreApplicationService>();
 builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationService>();
 builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
+builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
 
 // Domain Services Injection
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
 
 // Domain Repositories Injections
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

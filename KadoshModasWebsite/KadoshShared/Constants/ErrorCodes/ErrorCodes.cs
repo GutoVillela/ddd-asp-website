@@ -18,5 +18,9 @@
         public const int ERROR_USERNAME_NOT_FOUND = 14;
         public const int ERROR_INVALID_USER_AUTHENTICATE_COMMAND = 15;
         public const int ERROR_AUTHENTICATION_FAILED = 16;
+        public const int ERROR_INVALID_BRAND_CREATE_COMMAND = 17;
+        public const int ERROR_INVALID_BRAND_UPDATE_COMMAND = 18;
+        public const int ERROR_INVALID_BRAND_DELETE_COMMAND = 19;
+        public const int ERROR_BRAND_NOT_FOUND = 20;
     }
 }
