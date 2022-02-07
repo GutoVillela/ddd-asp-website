@@ -25,6 +25,13 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<Product> Products { get; private set; } = new List<Product>();
 
+        public void UpdateCategoryInfo(string name)
+        {
+            Name = name;
+
+            ValidateCategory();
+        }
+
         private void ValidateCategory()
         {
             AddNotifications(new Contract<Notification>()

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CategoryViewModel>
+@{
+    ViewData["Title"] = "Cadastro de categorias";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-3">
+            <a class="btn btn-success  float-end" asp-action="Create" title="Cadastrar um nova categoria no sistema">Nova categoria <i class="uil uil-plus"></i></a>
+        </div>
+        <div class="col-md-12">
+            @{
+                await Html.RenderPartialAsync("_CheckForAlert");
+            }
+            <table class="table table-bordered table-striped table-hover table-responsive">
+                <caption>Listando @Model.Count() categorias</caption>
+                <thead>
+                    <tr class="table-primary">
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model is null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">Nenhuma categoria cadastrada</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach(var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar categoria @item.Name">
+                                        <i class="uil uil-edit-alt"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Apagar categoria @item.Name">
+                                        <i class="uil uil-times"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

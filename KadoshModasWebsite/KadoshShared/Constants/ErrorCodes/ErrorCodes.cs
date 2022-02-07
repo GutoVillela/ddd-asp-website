@@ -22,5 +22,9 @@
         public const int ERROR_INVALID_BRAND_UPDATE_COMMAND = 18;
         public const int ERROR_INVALID_BRAND_DELETE_COMMAND = 19;
         public const int ERROR_BRAND_NOT_FOUND = 20;
+        public const int ERROR_INVALID_CATEGORY_CREATE_COMMAND = 21;
+        public const int ERROR_INVALID_CATEGORY_UPDATE_COMMAND = 22;
+        public const int ERROR_INVALID_CATEGORY_DELETE_COMMAND = 23;
+        public const int ERROR_CATEGORY_NOT_FOUND = 24;
     }
 }

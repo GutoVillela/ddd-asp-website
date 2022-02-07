@@ -25,18 +25,21 @@ builder.Services.AddScoped<IStoreApplicationService, StoreApplicationService>();
 builder.Services.AddScoped<ICustomerApplicationService, CustomerApplicationService>();
 builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
 builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
+builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationService>();
 
 // Domain Services Injection
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Domain Repositories Injections
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();
