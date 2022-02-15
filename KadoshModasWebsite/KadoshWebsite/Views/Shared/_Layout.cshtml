@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,52 +8,152 @@
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/KadoshWebsite.styles.css" asp-append-version="true" />
+
+    <!-- THEME CSS FILES-->
+    <link rel="stylesheet" href="~/theme/css/main.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KadoshWebsite</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="uil uil-estate icon-size-1-5"></i> Home</a>
+    <!-- START: Header-->
+    <header id="header-fix" class="header fixed-top">
+        <div class="site-width">
+            <nav class="navbar navbar-expand-lg  p-0">
+                <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="horizontal-logo text-left">
+                        <svg height="100%" id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 308.97 112.71">
+                            <defs>
+                                <style>
+                                    .cls-1 {
+                                        fill: #010101;
+                                    }
+
+                                    .cls-2 {
+                                        fill: #060606;
+                                    }
+
+                                    .cls-3 {
+                                        font-size: 48.67px;
+                                        font-family: Montserrat-Bold, Montserrat;
+                                        font-weight: 700;
+                                    }
+
+                                    .cls-4 {
+                                        letter-spacing: -0.03em;
+                                    }
+
+                                    .cls-5 {
+                                        letter-spacing: -0.01em;
+                                    }</style>
+                            </defs>
+                            <path d="M26.72,88.11c-.09-6.38,1.67-12.46,3-18.6.66-3,1.35-6.05,2-9.08.19-.93.57-1.25,1.57-1.3,4.44-.21,8.91-.2,13.2-1.64a5.37,5.37,0,0,0,1.15-.39c2.67-1.63,5.25-1,8,0C69.06,62.09,79,70.79,84.66,84.2c.59,1.4,1,2.89,1.48,4.32.24.67,0,.83-.63.93-1.42.21-2.83.48-4.23.82a2,2,0,0,0-1.55,1.14c-1.93,4.46-4.53,5.8-9.42,5a18.94,18.94,0,0,1-2.38-.49c-5.14-1.59-10.56-1.48-15.79-2.55-3.15-.65-6.21.39-9,1.69a21.16,21.16,0,0,1-11.79,2c-4.67-.6-3.72.29-4.34-4.32C26.79,91.17,26.8,89.63,26.72,88.11Z" transform="translate(-10.72 3.91)" />
+                            <path d="M10.79,42a4.52,4.52,0,0,0,4.76,2.07c2.1-.26,2.61-1.55,1.9-3.52-2.24-6.29-1.73-11.84,3.67-16.52,4.65-4,10.23-5,16.05-5.32a1.49,1.49,0,0,1,.76.2q5.22,2.66,10.42,5.36c.37.2.94.37.91.84s-.61.46-.95.65c-4.48,2.48-9.49,2.93-14.42,3.61-5.36.73-9.07,3.84-10.27,8.74a7,7,0,0,0-.15,2.14,22,22,0,0,1,0,2.69c-.23,3.28-1.14,4.49-3.66,5-3.77.82-7.2-.29-8.51-2.75A4.85,4.85,0,0,1,10.79,42Z" transform="translate(-10.72 3.91)" />
+                            <path d="M50.44,38.93a12.22,12.22,0,0,0,2.88,5.67c1.54,1.85,1.09,3.36-1.15,4.33a14.73,14.73,0,0,0-4.92,3A1.84,1.84,0,0,0,46.64,54c.28.77,0,1.25-.89,1.39a121.7,121.7,0,0,1-15,1.7c-.84,0-1.19-.09-1-1.07a14.12,14.12,0,0,0-.81-7.68,9.92,9.92,0,0,1-.5-4.12A1.23,1.23,0,0,1,29,43.13,17.67,17.67,0,0,0,35,37.19c0-.07.15-.08.42-.21.14.55.28,1.08.41,1.61a24.94,24.94,0,0,0,3.57,8.8,1.54,1.54,0,0,0,2.51.48A24.49,24.49,0,0,0,50.44,38.93Z" transform="translate(-10.72 3.91)" />
+                            <path class="cls-1" d="M73,24.8c2,1.81,1.46,4.16-.91,4.88-2.53.76-5,.17-7.43-.52-6.58-1.84-12.6-5-18.52-8.3C40.55,17.71,35.09,14.32,29.59,11a16.21,16.21,0,0,0-6.25-2.39c-3.34-.44-5,1.66-3.92,4.85a2.21,2.21,0,0,1,.07.4,4,4,0,0,1-1.65-4A3.41,3.41,0,0,1,20.43,7,9.71,9.71,0,0,1,26,7.67a24.59,24.59,0,0,1,3.46,1.78c9.34,5.48,18.5,11.28,28.45,15.64a39.25,39.25,0,0,0,10.74,3.42,5.56,5.56,0,0,0,1.35,0C72.62,28.22,73.24,27.48,73,24.8Z" transform="translate(-10.72 3.91)" />
+                            <path class="cls-1" d="M62.63,18.47c-1.19-5.13-2.94-9.81-7.87-11.91S45.19,5.89,40.4,8.49c3.72-5.75,10.43-7.78,15.45-5C61.2,6.42,64.78,14,62.63,18.47Z" transform="translate(-10.72 3.91)" />
+                            <path class="cls-1" d="M52,31.13a2.26,2.26,0,0,1,2.34.74c3.88,3.93,6.2,8.77,8,13.89.09.25.18.49.33.93a16.3,16.3,0,0,0,3.11-5.82,52.29,52.29,0,0,0,1.69-6.47c1,4.42-1.28,13.82-4,17.14C59.74,44.7,58.26,36.6,52,31.13Z" transform="translate(-10.72 3.91)" />
+                            <path class="cls-2" d="M42.15,12.39a101.47,101.47,0,0,0,16.26,8.76C53.56,21.38,43.83,15.6,42.15,12.39Z" transform="translate(-10.72 3.91)" />
+                            <text class="cls-3" transform="translate(85.54 41.37)"><tspan class="cls-4">K</tspan><tspan x="34.5" y="0">ADOSH</tspan><tspan x="0" y="58.4">MO</tspan><tspan class="cls-5" x="87.55" y="58.4">D</tspan><tspan x="127.26" y="58.4">AS</tspan></text>
+                        </svg>
+                    </a>
+                </div>
+                <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
+                    <a href="#" class="sidebarCollapse" id="collapse"><i class="uil uil-bars"></i></a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- START: Main Menu-->
+    <nav class="sidebar">
+        <div class="site-width">
+            <!-- START: Menu-->
+            <ul id="side-menu" class="sidebar-menu">
+                <li class="dropdown active">
+                    <a href="#"><i class="uil uil-angle-right-b mr-1"></i> Dashboard</a>
+                    <ul>
+                        <li class="active"><a asp-area="" asp-controller="Home" asp-action="Index" title="Página inicial"><i class="uil uil-estate icon-size-1-5"></i> Home</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="uil uil-angle-right-b mr-1"></i> Clientes e vendas</a>
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-store icon-size-1-5"></i> Lojas</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Store" asp-action="Index" title="Listar lojas"><i class="uil uil-store icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Store" asp-action="Create" title="Cadastrar loja"><i class="uil uil-store icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="Index"><i class="uil uil-store icon-size-1-5"></i> Lojas</a>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-users-alt icon-size-1-5"></i> Clientes</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Customer" asp-action="Index"><i class="uil uil-users-alt icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Customer" asp-action="Create"><i class="uil uil-users-alt icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index"><i class="uil uil-users-alt icon-size-1-5"></i> Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index"><i class="uil uil-user icon-size-1-5"></i> Usuários</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Brand" asp-action="Index"><i class="uil uil-ticket icon-size-1-5"></i> Marcas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index"><i class="uil uil-layer-group icon-size-1-5"></i> Categorias</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index"><i class="uil uil-box icon-size-1-5"></i> Produtos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="Index"><i class="uil uil-shopping-bag icon-size-1-5"></i> Vendas</a>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-shopping-bag icon-size-1-5"></i> Vendas</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Sale" asp-action="Index"><i class="uil uil-shopping-bag icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Sale" asp-action="Create"><i class="uil uil-shopping-bag icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="uil uil-angle-right-b mr-1"></i> Produtos</a>
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-box icon-size-1-5"></i> Produtos</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Product" asp-action="Index"><i class="uil uil-box icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Product" asp-action="Create"><i class="uil uil-box icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-layer-group icon-size-1-5"></i> Categorias</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Category" asp-action="Index"><i class="uil uil-layer-group icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Category" asp-action="Create"><i class="uil uil-layer-group icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-ticket icon-size-1-5"></i> Marcas</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="Brand" asp-action="Index"><i class="uil uil-ticket icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="Brand" asp-action="Create"><i class="uil uil-ticket icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#"><i class="uil uil-angle-right-b mr-1"></i> Sistema</a>
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#"><i class="uil uil-user icon-size-1-5"></i> Usuários</a>
+                            <ul class="sub-menu">
+                                <li><a asp-area="" asp-controller="User" asp-action="Index"><i class="uil uil-user icon-size-1-5"></i> Listar</a></li>
+                                <li><a asp-area="" asp-controller="User" asp-action="Create"><i class="uil uil-user icon-size-1-5"></i> Cadastrar</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- END: Menu-->
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0 ml-auto">
+                <li class="breadcrumb-item"><a href="#">Application</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </div>
+    </nav>
+    <!-- END: Main Menu-->
+
+
+    <main role="main" class="pb-3">
+        <div class="container-fluid site-width">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -64,5 +164,11 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- THEME JS FILES-->
+    <script src="~/theme/vendors/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/theme/js/app.js"></script>
+    <script src="~/theme/js/home.script.js"></script>
+
 </body>
 </html>
