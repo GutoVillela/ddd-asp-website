@@ -1,0 +1,237 @@
+﻿@using KadoshWebsite.Models.Enums
+@using KadoshWebsite.Util
+@model SaleViewModel
+@{
+    ViewData["Title"] = $"Cadastro de Vendas";
+}
+
+<link rel="stylesheet" type="text/css" href="~/lib/select2/css/select2.min.css" />
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post" class="row">
+            <div class="col-lg-8">
+                <!-- Customer -->
+                <div class="col-md-12 mb-3">
+                    <label asp-for="CustomerId"></label>
+                    @Html.DropDownListFor(m => m.CustomerId, ViewData[ViewConstants.VIEW_CUSTOMERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </div>
+
+                <!-- Seller -->
+                <div class="col-md-12 mb-3">
+                    <label asp-for="SellerId"></label>
+                    @Html.DropDownListFor(m => m.SellerId, ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                    <span asp-validation-for="SellerId" class="text-danger"></span>
+                </div>
+
+                <!-- Sale Items -->
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-box icon-size-1-5"></i> Produtos da venda
+                        </div>
+                        <div class="card-body">
+                            @*<h5 class="card-title">Special title treatment</h5>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+
+                            <div class="col-md-12 mb-3 repeater">
+                                <table class="table table-hover" id="saleItemsTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Produto</th>
+                                            <th scope="col">Preço</th>
+                                            <th scope="col">Quantidade</th>
+                                            <th scope="col">Desconto</th>
+                                            <th scope="col">Subtotal</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-repeater-list="@nameof(Model.SaleItems)">
+                                        <tr data-repeater-item>
+                                            <th scope="row" id="productCount">1</th>
+
+                                            <td style="max-width: 50%">
+                                                @Html.DropDownList(nameof(SaleItemViewModel.ProductId), ViewData[ViewConstants.VIEW_PRODUCTS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select sale-item-select", Name= nameof(SaleItemViewModel.ProductId), Required = "required", Style= "width: 100%"})
+                                            </td>
+
+                                            <td id="productPrice">
+                                                <div class="spinner-border text-primary visually-hidden" role="status" sty>
+                                                    <span class="visually-hidden">Carregando...</span>
+                                                </div>
+                                                <div class="row-data">
+                                                    R$ <span name="@nameof(SaleItemViewModel.Price)">
+                                                        -
+                                                    </span>
+
+                                                </div>
+                                            </td>
+
+                                            <td id="productQuantity">
+                                                <input type="number" name="@nameof(SaleItemViewModel.Quantity)" class="form-control" min="1" value="1" onchange="RecalculateSubtotal(this)" required />
+                                            </td>
+
+                                            <td id="productDiscount" style="max-width: 5%">
+                                                <span class="badge bg-success" style="display: none">
+                                                    -
+                                                    <input type="number" id="discountValue" name="@nameof(SaleItemViewModel.DiscountInPercentage)" class="bg-transparent border-0 text-white fw-bold w-50 p-0 m-0" value="0" min="0" max="100" readonly/>
+                                                    %
+                                                </span>
+                                            </td>
+                                            <td id="productSubtotal" class="fw-bold">
+                                                <div class="spinner-border text-primary visually-hidden" role="status">
+                                                    <span class="visually-hidden">Carregando...</span>
+                                                </div>
+                                                <div class="row-data">
+                                                    R$ 0,00
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <!-- Trigger to discount modal -->
+                                                <button type="button" title="Aplicar desconto no item" onclick="SetUpDiscountModal(this)" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#discountModal">
+                                                    <i class="uil uil-percentage"></i>
+                                                </button>
+                                                <a data-repeater-delete class="btn btn-danger btn-sm" title="Apagar este produto da venda"><i class="uil uil-times"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <a data-repeater-create class="btn btn-success" title="Adicionar outro produto"><i class="uil uil-plus"></i> Adicionar um produto à venda</a>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="card-footer text-muted">
+                            2 days ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 rounded-3">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <span class="text-start">Subtotal</span>
+
+                    </div>
+                    <div class="col-6 mb-3 text-end">
+                        <span id="saleSubtotal" class="fw-bold">R$ 0,00</span>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <span class="text-start">Descontos</span>
+                    </div>
+                    <div class="col-6 mb-3 text-end">
+                        <span id="saleDiscounts" class="badge bg-success">
+                            - R$ 0,00
+                        </span>
+                    </div>
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <span class="text-start">Total</span>
+
+                    </div>
+                    <div class="col-6 mb-3 text-end">
+                        <span id="saleTotal" class="fw-bold fs-4">R$ 0,00</span>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="row" id="saleInstallmentsPreview" style="display: none">
+                    <div class="col-6 mb-3">
+                        <span class="text-start">Parcelas</span>
+
+                    </div>
+                    <div class="col-6 mb-3 text-end">
+                        <span id="saleInstallmentsLabel">R$ 0,00</span>
+                    </div>
+                    <hr />
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="form-floating">
+                        @Html.DropDownListFor(m => m.PaymentType, Html.GetEnumSelectList(typeof(ESalePaymentType)), new { Class = "form-select" })
+                        <label asp-for="PaymentType"></label>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3" id="NumberOfInstallmentsDiv" style="display: none">
+                    <div class="form-floating">
+                        @Html.DropDownListFor(m => m.NumberOfInstallments, Model.Installments, new { Class = "form-select" })
+                        <label asp-for="NumberOfInstallments"></label>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3" id="DownPaymentDiv" style="display: none">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text" id="addon-wrapping"><i class="uil uil-ticket icon-size-1-5"></i></span>
+                        <div class="form-floating w-100">
+                            <input asp-for="DownPayment" class="form-control" placeholder="Entrada" />
+                            <label asp-for="DownPayment"></label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="DownPayment" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <input type="submit" id="btnRegisterSale" value="Fechar Venda" class="btn btn-primary" />
+                    <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                </div>
+
+            </div>
+
+            <!-- Discount Modal -->
+            <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="discountModalLabel">Aplicar desconto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- Table row index to apply discount -->
+                                    <input type="hidden" id="discountTableRowIndex" value="0" />
+                                    <div class="input-group mb-3">
+                                        <div class="form-floating w-50">
+                                            <input id="discountToApply" type="number" class="form-control" placeholder="Desconto em %" min="0" max="100" value="0" required />
+                                            <label for="discountToApply">Desconto</label>
+                                        </div>
+                                        <span class="input-group-text" id="basic-addon1">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnDismissModal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="ApplyDiscount()">Aplicar desconto</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let getProductInfoUrl = '@Url.Action("GetProductInfo")';
+    </script>
+
+<script src="~/lib/jquery.repeater/jquery.repeater.min.js"></script>
+<script src="~/lib/select2/js/select2.min.js"></script>
+<script src="~/lib/jquery.mask/jquery.mask.min.js"></script>
+<script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
+<script src="~/js/saleView.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

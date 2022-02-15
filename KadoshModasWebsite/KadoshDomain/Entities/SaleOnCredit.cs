@@ -11,27 +11,24 @@ namespace KadoshDomain.Entities
     public class SaleOnCredit : Sale
     {
         #region Constructors
-        /// <summary>
-        /// Private constructor used from Entity Framework.
-        /// </summary>
-        private SaleOnCredit(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
+        public SaleOnCredit(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, settlementDate: null)
         {
 
         }
 
-        public SaleOnCredit(
-            int customerId,
-            EFormOfPayment formOfPayment,
-            decimal discountInPercentage,
-            decimal downPayment,
-            DateTime saleDate,
-            IReadOnlyCollection<SaleItem> saleItems,
-            ESaleSituation situation,
-            int sellerId
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
-        {
+        //public SaleOnCredit(
+        //    int customerId,
+        //    EFormOfPayment formOfPayment,
+        //    decimal discountInPercentage,
+        //    decimal downPayment,
+        //    DateTime saleDate,
+        //    IReadOnlyCollection<SaleItem> saleItems,
+        //    ESaleSituation situation,
+        //    int sellerId
+        //    ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
+        //{
 
-        }
+        //}
 
         //protected SaleOnCredit(
         //    int customerId,

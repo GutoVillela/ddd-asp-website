@@ -19,16 +19,14 @@ namespace KadoshRepository.Repositories
         public virtual async Task CreateAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAsync(TEntity entity) 
+        public virtual async void Delete(TEntity entity) 
         { 
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public virtual async Task<TEntity> ReadAsync(int id)
+        public virtual async Task<TEntity?> ReadAsync(int id)
         {
             TEntity? entity = await _dbSet.SingleOrDefaultAsync(x => x.Id == id);
             return entity;
@@ -42,7 +40,6 @@ namespace KadoshRepository.Repositories
         public virtual async Task UpdateAsync(TEntity entity)
         {
             _context.Update(entity);
-            await _context.SaveChangesAsync();
         }
     }
 }

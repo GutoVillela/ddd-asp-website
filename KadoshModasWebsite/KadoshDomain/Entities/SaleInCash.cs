@@ -5,26 +5,9 @@ namespace KadoshDomain.Entities
     public class SaleInCash : Sale
     {
         #region Constructors
-        /// <summary>
-        /// Private constructor used from Entity Framework.
-        /// </summary>
-        private SaleInCash(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
+        public SaleInCash(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId, DateTime? settlementDate) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, settlementDate)
         {
 
-        }
-
-        public SaleInCash(
-            int customerId,
-            EFormOfPayment formOfPayment,
-            decimal discountInPercentage,
-            decimal downPayment,
-            DateTime saleDate,
-            IReadOnlyCollection<SaleItem> saleItems,
-            ESaleSituation situation,
-            int sellerId
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
-        {
-            
         }
 
         //protected SaleInCash(

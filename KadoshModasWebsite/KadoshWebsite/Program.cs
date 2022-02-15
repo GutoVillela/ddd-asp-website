@@ -3,6 +3,8 @@ using KadoshDomain.Services;
 using KadoshDomain.Services.Interfaces;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
+using KadoshRepository.UnitOfWork;
+using KadoshShared.Repositories;
 using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Services;
@@ -27,6 +29,7 @@ builder.Services.AddScoped<IUserApplicationService, UserApplicationService>();
 builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
 builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationService>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
+builder.Services.AddScoped<ISaleApplicationService, SaleApplicationService>();
 
 // Domain Services Injection
 builder.Services.AddScoped<IStoreService, StoreService>();
@@ -35,6 +38,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISaleService, SaleService>();
+
+// Unit of Work Injection
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Domain Repositories Injections
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
@@ -43,6 +50,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ISaleInCashRepository, SaleInCashRepository>();
+builder.Services.AddScoped<ISaleInInstallmentsRepository, SaleInInstallmentsRepository>();
+builder.Services.AddScoped<ISaleOnCreditRepository, SaleOnCreditRepository>();
+builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
+builder.Services.AddScoped<ICustomerPostingRepository, CustomerPostingRepository>();
+builder.Services.AddScoped<IInstallmentRepository, InstallmentRepository>();
+builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

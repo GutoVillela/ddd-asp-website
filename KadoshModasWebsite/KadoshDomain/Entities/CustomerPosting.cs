@@ -16,9 +16,9 @@ namespace KadoshDomain.Entities
             PostingDate = postingDate;
         }
 
-        public CustomerPosting(int customerId, Customer customer, ECustomerPostingType type, decimal value, int saleId, Sale sale, DateTime postingDate)
+        public CustomerPosting(int customerId, ECustomerPostingType type, decimal value, Sale sale, DateTime postingDate)
         {
-            Customer = customer;
+            CustomerId = customerId;
             Type = type;
             Value = value;
             Sale = sale;

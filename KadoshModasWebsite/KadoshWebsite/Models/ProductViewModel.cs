@@ -17,7 +17,7 @@ namespace KadoshWebsite.Models
         [Display(Name = "Preço")]
         //[Range(0.01, double.PositiveInfinity, ErrorMessage = "O campo {0} deve ser maior do que {1}")]
         //[DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "A categoria do produto é obrigatório")]

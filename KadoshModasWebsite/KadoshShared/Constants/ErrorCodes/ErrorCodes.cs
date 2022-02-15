@@ -2,6 +2,7 @@
 {
     public class ErrorCodes
     {
+        public const int UNEXPECTED_EXCEPTION = 0;
         public const int ERROR_INVALID_STORE_CREATE_COMMAND = 1;
         public const int ERROR_INVALID_STORE_UPDATE_COMMAND = 2;
         public const int ERROR_INVALID_STORE_DELETE_COMMAND = 3;
@@ -30,5 +31,15 @@
         public const int ERROR_INVALID_PRODUCT_UPDATE_COMMAND = 26;
         public const int ERROR_INVALID_PRODUCT_DELETE_COMMAND = 27;
         public const int ERROR_PRODUCT_NOT_FOUND = 28;
+        public const int ERROR_INVALID_SALE_IN_CASH_CREATE_COMMAND = 29;
+        public const int ERROR_COULD_NOT_FIND_SALE_CUSTOMER = 30;
+        public const int ERROR_COULD_NOT_FIND_SALE_SELLER = 31;
+        public const int ERROR_COULD_NOT_FIND_SALE_PRODUCT = 32;
+        public const int ERROR_INVALID_SALE_ITEM = 33;
+        public const int ERROR_COULD_NOT_CREATE_SALE_IN_CASH_POSTING = 34;
+        public const int ERROR_INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND = 35;
+        public const int ERROR_COULD_NOT_CREATE_DOWN_PAYMENT_POSTING = 36;
+        public const int ERROR_INVALID_SALE_INSTALLMENT = 35;
+        public const int ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND = 36;
     }
 }

@@ -288,10 +288,6 @@ namespace KadoshRepository.Migrations
                     b.Property<decimal>("DiscountInPercentage")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 

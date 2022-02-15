@@ -24,6 +24,22 @@ namespace KadoshDomain.Entities
 
         protected Sale(
             int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            ESaleSituation situation,
+            int sellerId,
+            DateTime? settlementDate
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
+        {
+            SettlementDate = settlementDate;
+
+            ValidateSettlementDate();
+        }
+
+        protected Sale(
+            int customerId,
             EFormOfPayment formOfPayment, 
             decimal discountInPercentage, 
             decimal downPayment, 
@@ -134,6 +150,11 @@ namespace KadoshDomain.Entities
         { 
             get { return _postings.ToList(); } 
             private set { _postings = value.ToList(); } 
+        }
+
+        public void SetSaleItems(IEnumerable<SaleItem> saleItems)
+        {
+            SaleItems = (IReadOnlyCollection<SaleItem>)saleItems;
         }
 
         public decimal Total { get { return CalculateTotal(); } }

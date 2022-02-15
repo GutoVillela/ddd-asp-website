@@ -4,11 +4,13 @@ using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
 using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
+using KadoshShared.Repositories;
 
 namespace KadoshDomain.Services
 {
     public class ProductService : IProductService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IProductRepository _productRepository;
 
         public ProductService(IProductRepository productRepository)
@@ -18,13 +20,13 @@ namespace KadoshDomain.Services
 
         public async Task<ICommandResult> CreateProductAsync(CreateProductCommand command)
         {
-            ProductHandler productHandler = new(_productRepository);
+            ProductHandler productHandler = new(_unitOfWork, _productRepository);
             return await productHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteProductAsync(DeleteProductCommand command)
         {
-            ProductHandler productHandler = new(_productRepository);
+            ProductHandler productHandler = new(_unitOfWork, _productRepository);
             return await productHandler.HandleAsync(command);
         }
 
@@ -40,7 +42,7 @@ namespace KadoshDomain.Services
 
         public async Task<ICommandResult> UpdateProductAsync(UpdateProductCommand command)
         {
-            ProductHandler productHandler = new(_productRepository);
+            ProductHandler productHandler = new(_unitOfWork, _productRepository);
             return await productHandler.HandleAsync(command);
         }
     }

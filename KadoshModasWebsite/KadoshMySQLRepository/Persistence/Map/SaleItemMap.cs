@@ -15,6 +15,7 @@ namespace KadoshRepository.Persistence.Map
             builder.Property(x => x.Situation).IsRequired();
             builder.HasOne(x => x.Sale).WithMany(x => x.SaleItems).HasForeignKey(x => x.SaleId);
             builder.HasOne(x => x.Product).WithMany(x => x.SaleItems).HasForeignKey(x => x.ProductId);
+            builder.Ignore(x => x.Id);
             builder.Ignore(x => x.Notifications);
         }
     }

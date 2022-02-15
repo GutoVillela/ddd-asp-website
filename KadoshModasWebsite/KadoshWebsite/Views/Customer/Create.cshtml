@@ -142,7 +142,7 @@
                                             </div>
                                             <div class="col-md-4 mb-3">
                                                 <div class="form-floating">
-                                                    <input type="text" name="@nameof(PhoneViewModel.PhoneNumber)" class="form-control" required />
+                                                    <input type="text" name="@nameof(PhoneViewModel.PhoneNumber)" data-mask="(00) 00000-0000" class="form-control" required />
                                                     <label for="@nameof(PhoneViewModel.PhoneNumber)">Telefone</label>
                                                 </div>
                                             </div>
@@ -179,6 +179,7 @@
 
 @section scripts{
 <script src="~/lib/jquery.repeater/jquery.repeater.min.js"></script>
+<script src="~/lib/jquery.mask/jquery.mask.min.js"></script>
 <script src="~/js/createCustomerView.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

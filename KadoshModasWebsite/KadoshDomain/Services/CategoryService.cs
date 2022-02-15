@@ -4,27 +4,30 @@ using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
 using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
+using KadoshShared.Repositories;
 
 namespace KadoshDomain.Services
 {
     public class CategoryService : ICategoryService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(IUnitOfWork unitOfWork, ICategoryRepository categoryRepository)
         {
+            _unitOfWork = unitOfWork;
             _categoryRepository = categoryRepository;
         }
 
         public async Task<ICommandResult> CreateCategoryAsync(CreateCategoryCommand command)
         {
-            CategoryHandler categoryHandler = new(_categoryRepository);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
             return await categoryHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteCategoryAsync(DeleteCategoryCommand command)
         {
-            CategoryHandler categoryHandler = new(_categoryRepository);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
             return await categoryHandler.HandleAsync(command);
         }
 
@@ -40,7 +43,7 @@ namespace KadoshDomain.Services
 
         public async Task<ICommandResult> UpdateCategoryAsync(UpdateCategoryCommand command)
         {
-            CategoryHandler categoryHandler = new(_categoryRepository);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
             return await categoryHandler.HandleAsync(command);
         }
     }

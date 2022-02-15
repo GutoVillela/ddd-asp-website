@@ -1,6 +1,7 @@
 ﻿using Flunt.Notifications;
 using Flunt.Validations;
 using KadoshDomain.Enums;
+using KadoshShared.Constants.ValidationErrors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,28 +15,19 @@ namespace KadoshDomain.Entities
     {
 
         #region Constructors
-        /// <summary>
-        /// Private constructor used from Entity Framework.
-        /// </summary>
-        private SaleInInstallments(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
-        {
-
-        }
-
         public SaleInInstallments(
             int customerId,
             EFormOfPayment formOfPayment,
             decimal discountInPercentage,
             decimal downPayment,
             DateTime saleDate,
-            IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             int sellerId,
-            IReadOnlyCollection<Installment> installments,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
         {
-            InitiateClass(installments, interestOnTheTotalSaleInPercentage);
+            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
+            ValidateSaleInInstallments();
         }
 
         //public SaleInInstallments(
@@ -93,16 +85,16 @@ namespace KadoshDomain.Entities
         //}
         #endregion Constructors
 
-        public int NumberOfInstallments 
-        { 
-            get 
+        public int NumberOfInstallments
+        {
+            get
             {
                 if (Installments is null)
                     return 0;
 
                 return Installments.Count;
-                
-            } 
+
+            }
         }
 
         [Required]
@@ -112,22 +104,26 @@ namespace KadoshDomain.Entities
         [MinLength(2)]
         public IReadOnlyCollection<Installment> Installments { get; private set; }
 
-        private void InitiateClass(IReadOnlyCollection<Installment> installments, decimal interestOnTheTotalSaleInPercentage)
-        {
-            Installments = installments;
-            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
-            ValidateSaleInInstallments();
-        }
+        //private void InitiateClass(IReadOnlyCollection<Installment> installments, decimal interestOnTheTotalSaleInPercentage)
+        //{
+        //    Installments = installments;
+        //    InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
+        //    ValidateSaleInInstallments();
+        //}
 
         private void ValidateSaleInInstallments()
         {
-            if(Installments is null)
-                AddNotification(nameof(Installments), "Não é possível criar uma venda parcelada sem nenhuma parcela!");
-            else
-                AddNotifications(new Contract<Notification>()
+            AddNotifications(new Contract<Notification>()
                     .Requires()
-                    .IsGreaterOrEqualsThan(Installments.Count, 2, nameof(Installments), "É necessária pelo menos duas parcelas em uma venda parcelada!")
+                    .IsGreaterOrEqualsThan(InterestOnTheTotalSaleInPercentage, 0, nameof(InterestOnTheTotalSaleInPercentage), SaleValidationsErrors.LESS_THAN_TWO_INSTALLMENTS_ERROR)
                 );
+            //if (Installments is null)
+            //    AddNotification(nameof(Installments), "Não é possível criar uma venda parcelada sem nenhuma parcela!");
+            //else
+            //    AddNotifications(new Contract<Notification>()
+            //        .Requires()
+            //        .IsGreaterOrEqualsThan(Installments.Count, 2, nameof(Installments), "É necessária pelo menos duas parcelas em uma venda parcelada!")
+            //    );
         }
     }
 }

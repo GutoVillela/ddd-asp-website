@@ -10,6 +10,7 @@
         // at this point.  If a show callback is not given the item will
         // have $(this).show() called on it.
         show: function () {
+            $(this).find("input[type='text'][name*='PhoneNumber']").mask('(00) 00000-0000');
             $(this).slideDown();
         },
         // (Optional)
@@ -20,7 +21,7 @@
         // to the server, etc.  If a hide callback is not given the item
         // will be deleted.
         hide: function (deleteElement) {
-            if (confirm('Are you sure you want to delete this element?')) {
+            if (confirm('Tem certeza que deseja apagar este telefone?')) {
                 $(this).slideUp(deleteElement);
             }
         },

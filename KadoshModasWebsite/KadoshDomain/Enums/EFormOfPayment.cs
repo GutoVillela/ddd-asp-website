@@ -14,6 +14,9 @@ namespace KadoshDomain.Enums
         CreditCard = 2,
 
         [Description("Cheque")]
-        Check = 3
+        Check = 3,
+
+        [Description("Fiado")]
+        OnCredit = 4
     }
 }
