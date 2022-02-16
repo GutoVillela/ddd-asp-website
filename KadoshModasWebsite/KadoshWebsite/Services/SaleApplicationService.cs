@@ -1,6 +1,7 @@
 ﻿using KadoshDomain.Commands;
 using KadoshDomain.Entities;
 using KadoshDomain.Enums;
+using KadoshDomain.Repositories;
 using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
 using KadoshWebsite.Models;
@@ -13,10 +14,12 @@ namespace KadoshWebsite.Services
     public class SaleApplicationService : ISaleApplicationService
     {
         private readonly ISaleService _saleService;
+        private readonly ISaleRepository _saleRepository;
 
-        public SaleApplicationService(ISaleService saleService)
+        public SaleApplicationService(ISaleService saleService, ISaleRepository saleRepository)
         {
             _saleService = saleService;
+            _saleRepository = saleRepository;
         }
 
         public async Task<ICommandResult> CreateSaleAsync(SaleViewModel sale)
@@ -84,6 +87,19 @@ namespace KadoshWebsite.Services
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesAsync()
         {
             var sales = await _saleService.GetAllSalesIncludingCustomerAsync();
+            List<SaleViewModel> salesViewModel = new();
+
+            foreach (var sale in sales)
+            {
+                salesViewModel.Add(GetViewModelFromEntity(sale));
+            }
+
+            return salesViewModel;
+        }
+
+        public async Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId)
+        {
+            var sales = await _saleRepository.ReadAllFromCustomer(customerId);
             List<SaleViewModel> salesViewModel = new();
 
             foreach (var sale in sales)

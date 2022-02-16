@@ -1,4 +1,5 @@
-﻿using KadoshShared.ValueObjects;
+﻿using KadoshShared.Constants.ErrorCodes;
+using KadoshShared.ValueObjects;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -30,7 +31,6 @@ namespace KadoshWebsite.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-
             var sales = await _saleService.GetAllSalesAsync();
             return View(sales);
         }
@@ -92,7 +92,35 @@ namespace KadoshWebsite.Controllers
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
-            throw new NotImplementedException();
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER))
+                ModelState.AddModelError(nameof(SaleViewModel.SellerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE))
+                ModelState.AddModelError(nameof(SaleViewModel.StoreId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_SALE_IN_CASH_CREATE_COMMAND))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_SALE_IN_CASH_CREATE_COMMAND));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_COULD_NOT_FIND_SALE_PRODUCT))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_PRODUCT));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_SALE_ITEM))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_SALE_ITEM));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_COULD_NOT_CREATE_SALE_IN_CASH_POSTING))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_COULD_NOT_CREATE_SALE_IN_CASH_POSTING));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND));
+
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND));
+
+            if (errors.Any(x => x.Code == ErrorCodes.UNEXPECTED_EXCEPTION))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.UNEXPECTED_EXCEPTION));
         }
     }
 }

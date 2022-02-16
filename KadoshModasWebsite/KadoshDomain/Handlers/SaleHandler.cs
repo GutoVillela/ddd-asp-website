@@ -374,8 +374,8 @@ namespace KadoshDomain.Handlers
                 if (!command.IsValid)
                 {
                     AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND);
-                    return new CommandResult(false, SaleCommandMessages.INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND, errors);
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND);
+                    return new CommandResult(false, SaleCommandMessages.INVALID_SALE_ON_CREDIT_CREATE_COMMAND, errors);
                 }
 
                 (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);

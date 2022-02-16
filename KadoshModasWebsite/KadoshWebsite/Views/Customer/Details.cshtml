@@ -1,0 +1,49 @@
+﻿@using KadoshDomain.Enums
+@model CustomerViewModel
+@{
+    ViewData["Title"] = $"Ficha do cliente {@Model.Name}";
+}
+
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Customer" asp-action="Index">Clientes</a></li>
+                <li class="breadcrumb-item active">@Model.Name</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
+
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-user icon-size-1-5"></i> Ficha do cliente
+        </div>
+        <div class="card-body row">
+            <div class="col-12">
+                <ul class="nav nav-tabs" id="customerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="true">Compras</button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#postings" type="button" role="tab" aria-controls="postings" aria-selected="false">Lançamentos</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="customerTabsContent">
+                    <div class="tab-pane fade show active p-3" id="sales" role="tabpanel" aria-labelledby="sales-tab">
+                        @await Component.InvokeAsync("ListSales", new { filterByCustumerId = Model.Id })
+                    </div>
+                    <div class="tab-pane fade p-3" id="postings" role="tabpanel" aria-labelledby="postings-tab">
+                        <h3>Lançamentos do cliente</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

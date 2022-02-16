@@ -119,6 +119,17 @@ namespace KadoshWebsite.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DetailsAsync(int? id)
+        {
+            if (!id.HasValue)
+                return NotFound();
+
+            var model = await _service.GetCustomerAsync(id.Value);
+
+            return View(model);
+        }
+
         protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_CUSTOMER_CREATE_COMMAND))

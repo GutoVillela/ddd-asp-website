@@ -15,5 +15,10 @@ namespace KadoshDomain.Queries
         {
             return x => x.SaleItems;
         }
+
+        public static Expression<Func<Sale, bool>> GetSalesByCustomer(int customerId)
+        {
+            return x => x.CustomerId == customerId;
+        }
     }
 }
