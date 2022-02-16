@@ -3,51 +3,73 @@
     ViewData["Title"] = "Cadastro de usuários";
 }
 
-<h1>@ViewData["Title"]</h1>
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-12 mb-3">
-            <a class="btn btn-success float-end" asp-action="Create" title="Cadastrar um novo cliente no sistema">Novo usuário<i class="uil uil-plus"></i></a>
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a href="#">Usuários</a></li>
+                <li class="breadcrumb-item active">Listar</li>
+            </ol>
         </div>
-        <div class="col-md-12">
-            @{
-                await Html.RenderPartialAsync("_CheckForAlert");
-            }
-            <table class="table table-bordered table-striped table-hover table-responsive">
-                <caption>Listando @Model.Count() usuários</caption>
-                <thead>
-                    <tr class="table-primary">
-                        <th>Usuário</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if(Model is null || !Model.Any())
-                    {
-                        <tr>
-                            <td colspan="3" class="text-center">Nenhum usuário cadastrado</td>
-                        </tr>
-                    }
-                    else
-                    {
-                        @foreach(var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Name</td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar usuário @item.Name">
-                                        <i class="uil uil-edit-alt"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Apagar usuário @item.Name">
-                                        <i class="uil uil-times"></i>
-                                    </a>
-                                </td>
-                            </tr>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
+
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-user icon-size-1-5"></i> Usuários cadastrados no sistema
+        </div>
+        <div class="card-body row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <a class="btn btn-success float-end" asp-action="Create" title="Cadastrar um novo cliente no sistema">Novo usuário<i class="uil uil-plus"></i></a>
+                    </div>
+                    <div class="col-md-12">
+                        @{
+                            await Html.RenderPartialAsync("_CheckForAlert");
                         }
-                    }
-                </tbody>
-            </table>
+                        <table class="table table-bordered table-striped table-hover table-responsive">
+                            <caption>Listando @Model.Count() usuários</caption>
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>Usuário</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is null || !Model.Any())
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">Nenhum usuário cadastrado</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar usuário @item.Name">
+                                                    <i class="uil uil-edit-alt"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Apagar usuário @item.Name">
+                                                    <i class="uil uil-times"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

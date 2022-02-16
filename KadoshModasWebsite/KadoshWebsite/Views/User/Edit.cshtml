@@ -5,76 +5,96 @@
     ViewData["Title"] = $"Editando o usuário {Model.UserName}";
 }
 
-<h1>@ViewData["Title"]</h1>
-
+<!-- START: Breadcrumbs-->
 <div class="row">
-    <div class="col-md-12">
-        <form asp-action="Edit" method="post" class="row">
-            <input asp-for="Id" type="hidden" />
-            <input asp-for="UserNameBeforeEdit" type="hidden" />
-            <div class="col-md-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-user icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="Name" class="form-control" placeholder="Nome" />
-                        <label asp-for="Name"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
 
-            <div class="col-md-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-chat-bubble-user icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="UserName" class="form-control" placeholder="Nome de usuário" />
-                        <label asp-for="UserName"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="User" asp-action="Index">Usuários</a></li>
+                <li class="breadcrumb-item active">Editar</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
 
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    @Html.DropDownListFor(m => m.Role, Html.GetEnumSelectList(typeof(EUserRole)), new { Class = "form-select" })
-                    <label asp-for="Role"></label>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    @Html.DropDownListFor(m => m.StoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
-                    <label asp-for="StoreId"></label>
-                </div>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="Password" class="form-control" placeholder="Senha" />
-                        <label asp-for="Password"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirmar senha" />
-                        <label asp-for="ConfirmPassword"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-user icon-size-1-5"></i> Informações do usuário
+        </div>
+        <div class="card-body row">
             <div class="col-md-12">
-                <input type="submit" value="Salvar alterações" class="btn btn-primary" />
-                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                <form asp-action="Edit" method="post" class="row">
+                    <input asp-for="Id" type="hidden" />
+                    <input asp-for="UserNameBeforeEdit" type="hidden" />
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-user icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="Name" class="form-control" placeholder="Nome" />
+                                <label asp-for="Name"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-chat-bubble-user icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="UserName" class="form-control" placeholder="Nome de usuário" />
+                                <label asp-for="UserName"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            @Html.DropDownListFor(m => m.Role, Html.GetEnumSelectList(typeof(EUserRole)), new { Class = "form-select" })
+                            <label asp-for="Role"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            @Html.DropDownListFor(m => m.StoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                            <label asp-for="StoreId"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="Password" class="form-control" placeholder="Senha" />
+                                <label asp-for="Password"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-lock icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirmar senha" />
+                                <label asp-for="ConfirmPassword"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <input type="submit" value="Salvar alterações" class="btn btn-primary" />
+                        <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

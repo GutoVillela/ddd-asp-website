@@ -7,24 +7,47 @@
 
 <link rel="stylesheet" type="text/css" href="~/lib/select2/css/select2.min.css" />
 
-<h1>@ViewData["Title"]</h1>
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sale" asp-action="Index">Vendas</a></li>
+                <li class="breadcrumb-item active">Cadastrar</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
 
 <div class="row">
     <div class="col-md-12">
         <form asp-action="Create" method="post" class="row">
             <div class="col-lg-8">
-                <!-- Customer -->
-                <div class="col-md-12 mb-3">
-                    <label asp-for="CustomerId"></label>
-                    @Html.DropDownListFor(m => m.CustomerId, ViewData[ViewConstants.VIEW_CUSTOMERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
-                    <span asp-validation-for="CustomerId" class="text-danger"></span>
-                </div>
 
-                <!-- Seller -->
                 <div class="col-md-12 mb-3">
-                    <label asp-for="SellerId"></label>
-                    @Html.DropDownListFor(m => m.SellerId, ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
-                    <span asp-validation-for="SellerId" class="text-danger"></span>
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-users-alt icon-size-1-5"></i> Cliente e vendedor
+                        </div>
+                        <div class="card-body row">
+                            <!-- Customer -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CustomerId"></label>
+                                @Html.DropDownListFor(m => m.CustomerId, ViewData[ViewConstants.VIEW_CUSTOMERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Seller -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SellerId"></label>
+                                @Html.DropDownListFor(m => m.SellerId, ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                                <span asp-validation-for="SellerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sale Items -->
@@ -77,7 +100,7 @@
                                             <td id="productDiscount" style="max-width: 5%">
                                                 <span class="badge bg-success" style="display: none">
                                                     -
-                                                    <input type="number" id="discountValue" name="@nameof(SaleItemViewModel.DiscountInPercentage)" class="bg-transparent border-0 text-white fw-bold w-50 p-0 m-0" value="0" min="0" max="100" readonly/>
+                                                    <input type="number" id="discountValue" name="@nameof(SaleItemViewModel.DiscountInPercentage)" class="bg-transparent border-0 text-white fw-bold w-50 p-0 m-0" value="0" min="0" max="100" readonly />
                                                     %
                                                 </span>
                                             </td>
@@ -111,80 +134,89 @@
             </div>
 
             <div class="col-lg-4 rounded-3">
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <span class="text-start">Subtotal</span>
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-shopping-bag icon-size-1-5"></i> Resumo da venda
+                        </div>
+                        <div class="card-body container">
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <span class="text-start">Subtotal</span>
 
-                    </div>
-                    <div class="col-6 mb-3 text-end">
-                        <span id="saleSubtotal" class="fw-bold">R$ 0,00</span>
-                    </div>
-                    <hr />
-                </div>
+                                </div>
+                                <div class="col-6 mb-3 text-end">
+                                    <span id="saleSubtotal" class="fw-bold">R$ 0,00</span>
+                                </div>
+                                <hr />
+                            </div>
 
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <span class="text-start">Descontos</span>
-                    </div>
-                    <div class="col-6 mb-3 text-end">
-                        <span id="saleDiscounts" class="badge bg-success">
-                            - R$ 0,00
-                        </span>
-                    </div>
-                    <hr />
-                </div>
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <span class="text-start">Total</span>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <span class="text-start">Descontos</span>
+                                </div>
+                                <div class="col-6 mb-3 text-end">
+                                    <span id="saleDiscounts" class="badge bg-success">
+                                        - R$ 0,00
+                                    </span>
+                                </div>
+                                <hr />
+                            </div>
 
-                    </div>
-                    <div class="col-6 mb-3 text-end">
-                        <span id="saleTotal" class="fw-bold fs-4">R$ 0,00</span>
-                    </div>
-                    <hr />
-                </div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <span class="text-start">Total</span>
 
-                <div class="row" id="saleInstallmentsPreview" style="display: none">
-                    <div class="col-6 mb-3">
-                        <span class="text-start">Parcelas</span>
+                                </div>
+                                <div class="col-6 mb-3 text-end">
+                                    <span id="saleTotal" class="fw-bold fs-4">R$ 0,00</span>
+                                </div>
+                                <hr />
+                            </div>
 
-                    </div>
-                    <div class="col-6 mb-3 text-end">
-                        <span id="saleInstallmentsLabel">R$ 0,00</span>
-                    </div>
-                    <hr />
-                </div>
+                            <div class="row" id="saleInstallmentsPreview" style="display: none">
+                                <div class="col-6 mb-3">
+                                    <span class="text-start">Parcelas</span>
 
-                <div class="col-12 mb-3">
-                    <div class="form-floating">
-                        @Html.DropDownListFor(m => m.PaymentType, Html.GetEnumSelectList(typeof(ESalePaymentType)), new { Class = "form-select" })
-                        <label asp-for="PaymentType"></label>
-                    </div>
-                </div>
+                                </div>
+                                <div class="col-6 mb-3 text-end">
+                                    <span id="saleInstallmentsLabel">R$ 0,00</span>
+                                </div>
+                                <hr />
+                            </div>
 
-                <div class="col-12 mb-3" id="NumberOfInstallmentsDiv" style="display: none">
-                    <div class="form-floating">
-                        @Html.DropDownListFor(m => m.NumberOfInstallments, Model.Installments, new { Class = "form-select" })
-                        <label asp-for="NumberOfInstallments"></label>
-                    </div>
-                </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-floating">
+                                    @Html.DropDownListFor(m => m.PaymentType, Html.GetEnumSelectList(typeof(ESalePaymentType)), new { Class = "form-select" })
+                                    <label asp-for="PaymentType"></label>
+                                </div>
+                            </div>
 
-                <div class="col-12 mb-3" id="DownPaymentDiv" style="display: none">
-                    <div class="input-group flex-nowrap">
-                        <span class="input-group-text" id="addon-wrapping"><i class="uil uil-ticket icon-size-1-5"></i></span>
-                        <div class="form-floating w-100">
-                            <input asp-for="DownPayment" class="form-control" placeholder="Entrada" />
-                            <label asp-for="DownPayment"></label>
+                            <div class="col-12 mb-3" id="NumberOfInstallmentsDiv" style="display: none">
+                                <div class="form-floating">
+                                    @Html.DropDownListFor(m => m.NumberOfInstallments, Model.Installments, new { Class = "form-select" })
+                                    <label asp-for="NumberOfInstallments"></label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mb-3" id="DownPaymentDiv" style="display: none">
+                                <div class="input-group flex-nowrap">
+                                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-ticket icon-size-1-5"></i></span>
+                                    <div class="form-floating w-100">
+                                        <input asp-for="DownPayment" class="form-control" placeholder="Entrada" />
+                                        <label asp-for="DownPayment"></label>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="DownPayment" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <input type="submit" id="btnRegisterSale" value="Fechar Venda" class="btn btn-primary" />
+                                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                            </div>
                         </div>
                     </div>
-                    <span asp-validation-for="DownPayment" class="text-danger"></span>
                 </div>
-
-                <div class="col-12 mb-3">
-                    <input type="submit" id="btnRegisterSale" value="Fechar Venda" class="btn btn-primary" />
-                    <a class="btn btn-danger" asp-action="Index">Cancelar</a>
-                </div>
-
             </div>
 
             <!-- Discount Modal -->
@@ -222,9 +254,9 @@
 </div>
 
 @section Scripts {
-    <script>
-        let getProductInfoUrl = '@Url.Action("GetProductInfo")';
-    </script>
+<script>
+    let getProductInfoUrl = '@Url.Action("GetProductInfo")';
+</script>
 
 <script src="~/lib/jquery.repeater/jquery.repeater.min.js"></script>
 <script src="~/lib/select2/js/select2.min.js"></script>

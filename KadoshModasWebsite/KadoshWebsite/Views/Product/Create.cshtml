@@ -4,68 +4,88 @@
     ViewData["Title"] = "Cadastrar uma nova marca";
 }
 
-<h1>@ViewData["Title"]</h1>
-
+<!-- START: Breadcrumbs-->
 <div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create" method="post" class="row">
-            <!-- Name -->
-            <div class="col-12 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-box icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="Name" class="form-control" placeholder="Nome do Produto" />
-                        <label asp-for="Name"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
 
-            <!-- Price -->
-            <div class="col-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bill icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="Price" id="txtPrice" class="form-control" placeholder="Preço" />
-                        <label asp-for="Price"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Product" asp-action="Index">Produtos</a></li>
+                <li class="breadcrumb-item active">Cadastrar</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
 
-            <!-- BarCode -->
-            <div class="col-6 mb-3">
-                <div class="input-group flex-nowrap">
-                    <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bars icon-size-1-5"></i></span>
-                    <div class="form-floating w-100">
-                        <input asp-for="BarCode" class="form-control" placeholder="Código de Barras" />
-                        <label asp-for="BarCode"></label>
-                    </div>
-                </div>
-                <span asp-validation-for="BarCode" class="text-danger"></span>
-            </div>
-
-            <!-- Category -->
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    @Html.DropDownListFor(m => m.CategoryId, ViewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
-                    <label asp-for="CategoryId"></label>
-                </div>
-            </div>
-
-            <!-- Brand -->
-            <div class="col-md-6 mb-3">
-                <div class="form-floating">
-                    @Html.DropDownListFor(m => m.BrandId, ViewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
-                    <label asp-for="CategoryId"></label>
-                </div>
-            </div>
-
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-box icon-size-1-5"></i> Informações da novo produto
+        </div>
+        <div class="card-body row">
             <div class="col-md-12">
-                <input type="submit" value="Cadastrar" id="btnCadastrar" class="btn btn-primary" />
-                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                <form asp-action="Create" method="post" class="row">
+                    <!-- Name -->
+                    <div class="col-12 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-box icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="Name" class="form-control" placeholder="Nome do Produto" />
+                                <label asp-for="Name"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="col-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bill icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="Price" id="txtPrice" class="form-control" placeholder="Preço" />
+                                <label asp-for="Price"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <!-- BarCode -->
+                    <div class="col-6 mb-3">
+                        <div class="input-group flex-nowrap">
+                            <span class="input-group-text" id="addon-wrapping"><i class="uil uil-bars icon-size-1-5"></i></span>
+                            <div class="form-floating w-100">
+                                <input asp-for="BarCode" class="form-control" placeholder="Código de Barras" />
+                                <label asp-for="BarCode"></label>
+                            </div>
+                        </div>
+                        <span asp-validation-for="BarCode" class="text-danger"></span>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            @Html.DropDownListFor(m => m.CategoryId, ViewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                            <label asp-for="CategoryId"></label>
+                        </div>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            @Html.DropDownListFor(m => m.BrandId, ViewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select" })
+                            <label asp-for="CategoryId"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <input type="submit" value="Cadastrar" id="btnCadastrar" class="btn btn-primary" />
+                        <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -73,8 +93,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
-    <script src="~/js/createProductView.js"></script>
-    <script src="~/js/numberValidationWithComma.js"></script>
+<script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
+<script src="~/js/createProductView.js"></script>
+<script src="~/js/numberValidationWithComma.js"></script>
 
 }
