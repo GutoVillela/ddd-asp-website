@@ -8,6 +8,7 @@
         public const string SUCCESS_ON_CREATE_SALE_COMMAND = "Venda registrada com sucesso";
         public const string ERROR_COULD_NOT_FIND_SALE_CUSTOMER = "Não foi possível encontrar o cliente associado à venda";
         public const string ERROR_COULD_NOT_FIND_SALE_SELLER = "Não foi possível encontrar o vendedor associado à venda";
+        public const string ERROR_COULD_NOT_FIND_SALE_STORE = "Não foi possível encontrar a loja associado à venda";
         public const string ERROR_COULD_NOT_FIND_SALE_PRODUCT = "Não foi possível encontrar um ou mais produtos da venda";
         public const string ERROR_INVALID_SALE_ITEM = "Um ou mais itens da venda estão inválidos";
         public const string ERROR_COULD_NOT_CREATE_SALE_IN_CASH_POSTING = "Não foi possível realizar o lançamento da venda em à vista";

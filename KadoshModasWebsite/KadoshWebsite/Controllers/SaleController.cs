@@ -16,13 +16,15 @@ namespace KadoshWebsite.Controllers
         private readonly IProductApplicationService _productService;
         private readonly ISaleApplicationService _saleService;
         private readonly IUserApplicationService _userService;
+        private readonly IStoreApplicationService _storeService;
 
-        public SaleController(ICustomerApplicationService customerService, IProductApplicationService productService, ISaleApplicationService saleService, IUserApplicationService userService)
+        public SaleController(ICustomerApplicationService customerService, IProductApplicationService productService, ISaleApplicationService saleService, IUserApplicationService userService, IStoreApplicationService storeService)
         {
             _customerService = customerService;
             _productService = productService;
             _saleService = saleService;
             _userService = userService;
+            _storeService = storeService;
         }
 
         [HttpGet]
@@ -36,7 +38,7 @@ namespace KadoshWebsite.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            await LoadCustomersSellersAndProductsToViewData();
+            await LoadCustomersSellersStoresAndProductsToViewData();
             return View(new SaleViewModel());
         }
 
@@ -56,12 +58,12 @@ namespace KadoshWebsite.Controllers
 
                 AddErrorsToModelState(errors: result.Errors);
 
-                await LoadCustomersSellersAndProductsToViewData();
+                await LoadCustomersSellersStoresAndProductsToViewData();
                 return View(model);
             }
             else
             {
-                await LoadCustomersSellersAndProductsToViewData();
+                await LoadCustomersSellersStoresAndProductsToViewData();
                 return View(model);
             }
         }
@@ -80,65 +82,12 @@ namespace KadoshWebsite.Controllers
             return Ok(product);
         }
 
-        private async Task LoadCustomersSellersAndProductsToViewData()
+        private async Task LoadCustomersSellersStoresAndProductsToViewData()
         {
-            await LoadCustomersToViewData();
-            await LoadSellersToViewData();
-            await LoadProductsToViewData();
-        }
-
-        private async Task LoadCustomersToViewData(int? selectedCustomer = null)
-        {
-            var customers = await _customerService.GetAllCustomersAsync();
-            ViewData[ViewConstants.VIEW_CUSTOMERS_SELECT_LIST_ITEMS] = GetSelectListItemsFromCustomers(customers, selectedCustomer);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromCustomers(IEnumerable<CustomerViewModel> customers, int? selectedCustomer = null)
-        {
-            List<SelectListItem> storeListItems = new();
-            foreach (var customer in customers)
-            {
-                if (selectedCustomer is not null && customer.Id == selectedCustomer)
-                    storeListItems.Add(new SelectListItem(text: customer.Name, value: customer.Id.ToString(), true));
-                else
-                    storeListItems.Add(new SelectListItem(text: customer.Name, value: customer.Id.ToString()));
-            }
-            return storeListItems;
-        }
-
-        private async Task LoadSellersToViewData(int? selectedSeller = null)
-        {
-            var sellers = await _userService.GetAllUsersAsync();
-            ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] = GetSelectListItemsFromSellers(sellers, selectedSeller);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromSellers(IEnumerable<UserViewModel> sellers, int? selectedSeller = null)
-        {
-            List<SelectListItem> sellersListItems = new();
-            foreach (var seller in sellers)
-            {
-                if (selectedSeller is not null && seller.Id == selectedSeller)
-                    sellersListItems.Add(new SelectListItem(text: seller.Name, value: seller.Id.ToString(), true));
-                else
-                    sellersListItems.Add(new SelectListItem(text: seller.Name, value: seller.Id.ToString()));
-            }
-            return sellersListItems;
-        }
-
-        private async Task LoadProductsToViewData()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            ViewData[ViewConstants.VIEW_PRODUCTS_SELECT_LIST_ITEMS] = GetSelectListItemsFromProducts(products);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromProducts(IEnumerable<ProductViewModel> products)
-        {
-            List<SelectListItem> productsListItems = new();
-            foreach (var product in products)
-            {
-                productsListItems.Add(new SelectListItem(text: product.Name, value: product.Id.ToString()));
-            }
-            return productsListItems;
+            await SelectListLoaderHelper.LoadCustomersToViewData(_customerService, ViewData);
+            await SelectListLoaderHelper.LoadSellersToViewData(_userService, ViewData);
+            await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData);
+            await SelectListLoaderHelper.LoadProductsToViewData(_productService, ViewData);
         }
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)

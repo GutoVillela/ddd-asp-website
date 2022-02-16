@@ -15,6 +15,7 @@ namespace KadoshDomain.Commands
         public decimal DownPayment { get; set; } = 0;
         public DateTime? SaleDate { get; set; }
         public int? SellerId { get; set; }
+        public int? StoreId { get; set; }
         public DateTime? SettlementDate { get; set; }
         public IEnumerable<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
         public ESaleSituation? Situation { get; set; }
@@ -29,6 +30,7 @@ namespace KadoshDomain.Commands
                 .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_LOWER_THAN_ZERO)
                 .IsNotNull(SaleDate, nameof(SaleDate), SaleValidationsErrors.NULL_SALE_DATE)
                 .IsNotNull(SellerId, nameof(SellerId), SaleValidationsErrors.NULL_SELLER_ID)
+                .IsNotNull(StoreId, nameof(StoreId), SaleValidationsErrors.NULL_STORE_ID)
                 .IsNotEmpty(SaleItems, nameof(SaleItems), SaleValidationsErrors.EMPTY_SALE_LIST_ITEMS)
             );
 

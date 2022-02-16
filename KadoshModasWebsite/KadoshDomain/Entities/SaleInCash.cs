@@ -5,7 +5,7 @@ namespace KadoshDomain.Entities
     public class SaleInCash : Sale
     {
         #region Constructors
-        public SaleInCash(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId, DateTime? settlementDate) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, settlementDate)
+        public SaleInCash(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId, int storeId,  DateTime? settlementDate) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, storeId, settlementDate)
         {
 
         }

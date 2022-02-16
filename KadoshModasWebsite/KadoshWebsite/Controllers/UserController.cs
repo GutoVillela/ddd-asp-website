@@ -32,7 +32,7 @@ namespace KadoshWebsite.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateAsync()
         {
-            await LoadStoresToViewData();
+            await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData);
             return View();
         }
 
@@ -51,12 +51,12 @@ namespace KadoshWebsite.Controllers
                 }
 
                 AddErrorsToModelState(errors: result.Errors);
-                await LoadStoresToViewData();
+                await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData, model.StoreId);
                 return View(model);
             }
             else
             {
-                await LoadStoresToViewData();
+                await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData, model.StoreId);
                 return View(model);
             }
         }
@@ -69,7 +69,7 @@ namespace KadoshWebsite.Controllers
 
             var model = await _userService.GetUserAsync(id.Value);
 
-            await LoadStoresToViewData(model.StoreId);
+            await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData, model.StoreId);
             return View(model);
         }
 
@@ -87,13 +87,13 @@ namespace KadoshWebsite.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                await LoadStoresToViewData(model.StoreId);
+                await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData, model.StoreId);
                 AddErrorsToModelState(errors: result.Errors);
                 return View(model);
             }
             else
             {
-                await LoadStoresToViewData(model.StoreId);
+                await SelectListLoaderHelper.LoadStoresToViewData(_storeService, ViewData, model.StoreId);
                 return View(model);
             }
         }
@@ -128,24 +128,7 @@ namespace KadoshWebsite.Controllers
             return View(model);
         }
 
-        private async Task LoadStoresToViewData(int? selectedStore = null)
-        {
-            var stores = await _storeService.GetAllStoresAsync();
-            ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] = GetSelectListItemsFromStores(stores, selectedStore);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromStores(IEnumerable<StoreViewModel> stores, int? selectedStore = null)
-        {
-            List<SelectListItem> storeListItems = new();
-            foreach (var store in stores)
-            {
-                if(selectedStore is not null && store.Id == selectedStore)
-                    storeListItems.Add(new SelectListItem(text: store.Name, value: store.Id.ToString(), true));
-                else
-                    storeListItems.Add(new SelectListItem(text: store.Name, value: store.Id.ToString()));
-            }
-            return storeListItems;
-        }
+        
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)
         {

@@ -23,6 +23,7 @@ namespace KadoshDomain.Handlers
         private readonly ICustomerRepository _customerRepository;
         private readonly IProductRepository _productRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IStoreRepository _storeRepository;
         private readonly ISaleItemRepository _saleItemRepository;
         private readonly ICustomerPostingRepository _customerPostingRepository;
         private readonly IInstallmentRepository _installmentRepository;
@@ -37,7 +38,8 @@ namespace KadoshDomain.Handlers
             IUserRepository userRepository,
             ISaleItemRepository saleItemRepository,
             ICustomerPostingRepository customerPostingRepository,
-            IInstallmentRepository installmentRepository)
+            IInstallmentRepository installmentRepository,
+            IStoreRepository storeRepository)
         {
             _unitOfWork = unitOfWork;
             _saleInCashRepository = saleInCashRepository;
@@ -49,8 +51,39 @@ namespace KadoshDomain.Handlers
             _saleItemRepository = saleItemRepository;
             _customerPostingRepository = customerPostingRepository;
             _installmentRepository = installmentRepository;
+            _storeRepository = storeRepository;
         }
 
+        private async Task<(bool isValid, int errorCode, string errorMessage)> ValidateSaleCustomerSellerAndStore(int? customerId, int? sellerId, int? storeId)
+        {
+            if(customerId is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
+
+            if (sellerId is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER);
+
+            if (storeId is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_STORE);
+
+            // Validate Customer
+            Customer? customer = await _customerRepository.ReadAsync(customerId.Value);
+            if (customer is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
+
+            // Validate Seller
+            User? seller = await _userRepository.ReadAsync(sellerId.Value);
+            if (seller is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER);
+
+            // Validate Store
+            Store? store = await _storeRepository.ReadAsync(storeId.Value);
+            if (store is null)
+                return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_STORE);
+
+            // Validated
+            return (true, 0, string.Empty);
+        }
+        
         public async Task<ICommandResult> HandleAsync(CreateSaleInCashCommand command)
         {
             try
@@ -64,22 +97,12 @@ namespace KadoshDomain.Handlers
                     return new CommandResult(false, SaleCommandMessages.INVALID_SALE_IN_CASH_CREATE_COMMAND, errors);
                 }
 
-                // Validate Customer
-                Customer? customer = await _customerRepository.ReadAsync(command.CustomerId!.Value);
-                if (customer is null)
+                (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);
+                if (!isCustomerSellerAndStoreValid)
                 {
                     AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, errors);
-                }
-
-                // Validate Seller
-                User? seller = await _userRepository.ReadAsync(command.SellerId!.Value);
-                if (seller is null)
-                {
-                    AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER, errors);
+                    var errors = GetErrorsFromNotifications(errorCode);
+                    return new CommandResult(false, errorMessage, errors);
                 }
 
                 // Retrieve products info and validade products
@@ -99,13 +122,14 @@ namespace KadoshDomain.Handlers
 
                 //Create Sale
                 SaleInCash saleInCash = new(
-                    customerId: customer.Id,
+                    customerId: command.CustomerId!.Value,
                     formOfPayment: command.FormOfPayment!.Value,
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
                     situation: command.Situation!.Value,
-                    sellerId: seller.Id,
+                    sellerId: command.SellerId!.Value,
+                    storeId: command.StoreId!.Value,
                     settlementDate: command.SettlementDate!.Value
                     );
 
@@ -152,7 +176,7 @@ namespace KadoshDomain.Handlers
 
                 // Create customer posting
                 CustomerPosting customerPosting = new(
-                    customerId: customer.Id,
+                    customerId: command.CustomerId.Value,
                     type: ECustomerPostingType.CashPurchase,
                     value: saleInCash.Total,
                     saleId: saleInCash.Id,
@@ -201,22 +225,12 @@ namespace KadoshDomain.Handlers
                     return new CommandResult(false, SaleCommandMessages.INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND, errors);
                 }
 
-                // Validate Customer
-                Customer? customer = await _customerRepository.ReadAsync(command.CustomerId!.Value);
-                if (customer is null)
+                (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);
+                if (!isCustomerSellerAndStoreValid)
                 {
                     AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, errors);
-                }
-
-                // Validate Seller
-                User? seller = await _userRepository.ReadAsync(command.SellerId!.Value);
-                if (seller is null)
-                {
-                    AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER, errors);
+                    var errors = GetErrorsFromNotifications(errorCode);
+                    return new CommandResult(false, errorMessage, errors);
                 }
 
                 // Retrieve products info and validade products
@@ -236,13 +250,14 @@ namespace KadoshDomain.Handlers
 
                 //Create Sale
                 SaleInInstallments saleInInstallments = new(
-                    customerId: customer.Id,
+                    customerId: command.CustomerId!.Value,
                     formOfPayment: command.FormOfPayment!.Value,
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
                     situation: command.Situation!.Value,
-                    sellerId: seller.Id,
+                    sellerId: command.SellerId!.Value,
+                    storeId: command.StoreId!.Value,
                     interestOnTheTotalSaleInPercentage: command.InterestOnTheTotalSaleInPercentage
                     );
 
@@ -314,7 +329,7 @@ namespace KadoshDomain.Handlers
                 if (saleInInstallments.DownPayment > 0)
                 {
                     CustomerPosting customerPosting = new(
-                        customerId: customer.Id,
+                        customerId: command.CustomerId!.Value,
                         type: ECustomerPostingType.DownPayment,
                         value: saleInInstallments.Total,
                         saleId: saleInInstallments.Id,
@@ -363,25 +378,16 @@ namespace KadoshDomain.Handlers
                     return new CommandResult(false, SaleCommandMessages.INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND, errors);
                 }
 
-                // Validate Customer
-                Customer? customer = await _customerRepository.ReadAsync(command.CustomerId!.Value);
-                if (customer is null)
+                (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);
+                if (!isCustomerSellerAndStoreValid)
                 {
                     AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, errors);
-                }
-
-                // Validate Seller
-                User? seller = await _userRepository.ReadAsync(command.SellerId!.Value);
-                if (seller is null)
-                {
-                    AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER);
-                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER, errors);
+                    var errors = GetErrorsFromNotifications(errorCode);
+                    return new CommandResult(false, errorMessage, errors);
                 }
 
                 // Retrieve products info and validade products
+                // TODO Create method to centralize this validations
                 IList<Product> products = new List<Product>();
                 foreach (var commandSaleItem in command.SaleItems)
                 {
@@ -398,13 +404,14 @@ namespace KadoshDomain.Handlers
 
                 //Create Sale
                 SaleOnCredit saleOnCredit = new(
-                    customerId: customer.Id,
+                    customerId: command.CustomerId!.Value,
                     formOfPayment: command.FormOfPayment!.Value,
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
                     situation: command.Situation!.Value,
-                    sellerId: seller.Id
+                    sellerId: command.SellerId!.Value,
+                    storeId: command.StoreId!.Value
                     );
 
                 // Entity validations
@@ -452,7 +459,7 @@ namespace KadoshDomain.Handlers
                 if (saleOnCredit.DownPayment > 0)
                 {
                     CustomerPosting customerPosting = new(
-                        customerId: customer.Id,
+                        customerId: command.CustomerId!.Value,
                         type: ECustomerPostingType.DownPayment,
                         value: saleOnCredit.DownPayment,
                         sale: saleOnCredit,

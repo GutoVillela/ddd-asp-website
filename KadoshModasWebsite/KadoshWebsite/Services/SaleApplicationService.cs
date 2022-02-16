@@ -33,6 +33,7 @@ namespace KadoshWebsite.Services
                 command.DownPayment = sale.DownPayment ?? 0;
                 command.SaleDate = DateTime.UtcNow;
                 command.SellerId = sale.SellerId;
+                command.StoreId = sale.StoreId;
                 command.SettlementDate = DateTime.UtcNow;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
                 command.Situation = ESaleSituation.Completed;
@@ -48,6 +49,7 @@ namespace KadoshWebsite.Services
                 command.DownPayment = sale.DownPayment ?? 0;
                 command.SaleDate = DateTime.UtcNow;
                 command.SellerId = sale.SellerId;
+                command.StoreId = sale.StoreId;
                 command.SettlementDate = DateTime.UtcNow;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
                 command.Situation = ESaleSituation.Completed;
@@ -68,6 +70,7 @@ namespace KadoshWebsite.Services
                 command.DownPayment = sale.DownPayment ?? 0;
                 command.SaleDate = DateTime.UtcNow;
                 command.SellerId = sale.SellerId;
+                command.StoreId = sale.StoreId;
                 command.SettlementDate = null;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
                 command.Situation = ESaleSituation.Completed;

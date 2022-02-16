@@ -2,7 +2,7 @@
 
 namespace KadoshWebsite.Util
 {
-    public  static class ViewAlerts
+    public static class ViewAlerts
     {
         public static void SuccessAlert(ITempDataDictionary tempData, string messageToAlert)
         {

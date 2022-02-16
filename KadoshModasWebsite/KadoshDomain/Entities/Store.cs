@@ -36,6 +36,8 @@ namespace KadoshDomain.Entities
 
         public IReadOnlyCollection<Stock> Stocks { get; private set; }
 
+        public IReadOnlyCollection<Sale>? Sales { get; private set; }
+
         public void UpdateStoreInfo(string name, Address address)
         {
             Name = name;

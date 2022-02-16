@@ -22,6 +22,7 @@ namespace KadoshDomain.Services
         private readonly ICustomerPostingRepository _customerPostingRepository;
         private readonly IInstallmentRepository _installmentRepository;
         private readonly ISaleRepository _saleRepository;
+        private readonly IStoreRepository _storeRepository;
 
         public SaleService(
             IUnitOfWork unitOfWork,
@@ -31,6 +32,7 @@ namespace KadoshDomain.Services
             ICustomerRepository customerRepository,
             IProductRepository productRepository,
             IUserRepository userRepository,
+            IStoreRepository storeRepository,
             ISaleItemRepository saleItemRepository,
             ICustomerPostingRepository customerPostingRepository,
             IInstallmentRepository installmentRepository,
@@ -47,6 +49,7 @@ namespace KadoshDomain.Services
             _customerPostingRepository = customerPostingRepository;
             _installmentRepository = installmentRepository;
             _saleRepository = saleRepository;
+            _storeRepository = storeRepository;
         }
 
         public async Task<ICommandResult> CreateSaleInCashAsync(CreateSaleInCashCommand command)
@@ -61,7 +64,8 @@ namespace KadoshDomain.Services
                 _userRepository,
                 _saleItemRepository,
                 _customerPostingRepository,
-                _installmentRepository
+                _installmentRepository,
+                _storeRepository
                 );
             return await handler.HandleAsync(command);
         }
@@ -78,7 +82,8 @@ namespace KadoshDomain.Services
                 _userRepository,
                 _saleItemRepository,
                 _customerPostingRepository,
-                _installmentRepository
+                _installmentRepository,
+                _storeRepository
                 );
             return await handler.HandleAsync(command);
         }
@@ -95,7 +100,8 @@ namespace KadoshDomain.Services
                 _userRepository,
                 _saleItemRepository,
                 _customerPostingRepository,
-                _installmentRepository
+                _installmentRepository,
+                _storeRepository
                 );
             return await handler.HandleAsync(command);
         }

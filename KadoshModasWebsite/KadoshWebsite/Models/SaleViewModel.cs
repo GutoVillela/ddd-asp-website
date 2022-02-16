@@ -18,6 +18,10 @@ namespace KadoshWebsite.Models
         [Display(Name = "Vendedor")]
         public int SellerId { get; set; }
 
+        [Required(ErrorMessage = "A loja é obrigatória")]
+        [Display(Name = "Loja")]
+        public int StoreId { get; set; }
+
         public IEnumerable<SaleItemViewModel> SaleItems { get; set; } = new List<SaleItemViewModel>();
 
         [Required(ErrorMessage = "O tipo de pagamento é obrigatório")]

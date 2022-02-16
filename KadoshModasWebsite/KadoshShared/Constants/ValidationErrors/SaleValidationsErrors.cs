@@ -8,6 +8,7 @@
         public const string DOWN_PAYMENT_LOWER_THAN_ZERO = "O campo Entrada da Venda não pode ser negativo";
         public const string NULL_SALE_DATE = "O campo Data da Venda é obrigatório";
         public const string NULL_SELLER_ID = "O campo Vendedor é obrigatório";
+        public const string NULL_STORE_ID = "O campo Loja é obrigatório";
         public const string SETTLEMENT_DATE_LOWER_THAN_SALE_DATE = "A data de conclusão da venda não pode ser menor que a data da venda";
         public const string EMPTY_SALE_LIST_ITEMS = "É obrigatório pelo menos um item da venda para registrar a venda";
         public const string EMPTY_SALE_INSTALLMENTS = "Não é possível criar uma venda parcelada sem nenhuma parcela";

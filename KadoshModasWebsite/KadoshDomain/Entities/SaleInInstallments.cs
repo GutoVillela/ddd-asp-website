@@ -23,8 +23,9 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             ESaleSituation situation,
             int sellerId,
+            int storeId,
             decimal interestOnTheTotalSaleInPercentage
-            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, storeId)
         {
             InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
             ValidateSaleInInstallments();

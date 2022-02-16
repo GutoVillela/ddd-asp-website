@@ -11,7 +11,7 @@ namespace KadoshDomain.Entities
         private IList<CustomerPosting> _postings;
 
         #region Constructors
-        protected Sale(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId)
+        protected Sale(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId, int storeId)
         {
             CustomerId = customerId;
             FormOfPayment = formOfPayment;
@@ -20,6 +20,8 @@ namespace KadoshDomain.Entities
             SaleDate = saleDate;
             Situation = situation;
             SellerId = sellerId;
+            StoreId = storeId;
+            _postings = new List<CustomerPosting>();
         }
 
         protected Sale(
@@ -30,8 +32,9 @@ namespace KadoshDomain.Entities
             DateTime saleDate,
             ESaleSituation situation,
             int sellerId,
+            int storeId,
             DateTime? settlementDate
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, storeId)
         {
             SettlementDate = settlementDate;
 
@@ -46,7 +49,8 @@ namespace KadoshDomain.Entities
             DateTime saleDate, 
             IReadOnlyCollection<SaleItem> saleItems, 
             ESaleSituation situation,
-            int sellerId
+            int sellerId,
+            int storeId
             )
         {
             CustomerId = customerId;
@@ -57,6 +61,7 @@ namespace KadoshDomain.Entities
             SaleItems = saleItems;
             Situation = situation;
             SellerId = sellerId;
+            StoreId = storeId;
             _postings = new List<CustomerPosting>();
 
             ValidateSaleWithNoSettlementDate();
@@ -71,8 +76,9 @@ namespace KadoshDomain.Entities
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             int sellerId,
+            int storeId,
             DateTime settlementDate
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, storeId)
         {
             SettlementDate = settlementDate;
 
@@ -88,9 +94,10 @@ namespace KadoshDomain.Entities
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             int sellerId,
+            int storeId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, storeId, settlementDate)
         {
             Postings = postings;
         }
@@ -104,10 +111,11 @@ namespace KadoshDomain.Entities
             IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             int sellerId,
+            int storeId,
             DateTime settlementDate,
             IReadOnlyCollection<CustomerPosting> postings,
             Customer? customer
-            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings)
+            ) : this(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, storeId, settlementDate, postings)
         {
             Customer = customer;
         }
@@ -135,6 +143,11 @@ namespace KadoshDomain.Entities
         public int SellerId { get; private set; }
 
         public User? Seller { get; private set; }
+
+        [Required]
+        public int StoreId { get; private set; }
+
+        public Store? Store { get; private set; }
 
         public DateTime? SettlementDate { get; private set; }
 

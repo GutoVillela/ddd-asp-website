@@ -34,7 +34,7 @@
                         </div>
                         <div class="card-body row">
                             <!-- Customer -->
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label asp-for="CustomerId"></label>
                                 @Html.DropDownListFor(m => m.CustomerId, ViewData[ViewConstants.VIEW_CUSTOMERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
                                 <span asp-validation-for="CustomerId" class="text-danger"></span>
@@ -45,6 +45,13 @@
                                 <label asp-for="SellerId"></label>
                                 @Html.DropDownListFor(m => m.SellerId, ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
                                 <span asp-validation-for="SellerId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Store -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StoreId"></label>
+                                @Html.DropDownListFor(m => m.StoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                                <span asp-validation-for="StoreId" class="text-danger"></span>
                             </div>
                         </div>
                     </div>

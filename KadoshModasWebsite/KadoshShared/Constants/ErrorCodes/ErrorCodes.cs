@@ -41,5 +41,6 @@
         public const int ERROR_COULD_NOT_CREATE_DOWN_PAYMENT_POSTING = 36;
         public const int ERROR_INVALID_SALE_INSTALLMENT = 35;
         public const int ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND = 36;
+        public const int ERROR_COULD_NOT_FIND_SALE_STORE = 37;
     }
 }
