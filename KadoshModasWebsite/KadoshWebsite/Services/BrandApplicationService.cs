@@ -1,7 +1,9 @@
 ﻿using KadoshDomain.Commands;
-using KadoshDomain.Services.Interfaces;
+using KadoshDomain.Handlers;
+using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Repositories;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -9,11 +11,13 @@ namespace KadoshWebsite.Services
 {
     public class BrandApplicationService : IBrandApplicationService
     {
-        private readonly IBrandService _brandService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBrandRepository _brandRepository;
 
-        public BrandApplicationService(IBrandService brandService)
+        public BrandApplicationService(IUnitOfWork unitOfWork, IBrandRepository brandRepository)
         {
-            _brandService = brandService;
+            _unitOfWork = unitOfWork;
+            _brandRepository = brandRepository;
         }
 
         public async Task<ICommandResult> CreateBrandAsync(BrandViewModel brand)
@@ -21,7 +25,8 @@ namespace KadoshWebsite.Services
             CreateBrandCommand command = new();
             command.Name = brand.Name;
 
-            return await _brandService.CreateBrandAsync(command);
+            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
+            return await brandHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteBrandAsync(int id)
@@ -29,12 +34,13 @@ namespace KadoshWebsite.Services
             DeleteBrandCommand command = new();
             command.Id = id;
 
-            return await _brandService.DeleteBrandAsync(command);
+            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
+            return await brandHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync()
         {
-            var brands = await _brandService.GetAllBrandsAsync();
+            var brands = await _brandRepository.ReadAllAsync();
             List<BrandViewModel> brandsViewModel = new();
 
             foreach(var brand in brands)
@@ -51,7 +57,7 @@ namespace KadoshWebsite.Services
 
         public async Task<BrandViewModel> GetBrandAsync(int id)
         {
-            var brand = await _brandService.GetBrandAsync(id);
+            var brand = await _brandRepository.ReadAsync(id);
             
             if(brand is null)
                 throw new ApplicationException(BrandServiceMessages.ERROR_BRAND_ID_NOT_FOUND);
@@ -71,7 +77,8 @@ namespace KadoshWebsite.Services
             command.Id = brand.Id;
             command.Name = brand.Name;
 
-            return await _brandService.UpdateBrandAsync(command);
+            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
+            return await brandHandler.HandleAsync(command);
         }
     }
 }

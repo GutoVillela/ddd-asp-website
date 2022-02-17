@@ -1,6 +1,4 @@
 using KadoshDomain.Repositories;
-using KadoshDomain.Services;
-using KadoshDomain.Services.Interfaces;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
 using KadoshRepository.UnitOfWork;
@@ -30,15 +28,6 @@ builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
 builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationService>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 builder.Services.AddScoped<ISaleApplicationService, SaleApplicationService>();
-
-// Domain Services Injection
-builder.Services.AddScoped<IStoreService, StoreService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IBrandService, BrandService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ISaleService, SaleService>();
 
 // Unit of Work Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

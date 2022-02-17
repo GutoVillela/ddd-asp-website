@@ -5,7 +5,7 @@ namespace KadoshDomain.Repositories
 {
     public interface ISaleRepository : IRepository<Sale>
     {
-        Task<IEnumerable<Sale>> ReadAllIncludingCustomer();
-        Task<IEnumerable<Sale>> ReadAllFromCustomer(int customerId);
+        Task<IEnumerable<Sale>> ReadAllIncludingCustomerAsync();
+        Task<IEnumerable<Sale>> ReadAllFromCustomerAsync(int customerId);
     }
 }

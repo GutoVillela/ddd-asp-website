@@ -1,26 +1,27 @@
 ﻿using KadoshDomain.Commands;
-using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
-using KadoshDomain.Enums;
-using KadoshDomain.ValueObjects;
 using KadoshShared.Constants.ServicesMessages;
-using KadoshDomain.Entities;
 using KadoshWebsite.Util;
+using KadoshShared.Repositories;
+using KadoshDomain.Repositories;
+using KadoshDomain.Handlers;
 
 namespace KadoshWebsite.Services
 {
     public class UserApplicationService : IUserApplicationService
     {
-        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ISession? _session => _httpContextAccessor.HttpContext?.Session;
 
-        public UserApplicationService(IUserService userService, IHttpContextAccessor httpContextAccessor)
+        public UserApplicationService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IUserRepository userRepository)
         {
-            _userService = userService;
+            _unitOfWork = unitOfWork;
+            _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -33,7 +34,8 @@ namespace KadoshWebsite.Services
             command.Role = user.Role;
             command.StoreId = user.StoreId;
 
-            return await _userService.CreateUserAsync(command);
+            UserHandler userHandler = new(_unitOfWork, _userRepository);
+            return await userHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteUserAsync(int id)
@@ -41,12 +43,13 @@ namespace KadoshWebsite.Services
             DeleteUserCommand command = new();
             command.Id = id;
 
-            return await _userService.DeleteUserAsync(command);
+            UserHandler userHandler = new(_unitOfWork, _userRepository);
+            return await userHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<UserViewModel>> GetAllUsersAsync()
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userRepository.ReadAllAsync();
             var usersViewModels = new List<UserViewModel>();
 
             foreach (var user in users)
@@ -66,7 +69,7 @@ namespace KadoshWebsite.Services
 
         public async Task<UserViewModel> GetUserAsync(int id)
         {
-            var user = await _userService.GetUserAsync(id);
+            var user = await _userRepository.ReadAsync(id);
             if (user is null)
                 throw new ApplicationException(UserServiceMessages.ERROR_USER_NOT_FOUND);
 
@@ -94,7 +97,8 @@ namespace KadoshWebsite.Services
             command.Role = user.Role;
             command.StoreId = user.StoreId;
 
-            return await _userService.UpdateUserAsync(command);
+            UserHandler userHandler = new(_unitOfWork, _userRepository);
+            return await userHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> AuthenticateUserAsync(string username, string password)
@@ -103,8 +107,8 @@ namespace KadoshWebsite.Services
             command.Username = username;
             command.Password = password;
 
-            var result = await _userService.AuthenticateUserAsync(command);
-            return result;
+            UserHandler userHandler = new(_unitOfWork, _userRepository);
+            return await userHandler.HandleAsync(command);
         }
 
         public void LoginAuthenticatedUser(string authenticatedUsername)

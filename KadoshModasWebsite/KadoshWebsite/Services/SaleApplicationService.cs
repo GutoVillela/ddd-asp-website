@@ -1,9 +1,10 @@
 ﻿using KadoshDomain.Commands;
 using KadoshDomain.Entities;
 using KadoshDomain.Enums;
+using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
-using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
+using KadoshShared.Repositories;
 using KadoshWebsite.Models;
 using KadoshWebsite.Models.Enums;
 using KadoshWebsite.Services.Interfaces;
@@ -13,13 +14,45 @@ namespace KadoshWebsite.Services
 {
     public class SaleApplicationService : ISaleApplicationService
     {
-        private readonly ISaleService _saleService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISaleInCashRepository _saleInCashRepository;
+        private readonly ISaleInInstallmentsRepository _saleInInstallmentsRepository;
+        private readonly ISaleOnCreditRepository _saleOnCreditRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ISaleItemRepository _saleItemRepository;
+        private readonly ICustomerPostingRepository _customerPostingRepository;
+        private readonly IInstallmentRepository _installmentRepository;
         private readonly ISaleRepository _saleRepository;
+        private readonly IStoreRepository _storeRepository;
 
-        public SaleApplicationService(ISaleService saleService, ISaleRepository saleRepository)
+        public SaleApplicationService(
+            IUnitOfWork unitOfWork,
+            ISaleInCashRepository saleInCashRepository,
+            ISaleInInstallmentsRepository saleInInstallmentsRepository,
+            ISaleOnCreditRepository saleOnCreditRepository,
+            ICustomerRepository customerRepository,
+            IProductRepository productRepository,
+            IUserRepository userRepository,
+            IStoreRepository storeRepository,
+            ISaleItemRepository saleItemRepository,
+            ICustomerPostingRepository customerPostingRepository,
+            IInstallmentRepository installmentRepository,
+            ISaleRepository saleRepository)
         {
-            _saleService = saleService;
+            _unitOfWork = unitOfWork;
+            _saleInCashRepository = saleInCashRepository;
+            _saleInInstallmentsRepository = saleInInstallmentsRepository;
+            _saleOnCreditRepository = saleOnCreditRepository;
+            _customerRepository = customerRepository;
+            _productRepository = productRepository;
+            _userRepository = userRepository;
+            _saleItemRepository = saleItemRepository;
+            _customerPostingRepository = customerPostingRepository;
+            _installmentRepository = installmentRepository;
             _saleRepository = saleRepository;
+            _storeRepository = storeRepository;
         }
 
         public async Task<ICommandResult> CreateSaleAsync(SaleViewModel sale)
@@ -40,9 +73,22 @@ namespace KadoshWebsite.Services
                 command.SettlementDate = DateTime.UtcNow;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
 
-                return await _saleService.CreateSaleInCashAsync(command);
+                SaleHandler handler = new(
+                    _unitOfWork,
+                    _saleInCashRepository,
+                    _saleInInstallmentsRepository,
+                    _saleOnCreditRepository,
+                    _customerRepository,
+                    _productRepository,
+                    _userRepository,
+                    _saleItemRepository,
+                    _customerPostingRepository,
+                    _installmentRepository,
+                    _storeRepository
+                );
+                return await handler.HandleAsync(command);
             }
-            else if(sale.PaymentType == ESalePaymentType.InStallments)
+            else if (sale.PaymentType == ESalePaymentType.InStallments)
             {
                 CreateSaleInInstallmentsCommand command = new();
                 command.CustomerId = sale.CustomerId;
@@ -60,9 +106,22 @@ namespace KadoshWebsite.Services
                     command.Installments.Add(new Installment(number: i, value: 0, maturityDate: DateTime.UtcNow.AddMonths(i), situation: EInstallmentSituation.Open, saleId: 0));
                 }
 
-                return await _saleService.CreateSaleInInstallmentsAsync(command);
+                SaleHandler handler = new(
+                    _unitOfWork,
+                    _saleInCashRepository,
+                    _saleInInstallmentsRepository,
+                    _saleOnCreditRepository,
+                    _customerRepository,
+                    _productRepository,
+                    _userRepository,
+                    _saleItemRepository,
+                    _customerPostingRepository,
+                    _installmentRepository,
+                    _storeRepository
+                );
+                return await handler.HandleAsync(command);
             }
-            else if(sale.PaymentType == ESalePaymentType.OnCredit)
+            else if (sale.PaymentType == ESalePaymentType.OnCredit)
             {
                 CreateSaleOnCreditCommand command = new();
                 command.CustomerId = sale.CustomerId;
@@ -75,7 +134,20 @@ namespace KadoshWebsite.Services
                 command.SettlementDate = null;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
 
-                return await _saleService.CreateSaleOnCreditAsync(command);
+                SaleHandler handler = new(
+                    _unitOfWork,
+                    _saleInCashRepository,
+                    _saleInInstallmentsRepository,
+                    _saleOnCreditRepository,
+                    _customerRepository,
+                    _productRepository,
+                    _userRepository,
+                    _saleItemRepository,
+                    _customerPostingRepository,
+                    _installmentRepository,
+                    _storeRepository
+                );
+                return await handler.HandleAsync(command);
             }
 
             throw new NotImplementedException();
@@ -83,7 +155,7 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesAsync()
         {
-            var sales = await _saleService.GetAllSalesIncludingCustomerAsync();
+            var sales = await _saleRepository.ReadAllIncludingCustomerAsync();
             List<SaleViewModel> salesViewModel = new();
 
             foreach (var sale in sales)
@@ -96,7 +168,7 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId)
         {
-            var sales = await _saleRepository.ReadAllFromCustomer(customerId);
+            var sales = await _saleRepository.ReadAllFromCustomerAsync(customerId);
             List<SaleViewModel> salesViewModel = new();
 
             foreach (var sale in sales)
@@ -111,7 +183,7 @@ namespace KadoshWebsite.Services
         {
             return new SaleViewModel
             {
-                Id = sale.Id, 
+                Id = sale.Id,
                 CustomerId = sale.CustomerId,
                 CustomerName = sale.Customer?.Name,
                 SellerId = sale.SellerId,
@@ -155,7 +227,7 @@ namespace KadoshWebsite.Services
 
             if (sale is not SaleInInstallments)
                 return 0;
-            
+
             return (sale as SaleInInstallments).NumberOfInstallments;
         }
     }

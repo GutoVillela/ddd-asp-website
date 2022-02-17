@@ -1,5 +1,4 @@
 ﻿using KadoshDomain.Commands;
-using KadoshDomain.Services.Interfaces;
 using KadoshShared.Commands;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -7,16 +6,21 @@ using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
 using KadoshShared.Constants.ServicesMessages;
 using KadoshDomain.Entities;
+using KadoshShared.Repositories;
+using KadoshDomain.Repositories;
+using KadoshDomain.Handlers;
 
 namespace KadoshWebsite.Services
 {
     public class CustomerApplicationService : ICustomerApplicationService
     {
-        private readonly ICustomerService _customerService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomerApplicationService(ICustomerService customerService)
+        public CustomerApplicationService(IUnitOfWork unitOfWork, ICustomerRepository customerRepository)
         {
-            _customerService = customerService;
+            _unitOfWork = unitOfWork;
+            _customerRepository = customerRepository;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -48,7 +52,8 @@ namespace KadoshWebsite.Services
             foreach(var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            return await _customerService.CreateCustomerAsync(command);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            return await customerHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteCustomerAsync(int id)
@@ -56,12 +61,13 @@ namespace KadoshWebsite.Services
             DeleteCustomerCommand command = new();
             command.Id = id;
 
-            return await _customerService.DeleteCustomerAsync(command);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            return await customerHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<CustomerViewModel>> GetAllCustomersAsync()
         {
-            var customers = await _customerService.GetAllCustomersAsync();
+            var customers = await _customerRepository.ReadAllAsync();
             var customerViewModels = new List<CustomerViewModel>();
 
             foreach (var customer in customers)
@@ -84,7 +90,7 @@ namespace KadoshWebsite.Services
 
         public async Task<CustomerViewModel> GetCustomerAsync(int id)
         {
-            var customer = await _customerService.GetCustomerAsync(id);
+            var customer = await _customerRepository.ReadAsync(id);
             if (customer == null)
                 throw new ApplicationException(CustomerServiceMessages.ERROR_CUSTOMER_ID_NOT_FOUND);
 
@@ -140,7 +146,8 @@ namespace KadoshWebsite.Services
             foreach (var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            return await _customerService.UpdateCustomerAsync(command);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            return await customerHandler.HandleAsync(command);
         }
 
         private Phone ConvertPhoneModelToValueObject(PhoneViewModel phoneViewModel)

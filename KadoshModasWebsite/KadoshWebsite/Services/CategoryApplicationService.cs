@@ -1,7 +1,9 @@
 ﻿using KadoshDomain.Commands;
-using KadoshDomain.Services.Interfaces;
+using KadoshDomain.Handlers;
+using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Repositories;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -9,11 +11,13 @@ namespace KadoshWebsite.Services
 {
     public class CategoryApplicationService : ICategoryApplicationService
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryApplicationService(ICategoryService categoryService)
+        public CategoryApplicationService(IUnitOfWork unitOfWork, ICategoryRepository categoryRepository)
         {
-            _categoryService = categoryService;
+            _unitOfWork = unitOfWork;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<ICommandResult> CreateCategoryAsync(CategoryViewModel Category)
@@ -21,7 +25,8 @@ namespace KadoshWebsite.Services
             CreateCategoryCommand command = new();
             command.Name = Category.Name;
 
-            return await _categoryService.CreateCategoryAsync(command);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
+            return await categoryHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteCategoryAsync(int id)
@@ -29,12 +34,13 @@ namespace KadoshWebsite.Services
             DeleteCategoryCommand command = new();
             command.Id = id;
 
-            return await _categoryService.DeleteCategoryAsync(command);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
+            return await categoryHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _categoryRepository.ReadAllAsync();
             List<CategoryViewModel> categoriesViewModel = new();
 
             foreach(var category in categories)
@@ -51,7 +57,7 @@ namespace KadoshWebsite.Services
 
         public async Task<CategoryViewModel> GetCategoryAsync(int id)
         {
-            var Category = await _categoryService.GetCategoryAsync(id);
+            var Category = await _categoryRepository.ReadAsync(id);
             
             if(Category is null)
                 throw new ApplicationException(CategoryServiceMessages.ERROR_CATEGORY_ID_NOT_FOUND);
@@ -71,7 +77,8 @@ namespace KadoshWebsite.Services
             command.Id = Category.Id;
             command.Name = Category.Name;
 
-            return await _categoryService.UpdateCategoryAsync(command);
+            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
+            return await categoryHandler.HandleAsync(command);
         }
     }
 }

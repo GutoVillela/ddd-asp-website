@@ -1,7 +1,9 @@
 ﻿using KadoshDomain.Commands;
-using KadoshDomain.Services.Interfaces;
+using KadoshDomain.Handlers;
+using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Repositories;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -9,11 +11,13 @@ namespace KadoshWebsite.Services
 {
     public class StoreApplicationService : IStoreApplicationService
     {
-        private readonly IStoreService _storeService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IStoreRepository _storeRepository;
 
-        public StoreApplicationService(IStoreService storeService)
+        public StoreApplicationService(IUnitOfWork unitOfWork, IStoreRepository storeRepository)
         {
-            _storeService = storeService;
+            _unitOfWork = unitOfWork;
+            _storeRepository = storeRepository;
         }
 
         public async Task<ICommandResult> CreateStoreAsync(StoreViewModel store)
@@ -28,12 +32,13 @@ namespace KadoshWebsite.Services
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement  = store.Complement;
 
-            return  await _storeService.CreateStoreAsync(command);
+            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
+            return await storeHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<StoreViewModel>> GetAllStoresAsync()
         {
-            var stores = await _storeService.GetAllStoresAsync();
+            var stores = await _storeRepository.ReadAllAsync();
             var storeViewModels = new List<StoreViewModel>();
 
             foreach(var store in stores)
@@ -57,7 +62,7 @@ namespace KadoshWebsite.Services
 
         public async Task<StoreViewModel> GetStoreAsync(int id)
         {
-            var store = await _storeService.GetStoreAsync(id);
+            var store = await _storeRepository.ReadAsync(id);
             if (store == null)
                 throw new ApplicationException(StoreServiceMessages.ERROR_STORE_ID_NOT_FOUND);
 
@@ -89,8 +94,9 @@ namespace KadoshWebsite.Services
             command.AddressState = store.State;
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement = store.Complement;
-            
-            return await _storeService.UpdateStoreAsync(command);
+
+            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
+            return await storeHandler.HandleAsync(command);
 
         }
 
@@ -99,7 +105,8 @@ namespace KadoshWebsite.Services
             DeleteStoreCommand command = new();
             command.Id = id;
 
-            return await _storeService.DeleteStoreAsync(command);
+            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
+            return await storeHandler.HandleAsync(command);
         }
     }
 }
