@@ -127,7 +127,7 @@ namespace KadoshDomain.Handlers
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
-                    situation: command.Situation!.Value,
+                    situation: ESaleSituation.Completed,
                     sellerId: command.SellerId!.Value,
                     storeId: command.StoreId!.Value,
                     settlementDate: command.SettlementDate!.Value
@@ -255,7 +255,7 @@ namespace KadoshDomain.Handlers
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
-                    situation: command.Situation!.Value,
+                    situation: ESaleSituation.Open,
                     sellerId: command.SellerId!.Value,
                     storeId: command.StoreId!.Value,
                     interestOnTheTotalSaleInPercentage: command.InterestOnTheTotalSaleInPercentage
@@ -409,7 +409,7 @@ namespace KadoshDomain.Handlers
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
-                    situation: command.Situation!.Value,
+                    situation: ESaleSituation.Open,
                     sellerId: command.SellerId!.Value,
                     storeId: command.StoreId!.Value
                     );

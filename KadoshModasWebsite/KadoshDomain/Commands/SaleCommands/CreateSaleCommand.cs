@@ -18,7 +18,6 @@ namespace KadoshDomain.Commands
         public int? StoreId { get; set; }
         public DateTime? SettlementDate { get; set; }
         public IEnumerable<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
-        public ESaleSituation? Situation { get; set; }
 
         public virtual void Validate()
         {

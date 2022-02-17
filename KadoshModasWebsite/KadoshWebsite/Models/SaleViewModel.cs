@@ -1,4 +1,5 @@
-﻿using KadoshWebsite.Models.Enums;
+﻿using KadoshDomain.Enums;
+using KadoshWebsite.Models.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
@@ -52,5 +53,7 @@ namespace KadoshWebsite.Models
         public string? SaleTotalFormatted { get; set; }
 
         public DateTime? SaleDate { get; set; }
+
+        public ESaleSituation Status { get; set; } 
     }
 }

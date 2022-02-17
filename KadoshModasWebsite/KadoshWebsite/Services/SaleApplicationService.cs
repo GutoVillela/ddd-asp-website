@@ -39,7 +39,6 @@ namespace KadoshWebsite.Services
                 command.StoreId = sale.StoreId;
                 command.SettlementDate = DateTime.UtcNow;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
-                command.Situation = ESaleSituation.Completed;
 
                 return await _saleService.CreateSaleInCashAsync(command);
             }
@@ -55,7 +54,6 @@ namespace KadoshWebsite.Services
                 command.StoreId = sale.StoreId;
                 command.SettlementDate = DateTime.UtcNow;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
-                command.Situation = ESaleSituation.Completed;
 
                 for (int i = 1; i <= sale.NumberOfInstallments; i++)
                 {
@@ -76,7 +74,6 @@ namespace KadoshWebsite.Services
                 command.StoreId = sale.StoreId;
                 command.SettlementDate = null;
                 command.SaleItems = sale.SaleItems.Select(x => new SaleItem(0, x.ProductId, x.Quantity, 0, x.DiscountInPercentage ?? 0, ESaleItemSituation.AcquiredOnPurchase));
-                command.Situation = ESaleSituation.Completed;
 
                 return await _saleService.CreateSaleOnCreditAsync(command);
             }
@@ -123,7 +120,8 @@ namespace KadoshWebsite.Services
                 NumberOfInstallments = GetNumberOfInstallmentsFromSale(sale),
                 DownPayment = sale.DownPayment,
                 SaleTotalFormatted = sale.Total.ToString("C", CultureInfo.GetCultureInfo("pt-br")),
-                SaleDate = sale.SaleDate
+                SaleDate = sale.SaleDate,
+                Status = sale.Situation
             };
         }
 
