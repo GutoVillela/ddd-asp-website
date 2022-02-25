@@ -1,4 +1,5 @@
-﻿@model IEnumerable<SaleViewModel>
+﻿@using KadoshWebsite.Infrastructure
+@model IEnumerable<SaleViewModel>
 
 <div class="col-md-12 mb-3">
     <div class="card">
@@ -9,7 +10,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <a class="btn btn-success float-end" asp-controller="Sale"  asp-action="Create" title="Realizar uma nova venda">Nova venda <i class="uil uil-plus"></i></a>
+                        <a class="btn btn-success float-end" asp-controller="Sale" asp-action="Create" title="Realizar uma nova venda">Nova venda <i class="uil uil-plus"></i></a>
                     </div>
                     <div class="col-md-12">
                         @{
@@ -19,6 +20,7 @@
                             <caption>Listando @Model.Count() vendas</caption>
                             <thead>
                                 <tr class="table-primary">
+                                    <th scope="col">#</th>
                                     <th>Cliente</th>
                                     <th>Data</th>
                                     <th>Valor</th>
@@ -30,7 +32,7 @@
                                 @if (Model is null || !Model.Any())
                                 {
                                     <tr>
-                                        <td colspan="4" class="text-center">Nenhuma venda cadastrada</td>
+                                        <td colspan="6" class="text-center">Nenhuma venda cadastrada</td>
                                     </tr>
                                 }
                                 else
@@ -38,30 +40,40 @@
                                     @foreach (var item in Model)
                                     {
                                         <tr>
+                                            <th scope="row">@item.Id</th>
                                             <td>@item.CustomerName</td>
-                                            <td>@item.SaleDate!.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.SaleDate!.Value.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
                                             <td>@item.SaleTotalFormatted</td>
                                             <td>
-                                                @if(item.Status == KadoshDomain.Enums.ESaleSituation.Open)
+                                                @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)
                                                 {
                                                     <span class="badge outline-badge-primary">Em aberto</span>
                                                 }
-                                                else if(item.Status == KadoshDomain.Enums.ESaleSituation.Completed)
+                                                else if (item.Status == KadoshDomain.Enums.ESaleSituation.Completed)
                                                 {
                                                     <span class="badge outline-badge-info">Pago</span>
                                                 }
-                                                else if(item.Status == KadoshDomain.Enums.ESaleSituation.Canceled)
+                                                else if (item.Status == KadoshDomain.Enums.ESaleSituation.Canceled)
                                                 {
                                                     <span class="badge outline-badge-danger">Cancelado</span>
                                                 }
                                             </td>
                                             <td>
-                                                <a asp-controller="Sale" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Detalhes da venda">
+                                                <a asp-controller="Sale" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary text-white mb-1" title="Detalhes da venda">
                                                     <i class="uil uil-notes"></i>
                                                 </a>
-                                                <a asp-controller="Sale" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Apagar venda">
+                                                <a asp-controller="Sale" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white mb-1" title="Apagar venda">
                                                     <i class="uil uil-times"></i>
                                                 </a>
+                                                <a asp-controller="Sale" asp-action="PrintReceipt" asp-route-id="@item.Id" class="btn btn-info text-white mb-1" title="Imprimir recibo">
+                                                    <i class="uil uil-invoice"></i>
+                                                </a>
+                                                @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)
+                                                {
+                                                    <button class="btn btn-success text-white mb-1" onclick="PayOffSaleUrl(@item.Id)" title="Quitar compra">
+                                                        <i class="uil uil-check"></i>
+                                                    </button>
+                                                }
                                             </td>
                                         </tr>
                                     }
@@ -74,3 +86,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    let payOffSaleUrl = '@Url.Action("PayOffSale", "Sale")';
+
+    window.addEventListener("load", function() {
+        if(typeof PayOffSaleUrl != "function")
+            console.error('The script "saleList.js" is missing on the parent View.');
+    });
+</script>

@@ -15,5 +15,9 @@
         public const string ERROR_COULD_NOT_CREATE_DOWN_PAYMENT_POSTING = "Não foi possível realizar o lançamento da entrada da venda";
         public const string ERROR_INVALID_SALE_INSTALLMENT = "Uma ou mais parcelas da venda estão inválidas";
         public const string UNEXPECTED_EXCEPTION = "Uma exceção inesperada aconteceu";
+        public const string INVALID_PAYOFF_SALE_COMMAND = "Não foi possível quitar a dívida";
+        public const string ERROR_COULD_NOT_FIND_SALE = "Não foi possível encontrar a venda para o ID informado";
+        public const string ERROR_COULD_NOT_CREATE_SALE_PAYOFF_POSTING = "Não foi possível realizar o lançamento da quitação da venda";
+        public const string SUCCESS_ON_SALE_PAYOFF_COMMAND = "Venda quitada com sucesso";
     }
 }

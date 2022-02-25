@@ -82,6 +82,20 @@ namespace KadoshWebsite.Controllers
             return Ok(product);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PayOffSale(int? saleId)
+        {
+            if (saleId is null)
+                return NotFound();
+
+            var result = await _saleService.PayOffSaleAsync(saleId.Value);
+
+            if (result.Success)
+                return Ok();
+
+            return BadRequest(result.Message);
+        }
+
         private async Task LoadCustomersSellersStoresAndProductsToViewData()
         {
             await SelectListLoaderHelper.LoadCustomersToViewData(_customerService, ViewData);

@@ -8,5 +8,6 @@ namespace KadoshWebsite.Services.Interfaces
         Task<ICommandResult> CreateSaleAsync(SaleViewModel sale);
         Task<IEnumerable<SaleViewModel>> GetAllSalesAsync();
         Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId);
+        Task<ICommandResult> PayOffSaleAsync(int saleId);
     }
 }

@@ -5,6 +5,7 @@ using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Repositories;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Models.Enums;
 using KadoshWebsite.Services.Interfaces;
@@ -75,6 +76,7 @@ namespace KadoshWebsite.Services
 
                 SaleHandler handler = new(
                     _unitOfWork,
+                    _saleRepository,
                     _saleInCashRepository,
                     _saleInInstallmentsRepository,
                     _saleOnCreditRepository,
@@ -108,6 +110,7 @@ namespace KadoshWebsite.Services
 
                 SaleHandler handler = new(
                     _unitOfWork,
+                    _saleRepository,
                     _saleInCashRepository,
                     _saleInInstallmentsRepository,
                     _saleOnCreditRepository,
@@ -136,6 +139,7 @@ namespace KadoshWebsite.Services
 
                 SaleHandler handler = new(
                     _unitOfWork,
+                    _saleRepository,
                     _saleInCashRepository,
                     _saleInInstallmentsRepository,
                     _saleOnCreditRepository,
@@ -179,6 +183,29 @@ namespace KadoshWebsite.Services
             return salesViewModel;
         }
 
+        public async Task<ICommandResult> PayOffSaleAsync(int saleId)
+        {
+            PayOffSaleCommand command = new();
+            command.SaleId = saleId;
+
+            SaleHandler handler = new(
+                    _unitOfWork,
+                    _saleRepository,
+                    _saleInCashRepository,
+                    _saleInInstallmentsRepository,
+                    _saleOnCreditRepository,
+                    _customerRepository,
+                    _productRepository,
+                    _userRepository,
+                    _saleItemRepository,
+                    _customerPostingRepository,
+                    _installmentRepository,
+                    _storeRepository
+                );
+            return await handler.HandleAsync(command);
+        }
+
+        #region Private methods
         private SaleViewModel GetViewModelFromEntity(Sale sale)
         {
             return new SaleViewModel
@@ -191,7 +218,7 @@ namespace KadoshWebsite.Services
                 PaymentType = GetPaymentTypeFromSale(sale),
                 NumberOfInstallments = GetNumberOfInstallmentsFromSale(sale),
                 DownPayment = sale.DownPayment,
-                SaleTotalFormatted = sale.Total.ToString("C", CultureInfo.GetCultureInfo("pt-br")),
+                SaleTotalFormatted = sale.Total.ToString("C", FormatProviderManager.CultureInfo),
                 SaleDate = sale.SaleDate,
                 Status = sale.Situation
             };
@@ -230,5 +257,6 @@ namespace KadoshWebsite.Services
 
             return (sale as SaleInInstallments).NumberOfInstallments;
         }
+        #endregion Private methods
     }
 }

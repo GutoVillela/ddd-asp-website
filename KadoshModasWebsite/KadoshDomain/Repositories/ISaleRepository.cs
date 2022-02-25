@@ -7,5 +7,6 @@ namespace KadoshDomain.Repositories
     {
         Task<IEnumerable<Sale>> ReadAllIncludingCustomerAsync();
         Task<IEnumerable<Sale>> ReadAllFromCustomerAsync(int customerId);
+        Task<IEnumerable<Sale>> ReadAllOpenFromCustomerAsync(int customerId);
     }
 }

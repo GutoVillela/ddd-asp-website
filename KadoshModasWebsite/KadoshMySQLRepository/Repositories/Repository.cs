@@ -32,6 +32,12 @@ namespace KadoshRepository.Repositories
             return entity;
         }
 
+        public virtual async Task<TEntity?> ReadAsNoTrackingAsync(int id)
+        {
+            TEntity? entity = await _dbSet.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            return entity;
+        }
+
         public virtual async Task<IEnumerable<TEntity>> ReadAllAsync()
         {
             return await _dbSet.AsNoTracking().ToListAsync();

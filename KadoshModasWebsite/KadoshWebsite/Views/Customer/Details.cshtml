@@ -1,4 +1,6 @@
 ﻿@using KadoshDomain.Enums
+@using KadoshWebsite.Infrastructure
+@using KadoshWebsite.ViewComponents
 @model CustomerViewModel
 @{
     ViewData["Title"] = $"Ficha do cliente {@Model.Name}";
@@ -45,22 +47,36 @@
                                             <i class="uil uil-bill icon-size-1-5"></i>
                                         </div>
                                         <div class="content px-md-3 my-3 my-md-0">
-                                            <span class="mb-0 font-w-600 h5">Saldo devedor do cliente: R$ 200,00</span><br>
+                                            <span class="mb-0 font-w-600 h5">Saldo devedor do cliente: @Model.TotalDebt.ToString("C", FormatProviderManager.CultureInfo)</span><br>
                                             <p class="mb-0 font-w-500 tx-s-12">Consulte os lançamentos do cliente para saber os detalhes do saldo.</p>
 
+                                        </div>
+                                        <div class="my-auto ms-auto">
+                                            <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Quitar compra">
+                                                <i class="uil uil-dollar-alt icon-size-1-5"></i> Informar pagamento
+                                            </button>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
-                        @await Component.InvokeAsync("ListSales", new { filterByCustumerId = Model.Id })
+                        @await Component.InvokeAsync(nameof(ListSalesViewComponent).Replace("ViewComponent", ""), new { filterByCustumerId = Model.Id })
                     </div>
                     <div class="tab-pane fade p-3" id="postings" role="tabpanel" aria-labelledby="postings-tab">
-                        <h3>Lançamentos do cliente</h3>
+                        @await Component.InvokeAsync(nameof(ListCustomerPostingsViewComponent).Replace("ViewComponent", ""), new { filterByCustumerId = Model.Id })
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        let informPaymentUrl = '@Url.Action("InformPayment", "Customer")';
+    </script>
+    <script src="~/js/saleList.js"></script>
+    <script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
+    <script src="~/js/customerDetailsView.js"></script>
+}

@@ -14,5 +14,6 @@
         public const string EMPTY_SALE_INSTALLMENTS = "Não é possível criar uma venda parcelada sem nenhuma parcela";
         public const string LESS_THAN_TWO_INSTALLMENTS_ERROR = "Não é possível criar uma venda parcelada sem pelo menos 2 parcelas";
         public const string NEGATIVE_INTEREST_ON_TOTAL_SALE_ERROR = "Não é possível criar uma venda parcelada com o juros total negativo";
+        public const string NULL_SALE_ID = "O ID da venda é obrigatório";
     }
 }

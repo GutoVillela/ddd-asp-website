@@ -50,7 +50,6 @@ namespace KadoshRepository.Persistence.Map
                     phone.Ignore(p => p.Notifications);
                 });
             builder.HasMany(x => x.Sales).WithOne(x => x.Customer).HasForeignKey(x => x.CustomerId);
-            builder.HasMany(x => x.CustomerPostings).WithOne(x => x.Customer).HasForeignKey(x => x.CustomerId);
             builder.Ignore(x => x.Notifications);
         }
     }

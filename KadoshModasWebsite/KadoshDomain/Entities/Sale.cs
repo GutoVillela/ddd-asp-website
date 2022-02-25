@@ -3,6 +3,7 @@ using Flunt.Validations;
 using KadoshDomain.Enums;
 using KadoshShared.Entities;
 using System.ComponentModel.DataAnnotations;
+using KadoshDomain.ExtensionMethods;
 
 namespace KadoshDomain.Entities
 {
@@ -43,11 +44,11 @@ namespace KadoshDomain.Entities
 
         protected Sale(
             int customerId,
-            EFormOfPayment formOfPayment, 
-            decimal discountInPercentage, 
-            decimal downPayment, 
-            DateTime saleDate, 
-            IReadOnlyCollection<SaleItem> saleItems, 
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            IReadOnlyCollection<SaleItem> saleItems,
             ESaleSituation situation,
             int sellerId,
             int storeId
@@ -159,10 +160,10 @@ namespace KadoshDomain.Entities
         public ESaleSituation Situation { get; private set; }
 
 
-        public IReadOnlyCollection<CustomerPosting> Postings 
-        { 
-            get { return _postings.ToList(); } 
-            private set { _postings = value.ToList(); } 
+        public IReadOnlyCollection<CustomerPosting> Postings
+        {
+            get { return _postings.ToList(); }
+            private set { _postings = value.ToList(); }
         }
 
         public void SetSaleItems(IEnumerable<SaleItem> saleItems)
@@ -170,7 +171,26 @@ namespace KadoshDomain.Entities
             SaleItems = (IReadOnlyCollection<SaleItem>)saleItems;
         }
 
+        public void SetSettlementDate(DateTime settlementDate)
+        {
+            settlementDate = settlementDate.ToUniversalTime();
+            ValidateSettlementDate();
+        }
+
+        public void SetSituation(ESaleSituation situation)
+        {
+            Situation = situation;
+        }
+
         public decimal Total { get { return CalculateTotal(); } }
+
+        public decimal TotalPaid { get { return CalculateTotalPaid(); } }
+
+        public decimal TotalToPay { get { return Total - TotalPaid; } }
+        public void AddPosting(CustomerPosting posting)
+        {
+            _postings.Add(posting);
+        }
 
         private void ValidateSaleWithNoSettlementDate()
         {
@@ -199,7 +219,7 @@ namespace KadoshDomain.Entities
 
         private void ValidateSettlementDate()
         {
-            if(SettlementDate.HasValue)
+            if (SettlementDate.HasValue)
                 AddNotifications(new Contract<Notification>()
                     .Requires()
                     .IsGreaterOrEqualsThan(SettlementDate.Value, SaleDate, nameof(SettlementDate), "A data de conclusão da venda não pode ser anterior à data da venda!")
@@ -221,9 +241,19 @@ namespace KadoshDomain.Entities
             return total;
         }
 
-        public void AddPosting(CustomerPosting posting)
+        private decimal CalculateTotalPaid()
         {
-            _postings.Add(posting);
+            if (!Postings.Any())
+                return 0;
+            
+            decimal totalPaid = 0;
+
+            foreach(var posting in Postings)
+            {
+                if (posting.IsCreditType())
+                    totalPaid += posting.Value;
+            }
+            return totalPaid;
         }
     }
 }

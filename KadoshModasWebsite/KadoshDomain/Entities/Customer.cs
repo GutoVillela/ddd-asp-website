@@ -42,20 +42,18 @@ namespace KadoshDomain.Entities
             Phones = phones;
         }
 
-        public Customer(
-            string name,
-            Email? email, 
-            Document? document,
-            EGender? gender,
-            Address? address, 
-            IReadOnlyCollection<Phone>? phones,
-            IReadOnlyCollection<Sale> sales,
-            IReadOnlyCollection<CustomerPosting> customerPostings
-            ) : this(name, email, document, gender, address, phones)
-        {
-            Sales = sales;
-            CustomerPostings = customerPostings;
-        }
+        //public Customer(
+        //    string name,
+        //    Email? email, 
+        //    Document? document,
+        //    EGender? gender,
+        //    Address? address, 
+        //    IReadOnlyCollection<Phone>? phones,
+        //    IReadOnlyCollection<Sale> sales
+        //    ) : this(name, email, document, gender, address, phones)
+        //{
+        //    Sales = sales;
+        //}
 
         public Customer(
             int id,
@@ -82,8 +80,6 @@ namespace KadoshDomain.Entities
         public IReadOnlyCollection<Phone>? Phones { get; private set; }
 
         public IReadOnlyCollection<Sale> Sales { get; private set; } =  new List<Sale>();
-
-        public IReadOnlyCollection<CustomerPosting> CustomerPostings { get; private set; } = new List<CustomerPosting>();
 
         public void UpdateCustomerInfo(
             string name,

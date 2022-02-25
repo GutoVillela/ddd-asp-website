@@ -106,9 +106,6 @@ namespace KadoshRepository.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
@@ -128,8 +125,6 @@ namespace KadoshRepository.Migrations
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("SaleId");
 
@@ -575,19 +570,11 @@ namespace KadoshRepository.Migrations
 
             modelBuilder.Entity("KadoshDomain.Entities.CustomerPosting", b =>
                 {
-                    b.HasOne("KadoshDomain.Entities.Customer", "Customer")
-                        .WithMany("CustomerPostings")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("KadoshDomain.Entities.Sale", "Sale")
                         .WithMany("Postings")
                         .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Customer");
 
                     b.Navigation("Sale");
                 });
@@ -757,8 +744,6 @@ namespace KadoshRepository.Migrations
 
             modelBuilder.Entity("KadoshDomain.Entities.Customer", b =>
                 {
-                    b.Navigation("CustomerPostings");
-
                     b.Navigation("Sales");
                 });
 

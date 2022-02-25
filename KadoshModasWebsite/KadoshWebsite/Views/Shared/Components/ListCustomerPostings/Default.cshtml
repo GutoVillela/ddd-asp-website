@@ -1,0 +1,64 @@
+﻿@model IEnumerable<CustomerPostingViewModel>
+@using KadoshDomain.ExtensionMethods
+@using KadoshShared.ExtensionMethods
+@using System.Globalization
+@using KadoshWebsite.Infrastructure
+
+<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-invoice icon-size-1-5"></i> Lançamentos realizados
+        </div>
+        <div class="card-body row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        @{
+                            await Html.RenderPartialAsync("_CheckForAlert");
+                        }
+                        <table class="table table-bordered table-striped table-hover table-responsive">
+                            <caption>Listando @Model.Count() lançamentos</caption>
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>Venda</th>
+                                    <th>Data do lançamento</th>
+                                    <th>Valor</th>
+                                    <th>Tipo de Lançamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is null || !Model.Any())
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Nenhum lançamento</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.SaleId</td>
+                                            <td>@item.PostingDate.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
+                                            <td>@item.Value.ToString("C", FormatProviderManager.CultureInfo)</td>
+                                            <td>
+                                                @if (item.PostingType.IsCreditType())
+                                                {
+                                                    <span class="badge outline-badge-primary">@item.PostingType.ToDescription()</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge outline-badge-danger">@item.PostingType.ToDescription()</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,8 +16,22 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            //TODO Replace this for Seeding service
+            var users = await _userService.GetAllUsersAsync();
+            if (!users.Any())
+            {
+                UserViewModel user = new()
+                {
+                    Name = "Administrador",
+                    UserName = "admin",
+                    Password = "admin",
+                    Role = KadoshDomain.Enums.EUserRole.Administrator
+                };
+                var result = await _userService.CreateUserAsync(user);
+            }
+
             return View();
         }
 

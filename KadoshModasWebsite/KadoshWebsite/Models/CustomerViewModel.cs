@@ -55,5 +55,7 @@ namespace KadoshWebsite.Models
         #endregion Address
 
         public IEnumerable<PhoneViewModel> Phones { get; set; } = new List<PhoneViewModel>();
+
+        public decimal TotalDebt { get; set; } = 0;
     }
 }

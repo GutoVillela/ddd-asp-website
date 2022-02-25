@@ -28,6 +28,7 @@ builder.Services.AddScoped<IBrandApplicationService, BrandApplicationService>();
 builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationService>();
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 builder.Services.AddScoped<ISaleApplicationService, SaleApplicationService>();
+builder.Services.AddScoped<ICustomerPostingApplicationService, CustomerPostingApplicationService>();
 
 // Unit of Work Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

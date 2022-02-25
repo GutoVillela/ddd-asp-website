@@ -42,5 +42,11 @@
         public const int ERROR_INVALID_SALE_INSTALLMENT = 35;
         public const int ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND = 36;
         public const int ERROR_COULD_NOT_FIND_SALE_STORE = 37;
+        public const int ERROR_INVALID_PAYOFF_SALE_COMMAND = 38;
+        public const int ERROR_SALE_NOT_FOUND = 39;
+        public const int ERROR_COULD_NOT_CREATE_SALE_PAYOFF_POSTING = 40;
+        public const int ERROR_INVALID_CUSTOMER_INFORM_PAYMENT_COMMAND = 41;
+        public const int ERROR_NO_OPEN_SALES_FOUND_TO_CUSTOMER = 42;
+        public const int ERROR_ONE_OR_MORE_INVALID_POSTINGS_TO_INFORMING_PAYMENT = 43;
     }
 }

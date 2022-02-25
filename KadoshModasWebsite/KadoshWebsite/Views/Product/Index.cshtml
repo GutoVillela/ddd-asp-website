@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using KadoshWebsite.Infrastructure
 @model IEnumerable<ProductViewModel>
 @{
     ViewData["Title"] = "Cadastro de produtos";
@@ -56,7 +57,7 @@
                                     {
                                         <tr>
                                             <td>@item.Name</td>
-                                            <td>@item.Price.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))</td>
+                                            <td>@item.Price.ToString("C",FormatProviderManager.CultureInfo)</td>
                                             <td>
                                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar produto @item.Name">
                                                     <i class="uil uil-edit-alt"></i>

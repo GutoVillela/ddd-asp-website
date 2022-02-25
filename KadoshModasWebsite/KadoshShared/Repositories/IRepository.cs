@@ -6,6 +6,7 @@ namespace KadoshShared.Repositories
     {
         Task CreateAsync(TEntity entity);
         Task<TEntity?> ReadAsync(int id);
+        Task<TEntity?> ReadAsNoTrackingAsync(int id);
         Task<IEnumerable<TEntity>> ReadAllAsync();
         Task UpdateAsync(TEntity entity);
         void Delete(TEntity entity);

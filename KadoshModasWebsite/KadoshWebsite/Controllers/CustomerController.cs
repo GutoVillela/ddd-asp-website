@@ -126,8 +126,33 @@ namespace KadoshWebsite.Controllers
                 return NotFound();
 
             var model = await _service.GetCustomerAsync(id.Value);
+            model.TotalDebt = await GetCustomerTotalDebtAsync(id.Value);
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<decimal> GetCustomerTotalDebtAsync(int? customerId)
+        {
+            ArgumentNullException.ThrowIfNull(customerId);
+
+            var totalDebt = await _service.GetCustomerTotalDebtAsync(customerId.Value);
+
+            return totalDebt;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InformPaymentAsync(int? customerId, decimal? amountToInform)
+        {
+            ArgumentNullException.ThrowIfNull(customerId);
+            ArgumentNullException.ThrowIfNull(amountToInform);
+
+            var result = await _service.InformCustomerPaymentAsync(customerId.Value, amountToInform.Value);
+
+            if (result.Success)
+                return Ok(result.Message);
+
+            return BadRequest(result.Message);
         }
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)

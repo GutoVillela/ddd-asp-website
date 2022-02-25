@@ -16,11 +16,15 @@ namespace KadoshWebsite.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _customerRepository;
+        private readonly ISaleRepository _saleRepository;
+        private readonly ICustomerPostingRepository _customerPostingRepository;
 
-        public CustomerApplicationService(IUnitOfWork unitOfWork, ICustomerRepository customerRepository)
+        public CustomerApplicationService(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, ISaleRepository saleRepository, ICustomerPostingRepository customerPostingRepository)
         {
             _unitOfWork = unitOfWork;
             _customerRepository = customerRepository;
+            _saleRepository = saleRepository;
+            _customerPostingRepository = customerPostingRepository;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -52,7 +56,7 @@ namespace KadoshWebsite.Services
             foreach(var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
             return await customerHandler.HandleAsync(command);
         }
 
@@ -61,7 +65,7 @@ namespace KadoshWebsite.Services
             DeleteCustomerCommand command = new();
             command.Id = id;
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
             return await customerHandler.HandleAsync(command);
         }
 
@@ -146,7 +150,7 @@ namespace KadoshWebsite.Services
             foreach (var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository);
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
             return await customerHandler.HandleAsync(command);
         }
 
@@ -184,6 +188,29 @@ namespace KadoshWebsite.Services
             model.PhoneType = phone.Type;
             model.TalkTo = phone.TalkTo;
             return model;
+        }
+
+        public async Task<decimal> GetCustomerTotalDebtAsync(int customerId)
+        {
+            decimal totalDebt = 0;
+            var customerSales = await _saleRepository.ReadAllOpenFromCustomerAsync(customerId);
+
+            foreach (var sale in customerSales)
+            {
+                totalDebt += sale.TotalToPay;
+            }
+
+            return totalDebt;
+        }
+
+        public async Task<ICommandResult> InformCustomerPaymentAsync(int customerId, decimal amountToInform)
+        {
+            InformPaymentCommand command = new();
+            command.CustomerId = customerId;
+            command.AmountToInform = amountToInform;
+
+            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
+            return await customerHandler.HandleAsync(command);
         }
     }
 }

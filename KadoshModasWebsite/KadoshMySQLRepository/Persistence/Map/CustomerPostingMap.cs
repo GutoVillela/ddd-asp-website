@@ -12,7 +12,6 @@ namespace KadoshRepository.Persistence.Map
             builder.Property(x => x.Type).IsRequired();
             builder.Property(x => x.Value).IsRequired();
             builder.Property(x => x.PostingDate).IsRequired();
-            builder.HasOne(x => x.Customer).WithMany(x => x.CustomerPostings).HasForeignKey(x => x.CustomerId).IsRequired();
             builder.HasOne(x => x.Sale).WithMany(x => x.Postings).HasForeignKey(x => x.SaleId).IsRequired();
             builder.Ignore(x => x.Notifications);
         }
