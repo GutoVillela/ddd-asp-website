@@ -3,22 +3,6 @@
 });
 
 function InformCustomerPayment(customerId) {
-    //swal({
-    //    text: 'Search for a movie. e.g. "La La Land".',
-    //    content: "input",
-    //    buttons: {
-    //        cancel: "Cancelar",
-    //        ok: {
-    //            text: "Informar pagamento!",
-    //            closeModal: false,
-    //        }
-    //    },
-    //})
-    //.then(value => {
-    //    if (!value) throw null;
-
-    //    console.log(value)
-    //})
     
     swal({
         text: 'Informar pagamento na ficha do cliente',

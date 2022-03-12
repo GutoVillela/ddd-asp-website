@@ -195,12 +195,28 @@ namespace KadoshDomain.Handlers
                     return new CommandResult(false, SaleCommandMessages.INVALID_SALE_IN_INSTALLMENTS_CREATE_COMMAND, errors);
                 }
 
-                (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);
-                if (!isCustomerSellerAndStoreValid)
+                // Validate Customer
+                Customer? customer = await _customerRepository.ReadAsync(command.CustomerId!.Value);
+                if (customer is null)
                 {
-                    AddNotifications(command);
-                    var errors = GetErrorsFromNotifications(errorCode);
-                    return new CommandResult(false, errorMessage, errors);
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
+                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, errors);
+                }
+
+                // Validate Seller
+                User? seller = await _userRepository.ReadAsync(command.SellerId!.Value);
+                if (seller is null)
+                {
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER);
+                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER, errors);
+                }
+
+                // Validate Store
+                Store? store = await _storeRepository.ReadAsync(command.StoreId!.Value);
+                if (store is null)
+                {
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE);
+                    return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_STORE, errors);
                 }
 
                 // Retrieve products info and validade products
@@ -218,18 +234,78 @@ namespace KadoshDomain.Handlers
                     products.Add(productInfo);
                 }
 
+                // Create sale items
+                IList<SaleItem> saleItems = new List<SaleItem>();
+                foreach (var commandSaleItem in command.SaleItems)
+                {
+                    var product = products.FirstOrDefault(p => p.Id == commandSaleItem.ProductId);
+                    SaleItem item = new(
+                        product: product,
+                        amount: commandSaleItem.Amount,
+                        price: product.Price,
+                        discountInPercentage: commandSaleItem.DiscountInPercentage,
+                        situation: ESaleItemSituation.AcquiredOnPurchase);
+
+                    AddNotifications(item);
+
+                    // Check validations
+                    if (!IsValid)
+                    {
+                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ITEM);
+                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_ITEM, errors);
+                    }
+
+                    saleItems.Add(item);
+                }
+
+                // Create sale installments
+                int installmentNumber = 1;
+                IList<Installment> installments = new List<Installment>();
+                foreach (var commandInstallment in command.Installments)
+                {
+                    Installment installment = new(
+                        number: installmentNumber,
+                        value: Sale.CalculateTotal(saleItems, command.DiscountInPercentage) / command.Installments.Count,
+                        maturityDate: commandInstallment.MaturityDate,
+                        situation: EInstallmentSituation.Open);
+
+                    AddNotifications(installment);
+
+                    // Check validations
+                    if (!IsValid)
+                    {
+                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_INSTALLMENT);
+                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_INSTALLMENT, errors);
+                    }
+
+                    installments.Add(installment);
+                }
+
                 //Create Sale
                 SaleInInstallments saleInInstallments = new(
-                    customerId: command.CustomerId!.Value,
+                    customer: customer,
                     formOfPayment: command.FormOfPayment!.Value,
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
                     situation: ESaleSituation.Open,
-                    sellerId: command.SellerId!.Value,
-                    storeId: command.StoreId!.Value,
+                    seller: seller,
+                    store: store,
+                    saleItems: saleItems as IReadOnlyCollection<SaleItem>,
+                    installments: installments as IReadOnlyCollection<Installment>,
                     interestOnTheTotalSaleInPercentage: command.InterestOnTheTotalSaleInPercentage
-                    );
+                );
+                //SaleInInstallments saleInInstallments = new(
+                //    customerId: command.CustomerId!.Value,
+                //    formOfPayment: command.FormOfPayment!.Value,
+                //    discountInPercentage: command.DiscountInPercentage,
+                //    downPayment: command.DownPayment,
+                //    saleDate: command.SaleDate!.Value,
+                //    situation: ESaleSituation.Open,
+                //    sellerId: command.SellerId!.Value,
+                //    storeId: command.StoreId!.Value,
+                //    interestOnTheTotalSaleInPercentage: command.InterestOnTheTotalSaleInPercentage
+                //    );
 
                 // Entity validations
                 AddNotifications(saleInInstallments);
@@ -243,57 +319,6 @@ namespace KadoshDomain.Handlers
 
                 // Save sale
                 await _saleInInstallmentsRepository.CreateAsync(saleInInstallments);
-
-                // Create sale items
-                IList<SaleItem> saleItems = new List<SaleItem>();
-                foreach (var commandSaleItem in command.SaleItems)
-                {
-                    var product = products.FirstOrDefault(p => p.Id == commandSaleItem.ProductId);
-                    SaleItem item = new(
-                        saleId: saleInInstallments.Id,
-                        productId: product!.Id,
-                        amount: commandSaleItem.Amount,
-                        price: product.Price,
-                        discountInPercentage: commandSaleItem.DiscountInPercentage,
-                        situation: Enums.ESaleItemSituation.AcquiredOnPurchase);
-
-                    AddNotifications(item);
-
-                    // Check validations
-                    if (!IsValid)
-                    {
-                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ITEM);
-                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_ITEM, errors);
-                    }
-
-                    saleItems.Add(item);
-                    await _saleItemRepository.CreateAsync(item);
-                }
-
-                saleInInstallments.SetSaleItems(saleItems);
-
-                // Create sale installments
-                int installmentNumber = 1;
-                foreach (var commandInstallment in command.Installments)
-                {
-                    Installment installment = new(
-                        number: installmentNumber,
-                        value: saleInInstallments.Total / command.Installments.Count,
-                        maturityDate: commandInstallment.MaturityDate,
-                        situation: EInstallmentSituation.Open,
-                        saleId: saleInInstallments.Id);
-
-                    AddNotifications(installment);
-
-                    // Check validations
-                    if (!IsValid)
-                    {
-                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_INSTALLMENT);
-                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_INSTALLMENT, errors);
-                    }
-
-                    await _installmentRepository.CreateAsync(installment);
-                }
 
                 // Create customer posting if there's any Down Payment
                 if (saleInInstallments.DownPayment > 0)

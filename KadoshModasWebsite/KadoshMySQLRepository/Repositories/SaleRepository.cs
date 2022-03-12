@@ -25,7 +25,8 @@ namespace KadoshRepository.Repositories
 
         public override async Task<Sale?> ReadAsync(int id)
         {
-            Sale? sale = await _dbSet.Include(SaleQueries.IncludeSaleItems())
+            Sale? sale = await _dbSet
+                .Include(SaleQueries.IncludeSaleItems())
                 .Include(SaleQueries.IncludePostings())
                 .OrderByDescending(SaleQueries.OrderBySaleDate())
                 .SingleOrDefaultAsync(SaleQueries.GetSalesById(id));
@@ -34,7 +35,8 @@ namespace KadoshRepository.Repositories
 
         public async Task<IEnumerable<Sale>> ReadAllIncludingCustomerAsync()
         {
-            return await _dbSet.AsNoTracking().Include(SaleQueries.IncludeCustomer())
+            return await _dbSet.AsNoTracking()
+                .Include(SaleQueries.IncludeCustomer())
                 .Include(SaleQueries.IncludePostings())
                 .Include(SaleQueries.IncludeSaleItems())
                 .ToListAsync();

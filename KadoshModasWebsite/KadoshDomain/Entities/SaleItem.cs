@@ -21,6 +21,17 @@ namespace KadoshDomain.Entities
             ValidateSaleItem();
         }
 
+        public SaleItem(Product product, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation)
+        {
+            Product = product;
+            Amount = amount;
+            Price = price;
+            DiscountInPercentage = discountInPercentage;
+            Situation = situation;
+
+            ValidateSaleItem();
+        }
+
         public SaleItem(int saleId, int productId, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation, Sale? sale) 
             : this(saleId, productId, amount, price, discountInPercentage, situation)
         {

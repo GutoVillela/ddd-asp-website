@@ -15,7 +15,10 @@ namespace KadoshDomain.Entities
     {
 
         #region Constructors
-        public SaleInInstallments(
+        /// <summary>
+        /// Used from Entity Framework only.
+        /// </summary>
+        private SaleInInstallments(
             int customerId,
             EFormOfPayment formOfPayment,
             decimal discountInPercentage,
@@ -31,59 +34,24 @@ namespace KadoshDomain.Entities
             ValidateSaleInInstallments();
         }
 
-        //public SaleInInstallments(
-        //    int customerId,
-        //    EFormOfPayment formOfPayment,
-        //    decimal discountInPercentage,
-        //    decimal downPayment,
-        //    DateTime saleDate,
-        //    IReadOnlyCollection<SaleItem> saleItems,
-        //    ESaleSituation situation,
-        //    string sellerId,
-        //    DateTime settlementDate,
-        //    IReadOnlyCollection<Installment> installments,
-        //    decimal interestOnTheTotalSaleInPercentage
-        //    ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate)
-        //{
-        //    InitiateClass(installments, interestOnTheTotalSaleInPercentage);
-        //}
-
-        //public SaleInInstallments(
-        //    int customerId,
-        //    EFormOfPayment formOfPayment,
-        //    decimal discountInPercentage,
-        //    decimal downPayment,
-        //    DateTime saleDate,
-        //    IReadOnlyCollection<SaleItem> saleItems,
-        //    ESaleSituation situation,
-        //    string sellerId,
-        //    DateTime settlementDate,
-        //    IReadOnlyCollection<CustomerPosting> postings,
-        //    IReadOnlyCollection<Installment> installments,
-        //    decimal interestOnTheTotalSaleInPercentage
-        //    ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings)
-        //{
-        //    InitiateClass(installments, interestOnTheTotalSaleInPercentage);
-        //}
-
-        //public SaleInInstallments(
-        //    int customerId,
-        //    EFormOfPayment formOfPayment,
-        //    decimal discountInPercentage,
-        //    decimal downPayment,
-        //    DateTime saleDate,
-        //    IReadOnlyCollection<SaleItem> saleItems,
-        //    ESaleSituation situation,
-        //    string sellerId,
-        //    DateTime settlementDate,
-        //    IReadOnlyCollection<CustomerPosting> postings,
-        //    Customer? customer,
-        //    IReadOnlyCollection<Installment> installments,
-        //    decimal interestOnTheTotalSaleInPercentage
-        //    ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems, situation, sellerId, settlementDate, postings, customer)
-        //{
-        //    InitiateClass(installments, interestOnTheTotalSaleInPercentage);
-        //}
+        public SaleInInstallments(
+            Customer customer,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            ESaleSituation situation,
+            User seller,
+            Store store,
+            IReadOnlyCollection<SaleItem> saleItems,
+            IReadOnlyCollection<Installment> installments,
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customer, formOfPayment, discountInPercentage, downPayment, saleDate, situation, seller, store, saleItems)
+        {
+            Installments = installments;
+            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
+            ValidateSaleInInstallments();
+        }
         #endregion Constructors
 
         public int NumberOfInstallments
@@ -105,26 +73,20 @@ namespace KadoshDomain.Entities
         [MinLength(2)]
         public IReadOnlyCollection<Installment> Installments { get; private set; }
 
-        //private void InitiateClass(IReadOnlyCollection<Installment> installments, decimal interestOnTheTotalSaleInPercentage)
-        //{
-        //    Installments = installments;
-        //    InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
-        //    ValidateSaleInInstallments();
-        //}
-
         private void ValidateSaleInInstallments()
         {
+            ValidateSale();
             AddNotifications(new Contract<Notification>()
                     .Requires()
                     .IsGreaterOrEqualsThan(InterestOnTheTotalSaleInPercentage, 0, nameof(InterestOnTheTotalSaleInPercentage), SaleValidationsErrors.LESS_THAN_TWO_INSTALLMENTS_ERROR)
                 );
-            //if (Installments is null)
-            //    AddNotification(nameof(Installments), "Não é possível criar uma venda parcelada sem nenhuma parcela!");
-            //else
-            //    AddNotifications(new Contract<Notification>()
-            //        .Requires()
-            //        .IsGreaterOrEqualsThan(Installments.Count, 2, nameof(Installments), "É necessária pelo menos duas parcelas em uma venda parcelada!")
-            //    );
+            if (Installments is null)
+                AddNotification(nameof(Installments), "Não é possível criar uma venda parcelada sem nenhuma parcela!");
+            else
+                AddNotifications(new Contract<Notification>()
+                    .Requires()
+                    .IsGreaterOrEqualsThan(Installments.Count, 2, nameof(Installments), "É necessária pelo menos duas parcelas em uma venda parcelada!")
+                );
         }
     }
 }

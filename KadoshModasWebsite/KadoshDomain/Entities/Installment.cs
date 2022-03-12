@@ -19,6 +19,16 @@ namespace KadoshDomain.Entities
             ValidateInstallment();
         }
 
+        public Installment(int number, decimal value, DateTime maturityDate, EInstallmentSituation situation)
+        {
+            Number = number;
+            Value = value;
+            MaturityDate = maturityDate;
+            Situation = situation;
+
+            ValidateInstallment();
+        }
+
         public Installment(int number, decimal value, DateTime maturityDate, EInstallmentSituation situation, int saleId, DateTime? settlementDate) : this(number, value, maturityDate, situation, saleId)
         {
             SettlementDate = settlementDate;
