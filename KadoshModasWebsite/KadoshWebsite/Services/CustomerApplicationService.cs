@@ -1,30 +1,45 @@
-﻿using KadoshDomain.Commands;
-using KadoshShared.Commands;
+﻿using KadoshShared.Commands;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
 using KadoshShared.Constants.ServicesMessages;
 using KadoshDomain.Entities;
-using KadoshShared.Repositories;
 using KadoshDomain.Repositories;
-using KadoshDomain.Handlers;
+using KadoshShared.Handlers;
+using KadoshDomain.Commands.CustomerCommands.CreateCustomer;
+using KadoshDomain.Commands.CustomerCommands.DeleteCustomer;
+using KadoshDomain.Commands.CustomerCommands.UpdateCustomer;
+using KadoshDomain.Commands.CustomerCommands.InformPayment;
 
 namespace KadoshWebsite.Services
 {
     public class CustomerApplicationService : ICustomerApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _customerRepository;
         private readonly ISaleRepository _saleRepository;
         private readonly ICustomerPostingRepository _customerPostingRepository;
+        private readonly IHandler<CreateCustomerCommand> _createCustomerHandler;
+        private readonly IHandler<DeleteCustomerCommand> _deleteCustomerHandler;
+        private readonly IHandler<UpdateCustomerCommand> _updateCustomerHandler;
+        private readonly IHandler<InformPaymentCommand> _informPaymentHandler;
 
-        public CustomerApplicationService(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, ISaleRepository saleRepository, ICustomerPostingRepository customerPostingRepository)
+        public CustomerApplicationService(
+            ICustomerRepository customerRepository,
+            ISaleRepository saleRepository,
+            ICustomerPostingRepository customerPostingRepository,
+            IHandler<CreateCustomerCommand> createCustomerHandler,
+            IHandler<DeleteCustomerCommand> deleteCustomerHandler,
+            IHandler<UpdateCustomerCommand> updateCustomerHandler,
+            IHandler<InformPaymentCommand> informPaymentHandler)
         {
-            _unitOfWork = unitOfWork;
             _customerRepository = customerRepository;
             _saleRepository = saleRepository;
             _customerPostingRepository = customerPostingRepository;
+            _createCustomerHandler = createCustomerHandler;
+            _deleteCustomerHandler = deleteCustomerHandler;
+            _updateCustomerHandler = updateCustomerHandler;
+            _informPaymentHandler = informPaymentHandler;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -56,8 +71,7 @@ namespace KadoshWebsite.Services
             foreach(var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
-            return await customerHandler.HandleAsync(command);
+            return await _createCustomerHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteCustomerAsync(int id)
@@ -65,8 +79,7 @@ namespace KadoshWebsite.Services
             DeleteCustomerCommand command = new();
             command.Id = id;
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
-            return await customerHandler.HandleAsync(command);
+            return await _deleteCustomerHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<CustomerViewModel>> GetAllCustomersAsync()
@@ -150,8 +163,7 @@ namespace KadoshWebsite.Services
             foreach (var phone in customer.Phones)
                 command.Phones.Add(ConvertPhoneModelToValueObject(phone));
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
-            return await customerHandler.HandleAsync(command);
+            return await _updateCustomerHandler.HandleAsync(command);
         }
 
         private Phone ConvertPhoneModelToValueObject(PhoneViewModel phoneViewModel)
@@ -209,8 +221,7 @@ namespace KadoshWebsite.Services
             command.CustomerId = customerId;
             command.AmountToInform = amountToInform;
 
-            CustomerHandler customerHandler = new(_unitOfWork, _customerRepository, _saleRepository, _customerPostingRepository);
-            return await customerHandler.HandleAsync(command);
+            return await _informPaymentHandler.HandleAsync(command);
         }
     }
 }

@@ -1,28 +1,44 @@
-﻿using KadoshDomain.Commands;
-using KadoshShared.Commands;
+﻿using KadoshShared.Commands;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshShared.Constants.ServicesMessages;
 using KadoshWebsite.Util;
-using KadoshShared.Repositories;
 using KadoshDomain.Repositories;
-using KadoshDomain.Handlers;
+using KadoshDomain.Commands.UserCommands.CreateUser;
+using KadoshDomain.Commands.UserCommands.DeleteUser;
+using KadoshDomain.Commands.UserCommands.UpdateUser;
+using KadoshShared.Handlers;
+using KadoshDomain.Commands.UserCommands.AuthenticateUser;
 
 namespace KadoshWebsite.Services
 {
     public class UserApplicationService : IUserApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ISession? _session => _httpContextAccessor.HttpContext?.Session;
 
-        public UserApplicationService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork, IUserRepository userRepository)
+        private readonly IHandler<AuthenticateUserCommand> _authenticateUserHandler;
+        private readonly IHandler<CreateUserCommand> _createUserHandler;
+        private readonly IHandler<DeleteUserCommand> _deleteUserHandler;
+        private readonly IHandler<UpdateUserCommand> _updateUserHandler;
+
+        public UserApplicationService(
+            IHttpContextAccessor httpContextAccessor,
+            IUserRepository userRepository,
+            IHandler<AuthenticateUserCommand> authenticateUserHandler,
+            IHandler<CreateUserCommand> createUserHandler,
+            IHandler<DeleteUserCommand> deleteUserHandler,
+            IHandler<UpdateUserCommand> updateUserHandler
+            )
         {
-            _unitOfWork = unitOfWork;
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
+            _authenticateUserHandler = authenticateUserHandler;
+            _createUserHandler = createUserHandler;
+            _deleteUserHandler = deleteUserHandler;
+            _updateUserHandler = updateUserHandler;
         }
 
         public async Task<ICommandResult> CreateUserAsync(UserViewModel user)
@@ -34,8 +50,7 @@ namespace KadoshWebsite.Services
             command.Role = user.Role;
             command.StoreId = user.StoreId;
 
-            UserHandler userHandler = new(_unitOfWork, _userRepository);
-            return await userHandler.HandleAsync(command);
+            return await _createUserHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteUserAsync(int id)
@@ -43,8 +58,7 @@ namespace KadoshWebsite.Services
             DeleteUserCommand command = new();
             command.Id = id;
 
-            UserHandler userHandler = new(_unitOfWork, _userRepository);
-            return await userHandler.HandleAsync(command);
+            return await _deleteUserHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<UserViewModel>> GetAllUsersAsync()
@@ -97,8 +111,7 @@ namespace KadoshWebsite.Services
             command.Role = user.Role;
             command.StoreId = user.StoreId;
 
-            UserHandler userHandler = new(_unitOfWork, _userRepository);
-            return await userHandler.HandleAsync(command);
+            return await _updateUserHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> AuthenticateUserAsync(string username, string password)
@@ -107,8 +120,7 @@ namespace KadoshWebsite.Services
             command.Username = username;
             command.Password = password;
 
-            UserHandler userHandler = new(_unitOfWork, _userRepository);
-            return await userHandler.HandleAsync(command);
+            return await _authenticateUserHandler.HandleAsync(command);
         }
 
         public void LoginAuthenticatedUser(string authenticatedUsername)

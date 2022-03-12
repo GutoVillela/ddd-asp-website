@@ -1,9 +1,10 @@
-﻿using KadoshDomain.Commands;
-using KadoshDomain.Handlers;
+﻿using KadoshDomain.Commands.StoreCommands.CreateStore;
+using KadoshDomain.Commands.StoreCommands.DeleteStore;
+using KadoshDomain.Commands.StoreCommands.UpdateStore;
 using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.Repositories;
+using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -11,13 +12,22 @@ namespace KadoshWebsite.Services
 {
     public class StoreApplicationService : IStoreApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IStoreRepository _storeRepository;
+        private readonly IHandler<CreateStoreCommand> _createStoreHandler;
+        private readonly IHandler<DeleteStoreCommand> _deleteStoreHandler;
+        private readonly IHandler<UpdateStoreCommand> _updateStoreHandler;
 
-        public StoreApplicationService(IUnitOfWork unitOfWork, IStoreRepository storeRepository)
+        public StoreApplicationService(
+            IStoreRepository storeRepository,
+            IHandler<CreateStoreCommand> createStoreHandler,
+            IHandler<DeleteStoreCommand> deleteStoreHandler,
+            IHandler<UpdateStoreCommand> updateStoreHandler
+            )
         {
-            _unitOfWork = unitOfWork;
             _storeRepository = storeRepository;
+            _createStoreHandler = createStoreHandler;
+            _deleteStoreHandler = deleteStoreHandler;
+            _updateStoreHandler = updateStoreHandler;
         }
 
         public async Task<ICommandResult> CreateStoreAsync(StoreViewModel store)
@@ -32,8 +42,7 @@ namespace KadoshWebsite.Services
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement  = store.Complement;
 
-            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
-            return await storeHandler.HandleAsync(command);
+            return await _createStoreHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<StoreViewModel>> GetAllStoresAsync()
@@ -95,8 +104,7 @@ namespace KadoshWebsite.Services
             command.AddressZipCode = store.ZipCode;
             command.AddressComplement = store.Complement;
 
-            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
-            return await storeHandler.HandleAsync(command);
+            return await _updateStoreHandler.HandleAsync(command);
 
         }
 
@@ -105,8 +113,7 @@ namespace KadoshWebsite.Services
             DeleteStoreCommand command = new();
             command.Id = id;
 
-            StoreHandler storeHandler = new(_unitOfWork, _storeRepository);
-            return await storeHandler.HandleAsync(command);
+            return await _deleteStoreHandler.HandleAsync(command);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using KadoshDomain.Commands;
+﻿using KadoshDomain.Commands.ProductCommands.CreateProduct;
+using KadoshDomain.Commands.ProductCommands.DeleteProduct;
+using KadoshDomain.Commands.ProductCommands.UpdateProduct;
 using KadoshDomain.Entities;
-using KadoshDomain.Handlers;
 using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.Repositories;
+using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -12,13 +13,22 @@ namespace KadoshWebsite.Services
 {
     public class ProductApplicationService : IProductApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IProductRepository _productRepository;
+        private readonly IHandler<CreateProductCommand> _createProductHandler;
+        private readonly IHandler<DeleteProductCommand> _deleteProductHandler;
+        private readonly IHandler<UpdateProductCommand> _updateProductHandler;
 
-        public ProductApplicationService(IUnitOfWork unitOfWork, IProductRepository productRepository)
+        public ProductApplicationService(
+            IProductRepository productRepository,
+            IHandler<CreateProductCommand> createProductHandler,
+            IHandler<DeleteProductCommand> deleteProductHandler,
+            IHandler<UpdateProductCommand> updateProductHandler
+            )
         {
-            _unitOfWork = unitOfWork;
             _productRepository = productRepository;
+            _createProductHandler = createProductHandler;
+            _deleteProductHandler = deleteProductHandler;
+            _updateProductHandler = updateProductHandler;
         }
 
         public async Task<ICommandResult> CreateProductAsync(ProductViewModel Product)
@@ -30,8 +40,7 @@ namespace KadoshWebsite.Services
             command.CategoryId = Product.CategoryId;
             command.BrandId = Product.BrandId;
 
-            ProductHandler productHandler = new(_unitOfWork, _productRepository);
-            return await productHandler.HandleAsync(command);
+            return await _createProductHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteProductAsync(int id)
@@ -39,8 +48,7 @@ namespace KadoshWebsite.Services
             DeleteProductCommand command = new();
             command.Id = id;
 
-            ProductHandler productHandler = new(_unitOfWork, _productRepository);
-            return await productHandler.HandleAsync(command);
+            return await _deleteProductHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<ProductViewModel>> GetAllProductsAsync()
@@ -78,8 +86,7 @@ namespace KadoshWebsite.Services
             command.CategoryId = Product.CategoryId;
             command.BrandId = Product.BrandId;
 
-            ProductHandler productHandler = new(_unitOfWork, _productRepository);
-            return await productHandler.HandleAsync(command);
+            return await _updateProductHandler.HandleAsync(command);
         }
 
         private ProductViewModel GetViewModelFromEntity(Product product)

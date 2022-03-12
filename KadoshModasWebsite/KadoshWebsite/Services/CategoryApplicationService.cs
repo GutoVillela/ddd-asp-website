@@ -1,9 +1,10 @@
-﻿using KadoshDomain.Commands;
-using KadoshDomain.Handlers;
+﻿using KadoshDomain.Commands.CategoryCommands.CreateCategory;
+using KadoshDomain.Commands.CategoryCommands.DeleteCategory;
+using KadoshDomain.Commands.CategoryCommands.UpdateCategory;
 using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.Repositories;
+using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -11,13 +12,21 @@ namespace KadoshWebsite.Services
 {
     public class CategoryApplicationService : ICategoryApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IHandler<CreateCategoryCommand> _createCategoryHandler;
+        private readonly IHandler<DeleteCategoryCommand> _deleteCategoryHandler;
+        private readonly IHandler<UpdateCategoryCommand> _updateCategoryHandler;
 
-        public CategoryApplicationService(IUnitOfWork unitOfWork, ICategoryRepository categoryRepository)
+        public CategoryApplicationService(
+            ICategoryRepository categoryRepository,
+            IHandler<CreateCategoryCommand> createCategoryHandler,
+            IHandler<DeleteCategoryCommand> deleteCategoryHandler,
+            IHandler<UpdateCategoryCommand> updateCategoryHandler)
         {
-            _unitOfWork = unitOfWork;
             _categoryRepository = categoryRepository;
+            _createCategoryHandler = createCategoryHandler;
+            _deleteCategoryHandler = deleteCategoryHandler;
+            _updateCategoryHandler = updateCategoryHandler;
         }
 
         public async Task<ICommandResult> CreateCategoryAsync(CategoryViewModel Category)
@@ -25,8 +34,7 @@ namespace KadoshWebsite.Services
             CreateCategoryCommand command = new();
             command.Name = Category.Name;
 
-            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
-            return await categoryHandler.HandleAsync(command);
+            return await _createCategoryHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteCategoryAsync(int id)
@@ -34,8 +42,7 @@ namespace KadoshWebsite.Services
             DeleteCategoryCommand command = new();
             command.Id = id;
 
-            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
-            return await categoryHandler.HandleAsync(command);
+            return await _deleteCategoryHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync()
@@ -77,8 +84,7 @@ namespace KadoshWebsite.Services
             command.Id = Category.Id;
             command.Name = Category.Name;
 
-            CategoryHandler categoryHandler = new(_unitOfWork, _categoryRepository);
-            return await categoryHandler.HandleAsync(command);
+            return await _updateCategoryHandler.HandleAsync(command);
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using KadoshDomain.Commands;
-using KadoshDomain.Handlers;
+﻿using KadoshDomain.Commands.BrandCommands.CreateBrand;
+using KadoshDomain.Commands.BrandCommands.DeleteBrand;
+using KadoshDomain.Commands.BrandCommands.UpdateBrand;
 using KadoshDomain.Repositories;
 using KadoshShared.Commands;
 using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.Repositories;
+using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -11,13 +12,21 @@ namespace KadoshWebsite.Services
 {
     public class BrandApplicationService : IBrandApplicationService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IBrandRepository _brandRepository;
+        private readonly IHandler<CreateBrandCommand> _createBrandHandler;
+        private readonly IHandler<DeleteBrandCommand> _deleteBrandHandler;
+        private readonly IHandler<UpdateBrandCommand> _updateBrandHandler;
 
-        public BrandApplicationService(IUnitOfWork unitOfWork, IBrandRepository brandRepository)
+        public BrandApplicationService(
+            IBrandRepository brandRepository,
+            IHandler<CreateBrandCommand> createBrandHandler,
+            IHandler<DeleteBrandCommand> deleteBrandHandler,
+            IHandler<UpdateBrandCommand> updateBrandHandler)
         {
-            _unitOfWork = unitOfWork;
             _brandRepository = brandRepository;
+            _createBrandHandler = createBrandHandler;
+            _deleteBrandHandler = deleteBrandHandler;
+            _updateBrandHandler = updateBrandHandler;
         }
 
         public async Task<ICommandResult> CreateBrandAsync(BrandViewModel brand)
@@ -25,8 +34,7 @@ namespace KadoshWebsite.Services
             CreateBrandCommand command = new();
             command.Name = brand.Name;
 
-            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
-            return await brandHandler.HandleAsync(command);
+            return await _createBrandHandler.HandleAsync(command);
         }
 
         public async Task<ICommandResult> DeleteBrandAsync(int id)
@@ -34,8 +42,7 @@ namespace KadoshWebsite.Services
             DeleteBrandCommand command = new();
             command.Id = id;
 
-            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
-            return await brandHandler.HandleAsync(command);
+            return await _deleteBrandHandler.HandleAsync(command);
         }
 
         public async Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync()
@@ -77,8 +84,7 @@ namespace KadoshWebsite.Services
             command.Id = brand.Id;
             command.Name = brand.Name;
 
-            BrandHandler brandHandler = new(_unitOfWork, _brandRepository);
-            return await brandHandler.HandleAsync(command);
+            return await _updateBrandHandler.HandleAsync(command);
         }
     }
 }
