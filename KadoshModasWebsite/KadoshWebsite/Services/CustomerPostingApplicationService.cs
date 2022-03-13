@@ -1,5 +1,7 @@
-﻿using KadoshDomain.Entities;
-using KadoshDomain.Repositories;
+﻿using KadoshDomain.Queries.CustomerPostingQueries.DTOs;
+using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
+using KadoshShared.ExtensionMethods;
+using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -7,37 +9,43 @@ namespace KadoshWebsite.Services
 {
     public class CustomerPostingApplicationService : ICustomerPostingApplicationService
     {
-        private readonly ICustomerPostingRepository _customerPostingRepository;
+        private readonly IQueryHandler<GetAllPostingsFromCustomerQuery, GetAllPostingsFromCustomerQueryResult> _getAllPostingsFromCustomerQueryHandler;
 
-        public CustomerPostingApplicationService(ICustomerPostingRepository customerPostingRepository)
+        public CustomerPostingApplicationService(IQueryHandler<GetAllPostingsFromCustomerQuery, GetAllPostingsFromCustomerQueryResult> getAllPostingsFromCustomerQueryHandler)
         {
-            _customerPostingRepository = customerPostingRepository;
+            _getAllPostingsFromCustomerQueryHandler = getAllPostingsFromCustomerQueryHandler;
         }
 
         public async Task<IEnumerable<CustomerPostingViewModel>> GetAllPostingsFromCustomerAsync(int customerId)
         {
-            var customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerAsync(customerId);
+            GetAllPostingsFromCustomerQuery query = new();
+            query.CustomerId = customerId;
+
+            var result = await _getAllPostingsFromCustomerQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             List<CustomerPostingViewModel> customerPostingsViewModel = new();
 
-            foreach (var posting in customerPostings)
+            foreach (var posting in result.CustomerPostings)
             {
-                customerPostingsViewModel.Add(GetViewModelFromEntity(posting));
+                customerPostingsViewModel.Add(GetViewModelFromDTO(posting));
             }
 
             return customerPostingsViewModel;
 
         }
 
-        private CustomerPostingViewModel GetViewModelFromEntity(CustomerPosting customerPosting)
+        private CustomerPostingViewModel GetViewModelFromDTO(CustomerPostingDTO customerPostingDTO)
         {
             return new CustomerPostingViewModel
             {
-                SaleId = customerPosting.SaleId,
-                PostingDate = customerPosting.PostingDate,
-                Value = customerPosting.Value,
-                PostingType = customerPosting.Type
-    };
+                SaleId = customerPostingDTO.SaleId,
+                PostingDate = customerPostingDTO.PostingDate,
+                Value = customerPostingDTO.Value,
+                PostingType = customerPostingDTO.PostingType
+            };
         }
     }
 }

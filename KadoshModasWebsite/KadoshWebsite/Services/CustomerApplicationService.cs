@@ -3,7 +3,6 @@ using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
-using KadoshDomain.Repositories;
 using KadoshShared.Handlers;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomer;
 using KadoshDomain.Commands.CustomerCommands.DeleteCustomer;
