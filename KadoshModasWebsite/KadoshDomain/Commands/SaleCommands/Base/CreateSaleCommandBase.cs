@@ -17,7 +17,7 @@ namespace KadoshDomain.Commands.SaleCommands.Base
         public int? SellerId { get; set; }
         public int? StoreId { get; set; }
         public DateTime? SettlementDate { get; set; }
-        public IEnumerable<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
+        public IEnumerable<SaleItem> SaleItems { get; set; } = new List<SaleItem>();// TODO check if it's possible not to use Entity here
 
         public virtual void Validate()
         {

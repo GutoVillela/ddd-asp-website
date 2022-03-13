@@ -10,7 +10,7 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments
     {
         public decimal InterestOnTheTotalSaleInPercentage { get; set; } = 0;
 
-        public IList<Installment> Installments { get; set; } = new List<Installment>();
+        public IList<Installment> Installments { get; set; } = new List<Installment>();// TODO check if it's possible not to use Entity here
 
         public override void Validate()
         {

@@ -4,8 +4,11 @@ using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
 using KadoshDomain.Entities;
 using KadoshDomain.Enums;
-using KadoshDomain.Repositories;
+using KadoshDomain.Queries.SaleQueries.DTOs;
+using KadoshDomain.Queries.SaleQueries.GetAllSales;
+using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
 using KadoshShared.Commands;
+using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
 using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
@@ -16,25 +19,29 @@ namespace KadoshWebsite.Services
 {
     public class SaleApplicationService : ISaleApplicationService
     {
-        private readonly ISaleRepository _saleRepository;
 
         private readonly ICommandHandler<CreateSaleInCashCommand> _createSaleInCashHandler;
         private readonly ICommandHandler<CreateSaleInInstallmentsCommand> _createSaleInInstallmentsHandler;
         private readonly ICommandHandler<CreateSaleOnCreditCommand> _createSaleOnCreditHandler;
         private readonly ICommandHandler<PayOffSaleCommand> _payOffSaleHandler;
 
+        private readonly IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> _getAllSalesQueryHandler;
+        private readonly IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> _getAllSalesByCustomerIdQueryHandler;
+
         public SaleApplicationService(
-            ISaleRepository saleRepository,
             ICommandHandler<CreateSaleInCashCommand> createSaleInCashHandler,
             ICommandHandler<CreateSaleInInstallmentsCommand> createSaleInInstallmentsHandler,
             ICommandHandler<CreateSaleOnCreditCommand> createSaleOnCreditHandler,
-            ICommandHandler<PayOffSaleCommand> payOffSaleHandler)
+            ICommandHandler<PayOffSaleCommand> payOffSaleHandler,
+            IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> getAllSalesQueryHandler,
+            IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> getAllSalesByCustomerIdQueryHandler)
         {
-            _saleRepository = saleRepository;
             _createSaleInCashHandler = createSaleInCashHandler;
             _createSaleInInstallmentsHandler = createSaleInInstallmentsHandler;
             _createSaleOnCreditHandler = createSaleOnCreditHandler;
             _payOffSaleHandler = payOffSaleHandler;
+            _getAllSalesQueryHandler = getAllSalesQueryHandler;
+            _getAllSalesByCustomerIdQueryHandler = getAllSalesByCustomerIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateSaleAsync(SaleViewModel sale)
@@ -98,12 +105,16 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesAsync()
         {
-            var sales = await _saleRepository.ReadAllIncludingCustomerAsync();
+            var result = await _getAllSalesQueryHandler.HandleAsync(new GetAllSalesQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             List<SaleViewModel> salesViewModel = new();
 
-            foreach (var sale in sales)
+            foreach (var sale in result.Sales)
             {
-                salesViewModel.Add(GetViewModelFromEntity(sale));
+                salesViewModel.Add(GetViewModelFromDTO(sale));
             }
 
             return salesViewModel;
@@ -111,12 +122,19 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId)
         {
-            var sales = await _saleRepository.ReadAllFromCustomerAsync(customerId);
+            GetAllSalesByCustomerIdQuery query = new();
+            query.CustomerId = customerId;
+
+            var result = await _getAllSalesByCustomerIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             List<SaleViewModel> salesViewModel = new();
 
-            foreach (var sale in sales)
+            foreach (var sale in result.Sales)
             {
-                salesViewModel.Add(GetViewModelFromEntity(sale));
+                salesViewModel.Add(GetViewModelFromDTO(sale));
             }
 
             return salesViewModel;
@@ -131,16 +149,16 @@ namespace KadoshWebsite.Services
         }
 
         #region Private methods
-        private SaleViewModel GetViewModelFromEntity(Sale sale)
+        private SaleViewModel GetViewModelFromDTO(SaleBaseDTO sale)
         {
             return new SaleViewModel
             {
                 Id = sale.Id,
                 CustomerId = sale.CustomerId,
-                CustomerName = sale.Customer?.Name,
+                CustomerName = sale.CustomerName,
                 SellerId = sale.SellerId,
                 SaleItems = GetSaleItemsViewModelFromSaleItems(sale.SaleItems),
-                PaymentType = GetPaymentTypeFromSale(sale),
+                PaymentType = GetPaymentTypeFromSaleDTO(sale),
                 NumberOfInstallments = GetNumberOfInstallmentsFromSale(sale),
                 DownPayment = sale.DownPayment,
                 SaleTotalFormatted = sale.Total.ToString("C", FormatProviderManager.CultureInfo),
@@ -149,7 +167,7 @@ namespace KadoshWebsite.Services
             };
         }
 
-        private IEnumerable<SaleItemViewModel> GetSaleItemsViewModelFromSaleItems(IEnumerable<SaleItem> saleItems)
+        private IEnumerable<SaleItemViewModel> GetSaleItemsViewModelFromSaleItems(IEnumerable<SaleItemDTO> saleItems)
         {
             ArgumentNullException.ThrowIfNull(saleItems);
             return saleItems.Select(x => new SaleItemViewModel()
@@ -161,26 +179,26 @@ namespace KadoshWebsite.Services
             });
         }
 
-        private ESalePaymentType GetPaymentTypeFromSale(Sale sale)
+        private ESalePaymentType GetPaymentTypeFromSaleDTO(SaleBaseDTO sale)
         {
             ArgumentNullException.ThrowIfNull(sale);
 
-            if (sale is SaleInCash)
+            if (sale is SaleInCashDTO)
                 return ESalePaymentType.Cash;
-            else if (sale is SaleInInstallments)
+            else if (sale is SaleInInstallmentsDTO)
                 return ESalePaymentType.InStallments;
             else
                 return ESalePaymentType.OnCredit;
         }
 
-        private int GetNumberOfInstallmentsFromSale(Sale sale)
+        private int GetNumberOfInstallmentsFromSale(SaleBaseDTO sale)
         {
             ArgumentNullException.ThrowIfNull(sale);
 
-            if (sale is not SaleInInstallments)
+            if (sale is not SaleInInstallmentsDTO)
                 return 0;
 
-            return (sale as SaleInInstallments).NumberOfInstallments;
+            return (sale as SaleInInstallmentsDTO)!.NumberOfInstallments;
         }
         #endregion Private methods
     }
