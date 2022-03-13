@@ -13,15 +13,15 @@ namespace KadoshWebsite.Services
     public class StoreApplicationService : IStoreApplicationService
     {
         private readonly IStoreRepository _storeRepository;
-        private readonly IHandler<CreateStoreCommand> _createStoreHandler;
-        private readonly IHandler<DeleteStoreCommand> _deleteStoreHandler;
-        private readonly IHandler<UpdateStoreCommand> _updateStoreHandler;
+        private readonly ICommandHandler<CreateStoreCommand> _createStoreHandler;
+        private readonly ICommandHandler<DeleteStoreCommand> _deleteStoreHandler;
+        private readonly ICommandHandler<UpdateStoreCommand> _updateStoreHandler;
 
         public StoreApplicationService(
             IStoreRepository storeRepository,
-            IHandler<CreateStoreCommand> createStoreHandler,
-            IHandler<DeleteStoreCommand> deleteStoreHandler,
-            IHandler<UpdateStoreCommand> updateStoreHandler
+            ICommandHandler<CreateStoreCommand> createStoreHandler,
+            ICommandHandler<DeleteStoreCommand> deleteStoreHandler,
+            ICommandHandler<UpdateStoreCommand> updateStoreHandler
             )
         {
             _storeRepository = storeRepository;

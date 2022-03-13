@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit
 {
-    public class CreateSaleOnCreditHandler : HandlerBase<CreateSaleOnCreditCommand>
+    public class CreateSaleOnCreditHandler : CommandHandlerBase<CreateSaleOnCreditCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISaleOnCreditRepository _saleOnCreditRepository;

@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.UserCommands.AuthenticateUser
 {
-    public class AuthenticateUserHandler : HandlerBase<AuthenticateUserCommand>
+    public class AuthenticateUserHandler : CommandHandlerBase<AuthenticateUserCommand>
     {
         private readonly IUserRepository _repository;
 

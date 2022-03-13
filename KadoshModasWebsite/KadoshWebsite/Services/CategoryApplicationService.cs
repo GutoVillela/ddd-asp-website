@@ -13,15 +13,15 @@ namespace KadoshWebsite.Services
     public class CategoryApplicationService : ICategoryApplicationService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IHandler<CreateCategoryCommand> _createCategoryHandler;
-        private readonly IHandler<DeleteCategoryCommand> _deleteCategoryHandler;
-        private readonly IHandler<UpdateCategoryCommand> _updateCategoryHandler;
+        private readonly ICommandHandler<CreateCategoryCommand> _createCategoryHandler;
+        private readonly ICommandHandler<DeleteCategoryCommand> _deleteCategoryHandler;
+        private readonly ICommandHandler<UpdateCategoryCommand> _updateCategoryHandler;
 
         public CategoryApplicationService(
             ICategoryRepository categoryRepository,
-            IHandler<CreateCategoryCommand> createCategoryHandler,
-            IHandler<DeleteCategoryCommand> deleteCategoryHandler,
-            IHandler<UpdateCategoryCommand> updateCategoryHandler)
+            ICommandHandler<CreateCategoryCommand> createCategoryHandler,
+            ICommandHandler<DeleteCategoryCommand> deleteCategoryHandler,
+            ICommandHandler<UpdateCategoryCommand> updateCategoryHandler)
         {
             _categoryRepository = categoryRepository;
             _createCategoryHandler = createCategoryHandler;

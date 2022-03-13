@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.BrandCommands.CreateBrand
 {
-    public class CreateBrandHandler : HandlerBase<CreateBrandCommand>
+    public class CreateBrandHandler : CommandHandlerBase<CreateBrandCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBrandRepository _repository;

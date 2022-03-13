@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.ProductCommands.DeleteProduct
 {
-    public class DeleteProductHandler : HandlerBase<DeleteProductCommand>
+    public class DeleteProductHandler : CommandHandlerBase<DeleteProductCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductRepository _repository;

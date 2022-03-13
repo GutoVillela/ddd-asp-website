@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.ProductCommands.UpdateProduct
 {
-    public class UpdateProductHandler : HandlerBase<UpdateProductCommand>
+    public class UpdateProductHandler : CommandHandlerBase<UpdateProductCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductRepository _repository;

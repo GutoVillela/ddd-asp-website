@@ -18,17 +18,17 @@ namespace KadoshWebsite.Services
     {
         private readonly ISaleRepository _saleRepository;
 
-        private readonly IHandler<CreateSaleInCashCommand> _createSaleInCashHandler;
-        private readonly IHandler<CreateSaleInInstallmentsCommand> _createSaleInInstallmentsHandler;
-        private readonly IHandler<CreateSaleOnCreditCommand> _createSaleOnCreditHandler;
-        private readonly IHandler<PayOffSaleCommand> _payOffSaleHandler;
+        private readonly ICommandHandler<CreateSaleInCashCommand> _createSaleInCashHandler;
+        private readonly ICommandHandler<CreateSaleInInstallmentsCommand> _createSaleInInstallmentsHandler;
+        private readonly ICommandHandler<CreateSaleOnCreditCommand> _createSaleOnCreditHandler;
+        private readonly ICommandHandler<PayOffSaleCommand> _payOffSaleHandler;
 
         public SaleApplicationService(
             ISaleRepository saleRepository,
-            IHandler<CreateSaleInCashCommand> createSaleInCashHandler,
-            IHandler<CreateSaleInInstallmentsCommand> createSaleInInstallmentsHandler,
-            IHandler<CreateSaleOnCreditCommand> createSaleOnCreditHandler,
-            IHandler<PayOffSaleCommand> payOffSaleHandler)
+            ICommandHandler<CreateSaleInCashCommand> createSaleInCashHandler,
+            ICommandHandler<CreateSaleInInstallmentsCommand> createSaleInInstallmentsHandler,
+            ICommandHandler<CreateSaleOnCreditCommand> createSaleOnCreditHandler,
+            ICommandHandler<PayOffSaleCommand> payOffSaleHandler)
         {
             _saleRepository = saleRepository;
             _createSaleInCashHandler = createSaleInCashHandler;

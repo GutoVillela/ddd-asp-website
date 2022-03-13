@@ -1,5 +1,5 @@
 ﻿using KadoshDomain.Entities;
-using KadoshDomain.Queries;
+using KadoshDomain.Queriables;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -42,22 +42,22 @@ namespace KadoshRepository.Repositories
 
         public async Task<User?> ReadAsync(string username)
         {
-            return await _dbSet.SingleOrDefaultAsync(UserQueries.GetUserByUsername(username));
+            return await _dbSet.SingleOrDefaultAsync(UserQueriable.GetUserByUsername(username));
         }
 
         public async Task<bool> VerifyIfUsernameIsTakenAsync(string username)
         {
-            return await _dbSet.AnyAsync(UserQueries.GetUserByUsername(username));
+            return await _dbSet.AnyAsync(UserQueriable.GetUserByUsername(username));
         }
 
         public async Task<bool> VerifyIfUsernameIsTakenExceptForGivenOneAsync(string username, string usernameToIgnore)
         {
-            return await _dbSet.AnyAsync(UserQueries.GetUserByUsernameExceptForGivenOne(username, usernameToIgnore));
+            return await _dbSet.AnyAsync(UserQueriable.GetUserByUsernameExceptForGivenOne(username, usernameToIgnore));
         }
 
         public async Task<User?> GetUserByUsername(string username)
         {
-            return await _dbSet.FirstOrDefaultAsync(UserQueries.GetUserByUsername(username));
+            return await _dbSet.FirstOrDefaultAsync(UserQueriable.GetUserByUsername(username));
         }
         
     }

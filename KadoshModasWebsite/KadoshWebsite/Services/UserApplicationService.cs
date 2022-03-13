@@ -19,18 +19,18 @@ namespace KadoshWebsite.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ISession? _session => _httpContextAccessor.HttpContext?.Session;
 
-        private readonly IHandler<AuthenticateUserCommand> _authenticateUserHandler;
-        private readonly IHandler<CreateUserCommand> _createUserHandler;
-        private readonly IHandler<DeleteUserCommand> _deleteUserHandler;
-        private readonly IHandler<UpdateUserCommand> _updateUserHandler;
+        private readonly ICommandHandler<AuthenticateUserCommand> _authenticateUserHandler;
+        private readonly ICommandHandler<CreateUserCommand> _createUserHandler;
+        private readonly ICommandHandler<DeleteUserCommand> _deleteUserHandler;
+        private readonly ICommandHandler<UpdateUserCommand> _updateUserHandler;
 
         public UserApplicationService(
             IHttpContextAccessor httpContextAccessor,
             IUserRepository userRepository,
-            IHandler<AuthenticateUserCommand> authenticateUserHandler,
-            IHandler<CreateUserCommand> createUserHandler,
-            IHandler<DeleteUserCommand> deleteUserHandler,
-            IHandler<UpdateUserCommand> updateUserHandler
+            ICommandHandler<AuthenticateUserCommand> authenticateUserHandler,
+            ICommandHandler<CreateUserCommand> createUserHandler,
+            ICommandHandler<DeleteUserCommand> deleteUserHandler,
+            ICommandHandler<UpdateUserCommand> updateUserHandler
             )
         {
             _userRepository = userRepository;

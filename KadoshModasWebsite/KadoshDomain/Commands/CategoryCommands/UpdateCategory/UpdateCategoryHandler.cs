@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CategoryCommands.UpdateCategory
 {
-    public class UpdateCategoryHandler : HandlerBase<UpdateCategoryCommand>
+    public class UpdateCategoryHandler : CommandHandlerBase<UpdateCategoryCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _repository;

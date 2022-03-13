@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments
 {
-    public class CreateSaleInInstallmentsHandler : HandlerBase<CreateSaleInInstallmentsCommand>
+    public class CreateSaleInInstallmentsHandler : CommandHandlerBase<CreateSaleInInstallmentsCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISaleInInstallmentsRepository _saleInInstallmentsRepository;

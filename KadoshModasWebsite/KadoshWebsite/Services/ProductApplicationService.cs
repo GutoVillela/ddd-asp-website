@@ -14,15 +14,15 @@ namespace KadoshWebsite.Services
     public class ProductApplicationService : IProductApplicationService
     {
         private readonly IProductRepository _productRepository;
-        private readonly IHandler<CreateProductCommand> _createProductHandler;
-        private readonly IHandler<DeleteProductCommand> _deleteProductHandler;
-        private readonly IHandler<UpdateProductCommand> _updateProductHandler;
+        private readonly ICommandHandler<CreateProductCommand> _createProductHandler;
+        private readonly ICommandHandler<DeleteProductCommand> _deleteProductHandler;
+        private readonly ICommandHandler<UpdateProductCommand> _updateProductHandler;
 
         public ProductApplicationService(
             IProductRepository productRepository,
-            IHandler<CreateProductCommand> createProductHandler,
-            IHandler<DeleteProductCommand> deleteProductHandler,
-            IHandler<UpdateProductCommand> updateProductHandler
+            ICommandHandler<CreateProductCommand> createProductHandler,
+            ICommandHandler<DeleteProductCommand> deleteProductHandler,
+            ICommandHandler<UpdateProductCommand> updateProductHandler
             )
         {
             _productRepository = productRepository;

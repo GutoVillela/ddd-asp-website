@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CategoryCommands.DeleteCategory
 {
-    public class DeleteCategoryHandler : HandlerBase<DeleteCategoryCommand>
+    public class DeleteCategoryHandler : CommandHandlerBase<DeleteCategoryCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _repository;

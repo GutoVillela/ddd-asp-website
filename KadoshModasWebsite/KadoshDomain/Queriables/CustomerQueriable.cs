@@ -1,9 +1,9 @@
 ﻿using KadoshDomain.Entities;
 using System.Linq.Expressions;
 
-namespace KadoshDomain.Queries
+namespace KadoshDomain.Queriables
 {
-    public static class CustomerQueries
+    public static class CustomerQueriable
     {
         public static Expression<Func<Customer, bool>> GetCustomerByName(string name)
         {

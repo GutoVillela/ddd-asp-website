@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.StoreCommands.UpdateStore
 {
-    public class UpdateStoreHandler : HandlerBase<UpdateStoreCommand>
+    public class UpdateStoreHandler : CommandHandlerBase<UpdateStoreCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStoreRepository _storeRepository;

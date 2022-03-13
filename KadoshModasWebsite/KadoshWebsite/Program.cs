@@ -22,6 +22,8 @@ using KadoshDomain.Commands.UserCommands.AuthenticateUser;
 using KadoshDomain.Commands.UserCommands.CreateUser;
 using KadoshDomain.Commands.UserCommands.DeleteUser;
 using KadoshDomain.Commands.UserCommands.UpdateUser;
+using KadoshDomain.Queries.BrandQueries.GetAllBrands;
+using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
@@ -74,30 +76,34 @@ builder.Services.AddScoped<IInstallmentRepository, InstallmentRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 
 // Command Handlers
-builder.Services.AddScoped<IHandler<CreateBrandCommand>, CreateBrandHandler>();
-builder.Services.AddScoped<IHandler<DeleteBrandCommand>, DeleteBrandHandler>();
-builder.Services.AddScoped<IHandler<UpdateBrandCommand>, UpdateBrandHandler>();
-builder.Services.AddScoped<IHandler<CreateCategoryCommand>, CreateCategoryHandler>();
-builder.Services.AddScoped<IHandler<DeleteCategoryCommand>, DeleteCategoryHandler>();
-builder.Services.AddScoped<IHandler<UpdateCategoryCommand>, UpdateCategoryHandler>();
-builder.Services.AddScoped<IHandler<CreateCustomerCommand>, CreateCustomerHandler>();
-builder.Services.AddScoped<IHandler<DeleteCustomerCommand>, DeleteCustomerHandler>();
-builder.Services.AddScoped<IHandler<UpdateCustomerCommand>, UpdateCustomerHandler>();
-builder.Services.AddScoped<IHandler<InformPaymentCommand>, InformPaymentHandler>();
-builder.Services.AddScoped<IHandler<CreateProductCommand>, CreateProductHandler>();
-builder.Services.AddScoped<IHandler<DeleteProductCommand>, DeleteProductHandler>();
-builder.Services.AddScoped<IHandler<UpdateProductCommand>, UpdateProductHandler>();
-builder.Services.AddScoped<IHandler<CreateSaleInCashCommand>, CreateSaleInCashHandler>();
-builder.Services.AddScoped<IHandler<CreateSaleInInstallmentsCommand>, CreateSaleInInstallmentsHandler>();
-builder.Services.AddScoped<IHandler<CreateSaleOnCreditCommand>, CreateSaleOnCreditHandler>();
-builder.Services.AddScoped<IHandler<PayOffSaleCommand>, PayOffSaleHandler>();
-builder.Services.AddScoped<IHandler<CreateStoreCommand>, CreateStoreHandler>();
-builder.Services.AddScoped<IHandler<DeleteStoreCommand>, DeleteStoreHandler>();
-builder.Services.AddScoped<IHandler<UpdateStoreCommand>, UpdateStoreHandler>();
-builder.Services.AddScoped<IHandler<AuthenticateUserCommand>, AuthenticateUserHandler>();
-builder.Services.AddScoped<IHandler<CreateUserCommand>, CreateUserHandler>();
-builder.Services.AddScoped<IHandler<DeleteUserCommand>, DeleteUserHandler>();
-builder.Services.AddScoped<IHandler<UpdateUserCommand>, UpdateUserHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateBrandCommand>, CreateBrandHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteBrandCommand>, DeleteBrandHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateBrandCommand>, UpdateBrandHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateCategoryCommand>, CreateCategoryHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteCategoryCommand>, DeleteCategoryHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateCategoryCommand>, UpdateCategoryHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateCustomerCommand>, CreateCustomerHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteCustomerCommand>, DeleteCustomerHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateCustomerCommand>, UpdateCustomerHandler>();
+builder.Services.AddScoped<ICommandHandler<InformPaymentCommand>, InformPaymentHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateProductCommand>, CreateProductHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteProductCommand>, DeleteProductHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateProductCommand>, UpdateProductHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateSaleInCashCommand>, CreateSaleInCashHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateSaleInInstallmentsCommand>, CreateSaleInInstallmentsHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateSaleOnCreditCommand>, CreateSaleOnCreditHandler>();
+builder.Services.AddScoped<ICommandHandler<PayOffSaleCommand>, PayOffSaleHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateStoreCommand>, CreateStoreHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteStoreCommand>, DeleteStoreHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateStoreCommand>, UpdateStoreHandler>();
+builder.Services.AddScoped<ICommandHandler<AuthenticateUserCommand>, AuthenticateUserHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserHandler>();
+builder.Services.AddScoped<ICommandHandler<DeleteUserCommand>, DeleteUserHandler>();
+builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler>();
+
+// Query Handlers
+builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetBrandByIdQuery, GetBrandByIdQueryResult>, GetBrandByIdQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.BrandCommands.DeleteBrand
 {
-    public class DeleteBrandHandler : HandlerBase<DeleteBrandCommand>
+    public class DeleteBrandHandler : CommandHandlerBase<DeleteBrandCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBrandRepository _repository;

@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.SaleCommands.PayOffSale
 {
-    public class PayOffSaleHandler : HandlerBase<PayOffSaleCommand>
+    public class PayOffSaleHandler : CommandHandlerBase<PayOffSaleCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISaleRepository _saleRepository;

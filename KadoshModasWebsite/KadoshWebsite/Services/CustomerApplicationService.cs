@@ -19,19 +19,19 @@ namespace KadoshWebsite.Services
         private readonly ICustomerRepository _customerRepository;
         private readonly ISaleRepository _saleRepository;
         private readonly ICustomerPostingRepository _customerPostingRepository;
-        private readonly IHandler<CreateCustomerCommand> _createCustomerHandler;
-        private readonly IHandler<DeleteCustomerCommand> _deleteCustomerHandler;
-        private readonly IHandler<UpdateCustomerCommand> _updateCustomerHandler;
-        private readonly IHandler<InformPaymentCommand> _informPaymentHandler;
+        private readonly ICommandHandler<CreateCustomerCommand> _createCustomerHandler;
+        private readonly ICommandHandler<DeleteCustomerCommand> _deleteCustomerHandler;
+        private readonly ICommandHandler<UpdateCustomerCommand> _updateCustomerHandler;
+        private readonly ICommandHandler<InformPaymentCommand> _informPaymentHandler;
 
         public CustomerApplicationService(
             ICustomerRepository customerRepository,
             ISaleRepository saleRepository,
             ICustomerPostingRepository customerPostingRepository,
-            IHandler<CreateCustomerCommand> createCustomerHandler,
-            IHandler<DeleteCustomerCommand> deleteCustomerHandler,
-            IHandler<UpdateCustomerCommand> updateCustomerHandler,
-            IHandler<InformPaymentCommand> informPaymentHandler)
+            ICommandHandler<CreateCustomerCommand> createCustomerHandler,
+            ICommandHandler<DeleteCustomerCommand> deleteCustomerHandler,
+            ICommandHandler<UpdateCustomerCommand> updateCustomerHandler,
+            ICommandHandler<InformPaymentCommand> informPaymentHandler)
         {
             _customerRepository = customerRepository;
             _saleRepository = saleRepository;

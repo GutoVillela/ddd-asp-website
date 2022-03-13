@@ -1,11 +1,10 @@
 ﻿using KadoshDomain.Entities;
 using KadoshDomain.Enums;
-using KadoshDomain.ValueObjects;
 using System.Linq.Expressions;
 
-namespace KadoshDomain.Queries
+namespace KadoshDomain.Queriables
 {
-    public static class SaleQueries
+    public static class SaleQueriable
     {
         public static Expression<Func<Sale, Customer?>> IncludeCustomer()
         {

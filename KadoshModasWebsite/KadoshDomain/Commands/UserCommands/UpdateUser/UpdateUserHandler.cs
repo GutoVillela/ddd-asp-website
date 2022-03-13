@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.UserCommands.UpdateUser
 {
-    public class UpdateUserHandler : HandlerBase<UpdateUserCommand>
+    public class UpdateUserHandler : CommandHandlerBase<UpdateUserCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _repository;

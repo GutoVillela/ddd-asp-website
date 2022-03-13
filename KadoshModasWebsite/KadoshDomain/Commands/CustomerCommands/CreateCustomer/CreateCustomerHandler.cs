@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CustomerCommands.CreateCustomer
 {
-    public class CreateCustomerHandler : HandlerBase<CreateCustomerCommand>
+    public class CreateCustomerHandler : CommandHandlerBase<CreateCustomerCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _repository;

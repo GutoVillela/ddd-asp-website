@@ -1,9 +1,10 @@
 ﻿using KadoshDomain.Commands.BrandCommands.CreateBrand;
 using KadoshDomain.Commands.BrandCommands.DeleteBrand;
 using KadoshDomain.Commands.BrandCommands.UpdateBrand;
-using KadoshDomain.Repositories;
+using KadoshDomain.Queries.BrandQueries.GetAllBrands;
+using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshShared.Commands;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -12,21 +13,24 @@ namespace KadoshWebsite.Services
 {
     public class BrandApplicationService : IBrandApplicationService
     {
-        private readonly IBrandRepository _brandRepository;
-        private readonly IHandler<CreateBrandCommand> _createBrandHandler;
-        private readonly IHandler<DeleteBrandCommand> _deleteBrandHandler;
-        private readonly IHandler<UpdateBrandCommand> _updateBrandHandler;
+        private readonly ICommandHandler<CreateBrandCommand> _createBrandHandler;
+        private readonly ICommandHandler<DeleteBrandCommand> _deleteBrandHandler;
+        private readonly ICommandHandler<UpdateBrandCommand> _updateBrandHandler;
+        private readonly IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult> _getAllBrandsQueryHandler;
+        private readonly IQueryHandler<GetBrandByIdQuery, GetBrandByIdQueryResult> _getBrandByIdQueryHandler;
 
         public BrandApplicationService(
-            IBrandRepository brandRepository,
-            IHandler<CreateBrandCommand> createBrandHandler,
-            IHandler<DeleteBrandCommand> deleteBrandHandler,
-            IHandler<UpdateBrandCommand> updateBrandHandler)
+            ICommandHandler<CreateBrandCommand> createBrandHandler,
+            ICommandHandler<DeleteBrandCommand> deleteBrandHandler,
+            ICommandHandler<UpdateBrandCommand> updateBrandHandler,
+            IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult> getAllBrandsQueryHandler,
+            IQueryHandler<GetBrandByIdQuery, GetBrandByIdQueryResult> getBrandByIdQueryHandler)
         {
-            _brandRepository = brandRepository;
             _createBrandHandler = createBrandHandler;
             _deleteBrandHandler = deleteBrandHandler;
             _updateBrandHandler = updateBrandHandler;
+            _getAllBrandsQueryHandler = getAllBrandsQueryHandler;
+            _getBrandByIdQueryHandler = getBrandByIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateBrandAsync(BrandViewModel brand)
@@ -47,10 +51,14 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<BrandViewModel>> GetAllBrandsAsync()
         {
-            var brands = await _brandRepository.ReadAllAsync();
+            var result = await _getAllBrandsQueryHandler.HandleAsync(new GetAllBrandsQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             List<BrandViewModel> brandsViewModel = new();
 
-            foreach(var brand in brands)
+            foreach(var brand in result.Brands)
             {
                 brandsViewModel.Add(new BrandViewModel
                 {
@@ -64,15 +72,18 @@ namespace KadoshWebsite.Services
 
         public async Task<BrandViewModel> GetBrandAsync(int id)
         {
-            var brand = await _brandRepository.ReadAsync(id);
+            GetBrandByIdQuery query = new();
+            query.BrandId = id;
+
+            var result = await _getBrandByIdQueryHandler.HandleAsync(query);
             
-            if(brand is null)
-                throw new ApplicationException(BrandServiceMessages.ERROR_BRAND_ID_NOT_FOUND);
+            if(!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             BrandViewModel brandViewModel = new()
             {
-                Id = brand.Id,
-                Name = brand.Name
+                Id = result.Brand!.Id,
+                Name = result.Brand!.Name
             };
 
             return brandViewModel;

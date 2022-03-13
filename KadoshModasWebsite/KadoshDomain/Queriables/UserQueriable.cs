@@ -1,9 +1,9 @@
 ﻿using KadoshDomain.Entities;
 using System.Linq.Expressions;
 
-namespace KadoshDomain.Queries
+namespace KadoshDomain.Queriables
 {
-    public static class UserQueries
+    public static class UserQueriable
     {
         public static Expression<Func<User, bool>> GetUserByUsername(string username)
         {

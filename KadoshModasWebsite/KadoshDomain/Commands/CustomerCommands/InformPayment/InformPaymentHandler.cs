@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CustomerCommands.InformPayment
 {
-    public class InformPaymentHandler : HandlerBase<InformPaymentCommand>
+    public class InformPaymentHandler : CommandHandlerBase<InformPaymentCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _repository;

@@ -1,5 +1,5 @@
 ﻿using KadoshDomain.Entities;
-using KadoshDomain.Queries;
+using KadoshDomain.Queriables;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +16,8 @@ namespace KadoshRepository.Repositories
         public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromCustomerAsync(int customerId)
         {
             return await _dbSet.AsNoTracking()
-                .Include(CustomerPostingsQueries.IncludeSale()).AsNoTracking()
-                .Where(CustomerPostingsQueries.GetCustomerPostingsByCustomerId(customerId)).ToListAsync();
+                .Include(CustomerPostingsQueriable.IncludeSale()).AsNoTracking()
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsByCustomerId(customerId)).ToListAsync();
         }
     }
 }

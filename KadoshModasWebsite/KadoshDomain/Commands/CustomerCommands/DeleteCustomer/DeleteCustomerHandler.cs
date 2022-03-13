@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CustomerCommands.DeleteCustomer
 {
-    public class DeleteCustomerHandler : HandlerBase<DeleteCustomerCommand>
+    public class DeleteCustomerHandler : CommandHandlerBase<DeleteCustomerCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _repository;

@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.UserCommands.CreateUser
 {
-    public class CreateUserHandler : HandlerBase<CreateUserCommand>
+    public class CreateUserHandler : CommandHandlerBase<CreateUserCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _repository;

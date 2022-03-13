@@ -1,13 +1,13 @@
 ﻿using Flunt.Notifications;
-using KadoshShared.Commands;
 using KadoshShared.Handlers;
+using KadoshShared.Queries;
 using KadoshShared.ValueObjects;
 
-namespace KadoshDomain.Commands.Base
+namespace KadoshDomain.Queries.Base
 {
-    public abstract class HandlerBase<TCommand> : Notifiable<Notification>, IHandler<TCommand> where TCommand : ICommand
+    public abstract class QueryHandlerBase <TRequest, TResult> : Notifiable<Notification>, IQueryHandler<TRequest, TResult> where TRequest : IQueryRequest where TResult : IQueryResult
     {
-        public abstract Task<ICommandResult> HandleAsync(TCommand command);
+        public abstract Task<TResult> HandleAsync(TRequest command);
 
         protected virtual ICollection<Error> GetErrorsFromNotifications(int errorCode)
         {

@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.BrandCommands.UpdateBrand
 {
-    public class UpdateBrandHandler : HandlerBase<UpdateBrandCommand>
+    public class UpdateBrandHandler : CommandHandlerBase<UpdateBrandCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBrandRepository _repository;

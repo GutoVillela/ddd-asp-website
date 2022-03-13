@@ -9,7 +9,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.SaleCommands.CreateSaleInCash
 {
-    public class CreateSaleInCashHandler : HandlerBase<CreateSaleInCashCommand>
+    public class CreateSaleInCashHandler : CommandHandlerBase<CreateSaleInCashCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISaleInCashRepository _saleInCashRepository;

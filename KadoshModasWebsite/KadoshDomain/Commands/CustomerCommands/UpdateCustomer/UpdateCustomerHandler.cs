@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CustomerCommands.UpdateCustomer
 {
-    public class UpdateCustomerHandler : HandlerBase<UpdateCustomerCommand>
+    public class UpdateCustomerHandler : CommandHandlerBase<UpdateCustomerCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomerRepository _repository;

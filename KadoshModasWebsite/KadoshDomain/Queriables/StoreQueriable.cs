@@ -2,9 +2,9 @@
 using KadoshDomain.ValueObjects;
 using System.Linq.Expressions;
 
-namespace KadoshDomain.Queries
+namespace KadoshDomain.Queriables
 {
-    public static class StoreQueries
+    public static class StoreQueriable
     {
         public static Expression<Func<Store, bool>> GetStoreByAddress(Address address)
         {

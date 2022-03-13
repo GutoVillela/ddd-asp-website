@@ -8,7 +8,7 @@ using KadoshShared.Repositories;
 
 namespace KadoshDomain.Commands.CategoryCommands.CreateCategory
 {
-    public class CreateCategoryHandler : HandlerBase<CreateCategoryCommand>
+    public class CreateCategoryHandler : CommandHandlerBase<CreateCategoryCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _repository;
