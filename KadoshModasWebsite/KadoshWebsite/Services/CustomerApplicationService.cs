@@ -3,43 +3,46 @@ using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshDomain.Enums;
 using KadoshDomain.ValueObjects;
-using KadoshShared.Constants.ServicesMessages;
-using KadoshDomain.Entities;
 using KadoshDomain.Repositories;
 using KadoshShared.Handlers;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomer;
 using KadoshDomain.Commands.CustomerCommands.DeleteCustomer;
 using KadoshDomain.Commands.CustomerCommands.UpdateCustomer;
 using KadoshDomain.Commands.CustomerCommands.InformPayment;
+using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
+using KadoshShared.ExtensionMethods;
+using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
+using KadoshDomain.Queries.CustomerQueries.DTOs;
+using KadoshDomain.Queries.CustomerQueries.GetCustomerTotalDebt;
 
 namespace KadoshWebsite.Services
 {
     public class CustomerApplicationService : ICustomerApplicationService
     {
-        private readonly ICustomerRepository _customerRepository;
-        private readonly ISaleRepository _saleRepository;
-        private readonly ICustomerPostingRepository _customerPostingRepository;
         private readonly ICommandHandler<CreateCustomerCommand> _createCustomerHandler;
         private readonly ICommandHandler<DeleteCustomerCommand> _deleteCustomerHandler;
         private readonly ICommandHandler<UpdateCustomerCommand> _updateCustomerHandler;
         private readonly ICommandHandler<InformPaymentCommand> _informPaymentHandler;
+        private readonly IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> _getAllCustomersQueryHandler;
+        private readonly IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> _getCustomerByIdQueryHandler;
+        private readonly IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> _getCustomerTotalDebtQueryHandler;
 
         public CustomerApplicationService(
-            ICustomerRepository customerRepository,
-            ISaleRepository saleRepository,
-            ICustomerPostingRepository customerPostingRepository,
             ICommandHandler<CreateCustomerCommand> createCustomerHandler,
             ICommandHandler<DeleteCustomerCommand> deleteCustomerHandler,
             ICommandHandler<UpdateCustomerCommand> updateCustomerHandler,
-            ICommandHandler<InformPaymentCommand> informPaymentHandler)
+            ICommandHandler<InformPaymentCommand> informPaymentHandler,
+            IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> getAllCustomersQueryHandler,
+            IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> getCustomerByIdQueryHandler,
+            IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> getCustomerTotalDebtQueryHandler)
         {
-            _customerRepository = customerRepository;
-            _saleRepository = saleRepository;
-            _customerPostingRepository = customerPostingRepository;
             _createCustomerHandler = createCustomerHandler;
             _deleteCustomerHandler = deleteCustomerHandler;
             _updateCustomerHandler = updateCustomerHandler;
             _informPaymentHandler = informPaymentHandler;
+            _getAllCustomersQueryHandler = getAllCustomersQueryHandler;
+            _getCustomerByIdQueryHandler = getCustomerByIdQueryHandler;
+            _getCustomerTotalDebtQueryHandler = getCustomerTotalDebtQueryHandler;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -84,22 +87,26 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<CustomerViewModel>> GetAllCustomersAsync()
         {
-            var customers = await _customerRepository.ReadAllAsync();
+            var result = await _getAllCustomersQueryHandler.HandleAsync(new GetAllCustomersQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             var customerViewModels = new List<CustomerViewModel>();
 
-            foreach (var customer in customers)
+            foreach (var customer in result.Customers)
             {
                 customerViewModels.Add(new CustomerViewModel()
                 {
                     Id = customer.Id,
                     Name = customer.Name,
-                    Street = customer.Address?.Street,
-                    Number = customer.Address?.Number,
-                    Neighborhood = customer.Address?.Neighborhood,
-                    City = customer.Address?.City,
-                    State = customer.Address?.State,
-                    ZipCode = customer.Address?.ZipCode,
-                    Complement = customer.Address?.Complement
+                    Street = customer.Street,
+                    Number = customer.Number,
+                    Neighborhood = customer.Neighborhood,
+                    City = customer.City,
+                    State = customer.State,
+                    ZipCode = customer.ZipCode,
+                    Complement = customer.Complement
                 });
             }
             return customerViewModels;
@@ -107,28 +114,32 @@ namespace KadoshWebsite.Services
 
         public async Task<CustomerViewModel> GetCustomerAsync(int id)
         {
-            var customer = await _customerRepository.ReadAsync(id);
-            if (customer == null)
-                throw new ApplicationException(CustomerServiceMessages.ERROR_CUSTOMER_ID_NOT_FOUND);
+            GetCustomerByIdQuery query = new();
+            query.CustomerId = id;
+
+            var result = await _getCustomerByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             CustomerViewModel viewModel = new()
             {
-                Id = customer.Id,
-                Name = customer.Name,
-                Gender = customer.Gender,
-                Email = customer.Email?.EmailAddress,
-                DocumentType = customer.Document?.Type,
-                DocumentNumber = customer.Document?.Number,
-                Street = customer.Address?.Street,
-                Number = customer.Address?.Number,
-                Neighborhood = customer.Address?.Neighborhood,
-                City = customer.Address?.City,
-                State = customer.Address?.State,
-                ZipCode = customer.Address?.ZipCode,
-                Complement = customer.Address?.Complement
+                Id = result.Customer!.Id,
+                Name = result.Customer!.Name,
+                Gender = result.Customer!.Gender,
+                Email = result.Customer!.Email,
+                DocumentType = result.Customer!.DocumentType,
+                DocumentNumber = result.Customer!.DocumentNumber,
+                Street = result.Customer!.Street,
+                Number = result.Customer!.Number,
+                Neighborhood = result.Customer!.Neighborhood,
+                City = result.Customer!.City,
+                State = result.Customer!.State,
+                ZipCode = result.Customer!.ZipCode,
+                Complement = result.Customer!.Complement
             };
 
-            viewModel.Phones = GetPhonesFromEntityAsViewModels(customer);
+            viewModel.Phones = GetPhonesFromDTOAsViewModels(result.Customer!);
 
             return viewModel;
         }
@@ -178,7 +189,7 @@ namespace KadoshWebsite.Services
                 return new Phone(areaCode: areaCode, number: phoneNumber, type: phoneViewModel.PhoneType, talkTo: phoneViewModel.TalkTo);
         }
 
-        private IEnumerable<PhoneViewModel> GetPhonesFromEntityAsViewModels(Customer customer)
+        private IEnumerable<PhoneViewModel> GetPhonesFromDTOAsViewModels(CustomerDTO customer)
         {
             List<PhoneViewModel> phones = new List<PhoneViewModel>();
             if (customer.Phones is not null && customer.Phones.Any())
@@ -204,15 +215,15 @@ namespace KadoshWebsite.Services
 
         public async Task<decimal> GetCustomerTotalDebtAsync(int customerId)
         {
-            decimal totalDebt = 0;
-            var customerSales = await _saleRepository.ReadAllOpenFromCustomerAsync(customerId);
+            GetCustomerTotalDebtQuery query = new();
+            query.CustomerId = customerId;
 
-            foreach (var sale in customerSales)
-            {
-                totalDebt += sale.TotalToPay;
-            }
+            var result = await _getCustomerTotalDebtQueryHandler.HandleAsync(query);
 
-            return totalDebt;
+            if(!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            return result.CustomerTotalDebt;
         }
 
         public async Task<ICommandResult> InformCustomerPaymentAsync(int customerId, decimal amountToInform)
