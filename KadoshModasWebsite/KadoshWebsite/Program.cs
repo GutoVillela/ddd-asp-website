@@ -24,6 +24,8 @@ using KadoshDomain.Commands.UserCommands.DeleteUser;
 using KadoshDomain.Commands.UserCommands.UpdateUser;
 using KadoshDomain.Queries.BrandQueries.GetAllBrands;
 using KadoshDomain.Queries.BrandQueries.GetBrandById;
+using KadoshDomain.Queries.CategoryQueries.GetAllCategories;
+using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
@@ -104,6 +106,8 @@ builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetBrandByIdQuery, GetBrandByIdQueryResult>, GetBrandByIdQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllCategoriesQuery, GetAllCategoriesQueryResult>, GetAllCategoriesQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResult>, GetCategoryByIdQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

@@ -49,5 +49,6 @@
         public const int ERROR_NO_OPEN_SALES_FOUND_TO_CUSTOMER = 42;
         public const int ERROR_ONE_OR_MORE_INVALID_POSTINGS_TO_INFORMING_PAYMENT = 43;
         public const int ERROR_INVALID_GET_BRAND_BY_ID_QUERY = 44;
+        public const int ERROR_INVALID_GET_CATEGORY_BY_ID_QUERY = 45;
     }
 }

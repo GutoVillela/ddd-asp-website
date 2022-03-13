@@ -1,9 +1,10 @@
 ﻿using KadoshDomain.Commands.CategoryCommands.CreateCategory;
 using KadoshDomain.Commands.CategoryCommands.DeleteCategory;
 using KadoshDomain.Commands.CategoryCommands.UpdateCategory;
-using KadoshDomain.Repositories;
+using KadoshDomain.Queries.CategoryQueries.GetAllCategories;
+using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshShared.Commands;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -12,21 +13,25 @@ namespace KadoshWebsite.Services
 {
     public class CategoryApplicationService : ICategoryApplicationService
     {
-        private readonly ICategoryRepository _categoryRepository;
         private readonly ICommandHandler<CreateCategoryCommand> _createCategoryHandler;
         private readonly ICommandHandler<DeleteCategoryCommand> _deleteCategoryHandler;
         private readonly ICommandHandler<UpdateCategoryCommand> _updateCategoryHandler;
+        private readonly IQueryHandler<GetAllCategoriesQuery, GetAllCategoriesQueryResult> _getAllCategoriesQueryHandler;
+        private readonly IQueryHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResult> _getCategoryByIdQueryHandler;
 
         public CategoryApplicationService(
-            ICategoryRepository categoryRepository,
             ICommandHandler<CreateCategoryCommand> createCategoryHandler,
             ICommandHandler<DeleteCategoryCommand> deleteCategoryHandler,
-            ICommandHandler<UpdateCategoryCommand> updateCategoryHandler)
+            ICommandHandler<UpdateCategoryCommand> updateCategoryHandler,
+            IQueryHandler<GetAllCategoriesQuery, GetAllCategoriesQueryResult> getAllCategoriesQueryHandler,
+            IQueryHandler<GetCategoryByIdQuery, GetCategoryByIdQueryResult> getCategoryByIdQueryHandler
+            )
         {
-            _categoryRepository = categoryRepository;
             _createCategoryHandler = createCategoryHandler;
             _deleteCategoryHandler = deleteCategoryHandler;
             _updateCategoryHandler = updateCategoryHandler;
+            _getAllCategoriesQueryHandler = getAllCategoriesQueryHandler;
+            _getCategoryByIdQueryHandler = getCategoryByIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateCategoryAsync(CategoryViewModel Category)
@@ -47,10 +52,14 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync()
         {
-            var categories = await _categoryRepository.ReadAllAsync();
+            var result = await _getAllCategoriesQueryHandler.HandleAsync(new GetAllCategoriesQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             List<CategoryViewModel> categoriesViewModel = new();
 
-            foreach(var category in categories)
+            foreach(var category in result.Categories)
             {
                 categoriesViewModel.Add(new CategoryViewModel
                 {
@@ -64,15 +73,18 @@ namespace KadoshWebsite.Services
 
         public async Task<CategoryViewModel> GetCategoryAsync(int id)
         {
-            var Category = await _categoryRepository.ReadAsync(id);
-            
-            if(Category is null)
-                throw new ApplicationException(CategoryServiceMessages.ERROR_CATEGORY_ID_NOT_FOUND);
+            GetCategoryByIdQuery query = new();
+            query.CategoryId = id;
+
+            var result = await _getCategoryByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             CategoryViewModel CategoryViewModel = new()
             {
-                Id = Category.Id,
-                Name = Category.Name
+                Id = result.Category!.Id,
+                Name = result.Category!.Name
             };
 
             return CategoryViewModel;
