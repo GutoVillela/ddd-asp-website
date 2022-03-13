@@ -34,6 +34,8 @@ using KadoshDomain.Queries.ProductQueries.GetAllProducts;
 using KadoshDomain.Queries.ProductQueries.GetProductById;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
+using KadoshDomain.Queries.StoreQueries.GetAllStores;
+using KadoshDomain.Queries.StoreQueries.GetStoreById;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Repositories;
@@ -124,6 +126,8 @@ builder.Services.AddScoped<IQueryHandler<GetAllProductsQuery, GetAllProductsQuer
 builder.Services.AddScoped<IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult>, GetProductByIdQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult>, GetAllSalesQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult>, GetAllSalesByCustomerIdQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllStoresQuery, GetAllStoresQueryResult>, GetAllStoresQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetStoreByIdQuery, GetStoreByIdQueryResult>, GetStoreByIdQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

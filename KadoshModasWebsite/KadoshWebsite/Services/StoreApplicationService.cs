@@ -1,9 +1,10 @@
 ﻿using KadoshDomain.Commands.StoreCommands.CreateStore;
 using KadoshDomain.Commands.StoreCommands.DeleteStore;
 using KadoshDomain.Commands.StoreCommands.UpdateStore;
-using KadoshDomain.Repositories;
+using KadoshDomain.Queries.StoreQueries.GetAllStores;
+using KadoshDomain.Queries.StoreQueries.GetStoreById;
 using KadoshShared.Commands;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -12,22 +13,26 @@ namespace KadoshWebsite.Services
 {
     public class StoreApplicationService : IStoreApplicationService
     {
-        private readonly IStoreRepository _storeRepository;
         private readonly ICommandHandler<CreateStoreCommand> _createStoreHandler;
         private readonly ICommandHandler<DeleteStoreCommand> _deleteStoreHandler;
         private readonly ICommandHandler<UpdateStoreCommand> _updateStoreHandler;
 
+        private readonly IQueryHandler<GetAllStoresQuery, GetAllStoresQueryResult> _getAllStoresQueryHandler;
+        private readonly IQueryHandler<GetStoreByIdQuery, GetStoreByIdQueryResult> _getStoreByIdQueryHandler;
+
         public StoreApplicationService(
-            IStoreRepository storeRepository,
             ICommandHandler<CreateStoreCommand> createStoreHandler,
             ICommandHandler<DeleteStoreCommand> deleteStoreHandler,
-            ICommandHandler<UpdateStoreCommand> updateStoreHandler
+            ICommandHandler<UpdateStoreCommand> updateStoreHandler,
+            IQueryHandler<GetAllStoresQuery, GetAllStoresQueryResult> getAllStoresQueryHandler,
+            IQueryHandler<GetStoreByIdQuery, GetStoreByIdQueryResult> getStoreByIdQueryHandler
             )
         {
-            _storeRepository = storeRepository;
             _createStoreHandler = createStoreHandler;
             _deleteStoreHandler = deleteStoreHandler;
             _updateStoreHandler = updateStoreHandler;
+            _getAllStoresQueryHandler = getAllStoresQueryHandler;
+            _getStoreByIdQueryHandler = getStoreByIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateStoreAsync(StoreViewModel store)
@@ -47,22 +52,26 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<StoreViewModel>> GetAllStoresAsync()
         {
-            var stores = await _storeRepository.ReadAllAsync();
+            var result = await _getAllStoresQueryHandler.HandleAsync(new GetAllStoresQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             var storeViewModels = new List<StoreViewModel>();
 
-            foreach(var store in stores)
+            foreach(var store in result.Stores)
             {
                 storeViewModels.Add(new StoreViewModel()
                 {
                     Id = store.Id,
                     Name = store.Name,
-                    Street = store.Address?.Street,
-                    Number = store.Address?.Number,
-                    Neighborhood = store.Address?.Neighborhood,
-                    City = store.Address?.City,
-                    State = store.Address?.State,
-                    ZipCode = store.Address?.ZipCode,
-                    Complement = store.Address?.Complement
+                    Street = store.Street,
+                    Number = store.Number,
+                    Neighborhood = store.Neighborhood,
+                    City = store.City,
+                    State = store.State,
+                    ZipCode = store.ZipCode,
+                    Complement = store.Complement
                 });
             }
             return storeViewModels;
@@ -71,21 +80,25 @@ namespace KadoshWebsite.Services
 
         public async Task<StoreViewModel> GetStoreAsync(int id)
         {
-            var store = await _storeRepository.ReadAsync(id);
-            if (store == null)
-                throw new ApplicationException(StoreServiceMessages.ERROR_STORE_ID_NOT_FOUND);
+            GetStoreByIdQuery query = new();
+            query.StoreId = id;
+
+            var result = await _getStoreByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             StoreViewModel viewModel = new()
             {
-                Id = store.Id,
-                Name = store.Name,
-                Street = store.Address?.Street,
-                Number = store.Address?.Number,
-                Neighborhood = store.Address?.Neighborhood,
-                City = store.Address?.City,
-                State = store.Address?.State,
-                ZipCode = store.Address?.ZipCode,
-                Complement = store.Address?.Complement
+                Id = result.Store!.Id,
+                Name = result.Store!.Name,
+                Street = result.Store!.Street,
+                Number = result.Store!.Number,
+                Neighborhood = result.Store!.Neighborhood,
+                City = result.Store!.City,
+                State = result.Store!.State,
+                ZipCode = result.Store!.ZipCode,
+                Complement = result.Store!.Complement
             };
 
             return viewModel;
