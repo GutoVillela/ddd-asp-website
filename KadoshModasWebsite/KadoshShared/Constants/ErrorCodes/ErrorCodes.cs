@@ -53,5 +53,6 @@
         public const int ERROR_INVALID_GET_CUSTOMER_BY_ID_QUERY = 46;
         public const int ERROR_INVALID_GET_CUSTOMER_TOTAL_DEBT_QUERY = 47;
         public const int ERROR_INVALID_GET_ALL_POSTINGS_FROM_CUSTOMER_QUERY = 48;
+        public const int ERROR_INVALID_GET_PRODUCT_BY_ID_QUERY = 49;
     }
 }

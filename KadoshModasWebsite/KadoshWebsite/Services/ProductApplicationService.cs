@@ -1,10 +1,11 @@
 ﻿using KadoshDomain.Commands.ProductCommands.CreateProduct;
 using KadoshDomain.Commands.ProductCommands.DeleteProduct;
 using KadoshDomain.Commands.ProductCommands.UpdateProduct;
-using KadoshDomain.Entities;
-using KadoshDomain.Repositories;
+using KadoshDomain.Queries.ProductQueries.DTOs;
+using KadoshDomain.Queries.ProductQueries.GetAllProducts;
+using KadoshDomain.Queries.ProductQueries.GetProductById;
 using KadoshShared.Commands;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -13,22 +14,25 @@ namespace KadoshWebsite.Services
 {
     public class ProductApplicationService : IProductApplicationService
     {
-        private readonly IProductRepository _productRepository;
         private readonly ICommandHandler<CreateProductCommand> _createProductHandler;
         private readonly ICommandHandler<DeleteProductCommand> _deleteProductHandler;
         private readonly ICommandHandler<UpdateProductCommand> _updateProductHandler;
+        private readonly IQueryHandler<GetAllProductsQuery, GetAllProductsQueryResult> _getAllProductsQueryHandler;
+        private readonly IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult> _getProductByIdQueryHandler;
 
         public ProductApplicationService(
-            IProductRepository productRepository,
             ICommandHandler<CreateProductCommand> createProductHandler,
             ICommandHandler<DeleteProductCommand> deleteProductHandler,
-            ICommandHandler<UpdateProductCommand> updateProductHandler
+            ICommandHandler<UpdateProductCommand> updateProductHandler,
+            IQueryHandler<GetAllProductsQuery, GetAllProductsQueryResult> getAllProductsQueryHandler,
+            IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult> getProductByIdQueryHandler
             )
         {
-            _productRepository = productRepository;
             _createProductHandler = createProductHandler;
             _deleteProductHandler = deleteProductHandler;
             _updateProductHandler = updateProductHandler;
+            _getAllProductsQueryHandler = getAllProductsQueryHandler;
+            _getProductByIdQueryHandler = getProductByIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateProductAsync(ProductViewModel Product)
@@ -53,12 +57,16 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<ProductViewModel>> GetAllProductsAsync()
         {
-            var products = await _productRepository.ReadAllAsync();
+            var result = await _getAllProductsQueryHandler.HandleAsync(new GetAllProductsQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             List<ProductViewModel> productsViewModel = new();
 
-            foreach(var product in products)
+            foreach(var product in result.Products)
             {
-                productsViewModel.Add(GetViewModelFromEntity(product));
+                productsViewModel.Add(GetViewModelFromDTO(product));
             }
 
             return productsViewModel;
@@ -66,12 +74,16 @@ namespace KadoshWebsite.Services
 
         public async Task<ProductViewModel> GetProductAsync(int id)
         {
-            var product = await _productRepository.ReadAsync(id);
-            
-            if(product is null)
-                throw new ApplicationException(ProductServiceMessages.ERROR_PRODUCT_ID_NOT_FOUND);
 
-            ProductViewModel ProductViewModel = GetViewModelFromEntity(product);
+            GetProductByIdQuery query = new();
+            query.ProductId = id;
+
+            var result = await _getProductByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            ProductViewModel ProductViewModel = GetViewModelFromDTO(result.Product!);
 
             return ProductViewModel;
         }
@@ -89,7 +101,7 @@ namespace KadoshWebsite.Services
             return await _updateProductHandler.HandleAsync(command);
         }
 
-        private ProductViewModel GetViewModelFromEntity(Product product)
+        private ProductViewModel GetViewModelFromDTO(ProductDTO product)
         {
             return new ProductViewModel
             {
