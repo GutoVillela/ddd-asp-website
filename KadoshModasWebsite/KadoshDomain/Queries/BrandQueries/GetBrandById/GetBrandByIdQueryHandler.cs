@@ -25,7 +25,7 @@ namespace KadoshDomain.Queries.BrandQueries.GetBrandById
             {
                 AddNotifications(command);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_BRAND_BY_ID_QUERY);
-                return new GetBrandByIdQueryResult(errors as IReadOnlyCollection<Error>);
+                return new GetBrandByIdQueryResult(errors);
             }
 
             var brand = await _brandRepository.ReadAsync(command.BrandId!.Value);
@@ -34,7 +34,7 @@ namespace KadoshDomain.Queries.BrandQueries.GetBrandById
             {
                 AddNotification(nameof(brand), BrandServiceMessages.ERROR_BRAND_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
-                return new GetBrandByIdQueryResult(errors as IReadOnlyCollection<Error>);
+                return new GetBrandByIdQueryResult(errors);
             }
 
             GetBrandByIdQueryResult brandViewModel = new()

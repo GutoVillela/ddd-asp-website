@@ -8,9 +8,9 @@ namespace KadoshDomain.Queries.BrandQueries.GetBrandById
     {
         public GetBrandByIdQueryResult() { }
 
-        public GetBrandByIdQueryResult(IReadOnlyCollection<Error> errors) 
+        public GetBrandByIdQueryResult(IEnumerable<Error> errors) 
         { 
-            Errors = errors;
+            Errors = errors as IReadOnlyCollection<Error>;
         }
 
         public BrandDTO? Brand { get; set; }

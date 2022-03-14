@@ -8,9 +8,9 @@ namespace KadoshDomain.Queries.CategoryQueries.GetCategoryById
     {
         public GetCategoryByIdQueryResult() { }
 
-        public GetCategoryByIdQueryResult(IReadOnlyCollection<Error> errors)
+        public GetCategoryByIdQueryResult(IEnumerable<Error> errors)
         {
-            Errors = errors;
+            Errors = errors as IReadOnlyCollection<Error>;
         }
 
         public CategoryDTO? Category { get; set; }

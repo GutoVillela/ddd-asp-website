@@ -23,7 +23,7 @@ namespace KadoshDomain.Queries.CategoryQueries.GetCategoryById
             {
                 AddNotifications(command);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_CATEGORY_BY_ID_QUERY);
-                return new GetCategoryByIdQueryResult(errors as IReadOnlyCollection<Error>);
+                return new GetCategoryByIdQueryResult(errors);
             }
 
             var category = await _categoryRepository.ReadAsync(command.CategoryId!.Value);
@@ -32,7 +32,7 @@ namespace KadoshDomain.Queries.CategoryQueries.GetCategoryById
             {
                 AddNotification(nameof(category), CategoryServiceMessages.ERROR_CATEGORY_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
-                return new GetCategoryByIdQueryResult(errors as IReadOnlyCollection<Error>);
+                return new GetCategoryByIdQueryResult(errors);
             }
 
             GetCategoryByIdQueryResult result = new()
