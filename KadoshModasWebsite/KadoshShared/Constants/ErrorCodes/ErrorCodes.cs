@@ -57,5 +57,6 @@
         public const int ERROR_INVALID_GET_ALL_SALES_BY_CUSTOMER_ID_QUERY = 50;
         public const int ERROR_INVALID_GET_STORE_BY_ID_QUERY_RESULT = 51;
         public const int ERROR_INVALID_GET_USER_BY_ID_QUERY = 52;
+        public const int ERROR_INVALID_GET_ALL_BRANDS_QUERY = 53;
     }
 }

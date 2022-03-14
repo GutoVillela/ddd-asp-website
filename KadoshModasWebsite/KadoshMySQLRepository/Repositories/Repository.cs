@@ -43,9 +43,25 @@ namespace KadoshRepository.Repositories
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
+        public virtual async Task<IEnumerable<TEntity>> ReadAllPagedAsync(int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet
+                .AsNoTracking()
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public virtual async Task UpdateAsync(TEntity entity)
         {
             _context.Update(entity);
+        }
+
+        public virtual async Task<int> CountAllAsync()
+        {
+            return await _dbSet
+                .CountAsync();
         }
     }
 }

@@ -6,6 +6,7 @@ using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -58,7 +59,7 @@ namespace KadoshWebsite.Services
 
             List<BrandViewModel> brandsViewModel = new();
 
-            foreach(var brand in result.Brands)
+            foreach (var brand in result.Brands)
             {
                 brandsViewModel.Add(new BrandViewModel
                 {
@@ -68,6 +69,40 @@ namespace KadoshWebsite.Services
             }
 
             return brandsViewModel;
+        }
+
+        public async Task<PaginatedListViewModel<BrandViewModel>> GetAllBrandsPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllBrandsQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllBrandsQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<BrandViewModel> brandsViewModel = new();
+
+            foreach (var brand in result.Brands)
+            {
+                brandsViewModel.Add(new BrandViewModel
+                {
+                    Id = brand.Id,
+                    Name = brand.Name
+                });
+            }
+
+            PaginatedListViewModel<BrandViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.BrandsCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.BrandsCount, pageSize);
+            paginatedList.Items = brandsViewModel;
+
+
+
+            return paginatedList;
         }
 
         public async Task<BrandViewModel> GetBrandAsync(int id)

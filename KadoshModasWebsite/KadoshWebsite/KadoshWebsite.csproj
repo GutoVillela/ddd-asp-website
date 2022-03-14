@@ -31,4 +31,8 @@
     <ProjectReference Include="..\KadoshShared\KadoshShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Base\" />
+  </ItemGroup>
+
 </Project>
