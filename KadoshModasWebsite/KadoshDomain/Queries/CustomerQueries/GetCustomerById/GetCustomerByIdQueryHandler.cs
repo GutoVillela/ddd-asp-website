@@ -1,8 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.ValueObjects;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.CustomerQueries.GetCustomerById
 {
@@ -30,9 +29,9 @@ namespace KadoshDomain.Queries.CustomerQueries.GetCustomerById
 
             if (customer is null)
             {
-                AddNotification(nameof(customer), CustomerServiceMessages.ERROR_CUSTOMER_ID_NOT_FOUND);
+                AddNotification(nameof(customer), CustomerQueriesMessages.ERROR_CUSTOMER_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
-                return new GetCustomerByIdQueryResult(errors as IReadOnlyCollection<Error>);
+                return new GetCustomerByIdQueryResult(errors);
             }
 
             GetCustomerByIdQueryResult result = new()

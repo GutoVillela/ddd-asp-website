@@ -1,8 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.ValueObjects;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.CategoryQueries.GetCategoryById
 {
@@ -30,7 +29,7 @@ namespace KadoshDomain.Queries.CategoryQueries.GetCategoryById
 
             if (category is null)
             {
-                AddNotification(nameof(category), CategoryServiceMessages.ERROR_CATEGORY_ID_NOT_FOUND);
+                AddNotification(nameof(category), CategoryQueriesMessages.ERROR_CATEGORY_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
                 return new GetCategoryByIdQueryResult(errors);
             }

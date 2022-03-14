@@ -1,7 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.StoreQueries.GetStoreById
 {
@@ -29,7 +29,7 @@ namespace KadoshDomain.Queries.StoreQueries.GetStoreById
 
             if (store is null)
             {
-                AddNotification(nameof(store), StoreServiceMessages.ERROR_STORE_ID_NOT_FOUND);
+                AddNotification(nameof(store), StoreQueriesMessages.ERROR_STORE_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
                 return new GetStoreByIdQueryResult(errors);
             }

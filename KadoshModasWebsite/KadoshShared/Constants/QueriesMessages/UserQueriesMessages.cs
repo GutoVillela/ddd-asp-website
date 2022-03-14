@@ -1,6 +1,6 @@
-﻿namespace KadoshShared.Constants.ServicesMessages
+﻿namespace KadoshShared.Constants.QueriesMessages
 {
-    public class UserServiceMessages
+    public class UserQueriesMessages
     {
         public const string ERROR_USER_NOT_FOUND = "Não foi encontrado nenhum usuário para o ID fornecido";
     }

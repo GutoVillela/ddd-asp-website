@@ -1,10 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
-using KadoshShared.Constants.CommandMessages;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
-using KadoshShared.Handlers;
-using KadoshShared.ValueObjects;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.BrandQueries.GetBrandById
 {
@@ -32,7 +29,7 @@ namespace KadoshDomain.Queries.BrandQueries.GetBrandById
 
             if (brand is null)
             {
-                AddNotification(nameof(brand), BrandServiceMessages.ERROR_BRAND_ID_NOT_FOUND);
+                AddNotification(nameof(brand), BrandQueriesMessages.ERROR_BRAND_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
                 return new GetBrandByIdQueryResult(errors);
             }

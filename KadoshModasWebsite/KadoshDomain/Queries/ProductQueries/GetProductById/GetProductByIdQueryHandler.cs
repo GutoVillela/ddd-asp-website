@@ -1,7 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.ProductQueries.GetProductById
 {
@@ -29,7 +29,7 @@ namespace KadoshDomain.Queries.ProductQueries.GetProductById
 
             if (product is null)
             {
-                AddNotification(nameof(product), ProductServiceMessages.ERROR_PRODUCT_ID_NOT_FOUND);
+                AddNotification(nameof(product), ProductQueriesMessages.ERROR_PRODUCT_ID_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_PRODUCT_NOT_FOUND);
                 return new GetProductByIdQueryResult(errors);
             }

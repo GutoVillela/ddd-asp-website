@@ -1,7 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
-using KadoshShared.Constants.ServicesMessages;
+using KadoshShared.Constants.QueriesMessages;
 
 namespace KadoshDomain.Queries.UserQueries.GetUserById
 {
@@ -29,7 +29,7 @@ namespace KadoshDomain.Queries.UserQueries.GetUserById
 
             if (user is null)
             {
-                AddNotification(nameof(user), UserServiceMessages.ERROR_USER_NOT_FOUND);
+                AddNotification(nameof(user), UserQueriesMessages.ERROR_USER_NOT_FOUND);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_USERNAME_NOT_FOUND);
                 return new GetUserByIdQueryResult(errors);
             }
