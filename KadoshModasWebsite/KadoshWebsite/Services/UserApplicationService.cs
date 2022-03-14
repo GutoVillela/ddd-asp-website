@@ -1,20 +1,20 @@
 ﻿using KadoshShared.Commands;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
-using KadoshShared.Constants.ServicesMessages;
 using KadoshWebsite.Util;
-using KadoshDomain.Repositories;
 using KadoshDomain.Commands.UserCommands.CreateUser;
 using KadoshDomain.Commands.UserCommands.DeleteUser;
 using KadoshDomain.Commands.UserCommands.UpdateUser;
 using KadoshShared.Handlers;
 using KadoshDomain.Commands.UserCommands.AuthenticateUser;
+using KadoshDomain.Queries.UserQueries.GetAllUsers;
+using KadoshDomain.Queries.UserQueries.GetUserById;
+using KadoshShared.ExtensionMethods;
 
 namespace KadoshWebsite.Services
 {
     public class UserApplicationService : IUserApplicationService
     {
-        private readonly IUserRepository _userRepository;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private ISession? _session => _httpContextAccessor.HttpContext?.Session;
@@ -24,21 +24,26 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<DeleteUserCommand> _deleteUserHandler;
         private readonly ICommandHandler<UpdateUserCommand> _updateUserHandler;
 
+        private readonly IQueryHandler<GetAllUsersQuery, GetAllUsersQueryResult> _getAllUsersQueryHandler;
+        private readonly IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult> _getUserByIdQueryHandler;
+
         public UserApplicationService(
             IHttpContextAccessor httpContextAccessor,
-            IUserRepository userRepository,
             ICommandHandler<AuthenticateUserCommand> authenticateUserHandler,
             ICommandHandler<CreateUserCommand> createUserHandler,
             ICommandHandler<DeleteUserCommand> deleteUserHandler,
-            ICommandHandler<UpdateUserCommand> updateUserHandler
+            ICommandHandler<UpdateUserCommand> updateUserHandler,
+            IQueryHandler<GetAllUsersQuery, GetAllUsersQueryResult> getAllUsersQueryHandler,
+            IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult> getUserByIdQueryHandler
             )
         {
-            _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
             _authenticateUserHandler = authenticateUserHandler;
             _createUserHandler = createUserHandler;
             _deleteUserHandler = deleteUserHandler;
             _updateUserHandler = updateUserHandler;
+            _getAllUsersQueryHandler = getAllUsersQueryHandler;
+            _getUserByIdQueryHandler = getUserByIdQueryHandler;
         }
 
         public async Task<ICommandResult> CreateUserAsync(UserViewModel user)
@@ -63,17 +68,21 @@ namespace KadoshWebsite.Services
 
         public async Task<IEnumerable<UserViewModel>> GetAllUsersAsync()
         {
-            var users = await _userRepository.ReadAllAsync();
+            var result = await _getAllUsersQueryHandler.HandleAsync(new GetAllUsersQuery());
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
             var usersViewModels = new List<UserViewModel>();
 
-            foreach (var user in users)
+            foreach (var user in result.Users)
             {
                 usersViewModels.Add(new UserViewModel()
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    UserName = user.Username,
-                    UserNameBeforeEdit = user.Username,
+                    UserName = user.UserName,
+                    UserNameBeforeEdit = user.UserName,
                     Role = user.Role,
                     StoreId = user.StoreId
                 });
@@ -83,18 +92,22 @@ namespace KadoshWebsite.Services
 
         public async Task<UserViewModel> GetUserAsync(int id)
         {
-            var user = await _userRepository.ReadAsync(id);
-            if (user is null)
-                throw new ApplicationException(UserServiceMessages.ERROR_USER_NOT_FOUND);
+            GetUserByIdQuery query = new();
+            query.UserId = id;
+
+            var result = await _getUserByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
             UserViewModel viewModel = new()
             {
-                Id = user.Id,
-                Name = user.Name,
-                UserName = user.Username,
-                UserNameBeforeEdit = user.Username,
-                Role = user.Role,
-                StoreId = user.StoreId
+                Id = result.User!.Id,
+                Name = result.User!.Name,
+                UserName = result.User!.UserName,
+                UserNameBeforeEdit = result.User!.UserName,
+                Role = result.User!.Role,
+                StoreId = result.User!.StoreId
             };
 
             return viewModel;
