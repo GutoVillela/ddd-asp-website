@@ -1,4 +1,5 @@
-﻿using KadoshDomain.Queries.Base;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.CategoryQueries.DTOs;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
@@ -25,7 +26,14 @@ namespace KadoshDomain.Queries.CategoryQueries.GetAllCategories
                 return new GetAllCategoriesQueryResult(errors);
             }
 
-            var categories = await _categoryRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+            IEnumerable<Category> categories;
+
+
+            if (command.PageSize == 0 || command.CurrentPage == 0)
+                categories = await _categoryRepository.ReadAllAsync();
+            else
+                categories = await _categoryRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+
             HashSet<CategoryDTO> categoriesDTO = new();
 
             foreach (var category in categories)

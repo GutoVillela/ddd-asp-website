@@ -1,4 +1,5 @@
-﻿using KadoshDomain.Queries.Base;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.BrandQueries.DTOs;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
@@ -25,7 +26,14 @@ namespace KadoshDomain.Queries.BrandQueries.GetAllBrands
                 return new GetAllBrandsQueryResult(errors);
             }
 
-            var brands = await _brandRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+            IEnumerable<Brand> brands;
+
+            if (command.PageSize == 0 || command.CurrentPage == 0)
+                brands = await _brandRepository.ReadAllAsync();
+            else
+                brands = await _brandRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+            
+            
             HashSet<BrandDTO> brandsDTO = new();
 
             foreach (var brand in brands)

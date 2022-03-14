@@ -1,4 +1,5 @@
-﻿using KadoshDomain.Queries.Base;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.CustomerQueries.DTOs;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
@@ -25,7 +26,13 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
                 return new GetAllCustomersQueryResult(errors);
             }
 
-            var customers = await _customerRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+            IEnumerable<Customer> customers;
+
+            if (command.PageSize == 0 || command.CurrentPage == 0)
+                customers = await _customerRepository.ReadAllAsync();
+            else
+                customers = await _customerRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+
             HashSet<CustomerDTO> customersDTO = new();
 
             foreach (var customer in customers)
