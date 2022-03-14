@@ -1,6 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.CategoryQueries.DTOs;
 using KadoshDomain.Repositories;
+using KadoshShared.Constants.ErrorCodes;
 
 namespace KadoshDomain.Queries.CategoryQueries.GetAllCategories
 {
@@ -15,7 +16,16 @@ namespace KadoshDomain.Queries.CategoryQueries.GetAllCategories
 
         public override async Task<GetAllCategoriesQueryResult> HandleAsync(GetAllCategoriesQuery command)
         {
-            var categories = await _categoryRepository.ReadAllAsync();
+            // Fail Fast Validations
+            command.Validate();
+            if (!command.IsValid)
+            {
+                AddNotifications(command);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_ALL_CATEGORIES_QUERY);
+                return new GetAllCategoriesQueryResult(errors);
+            }
+
+            var categories = await _categoryRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
             HashSet<CategoryDTO> categoriesDTO = new();
 
             foreach (var category in categories)
@@ -27,6 +37,8 @@ namespace KadoshDomain.Queries.CategoryQueries.GetAllCategories
             {
                 Categories = categoriesDTO
             };
+            result.CategoriesCount = await _categoryRepository.CountAllAsync();
+
             return result;
         }
     }

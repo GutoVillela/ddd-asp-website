@@ -6,6 +6,7 @@ using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -69,6 +70,38 @@ namespace KadoshWebsite.Services
             }
 
             return categoriesViewModel;
+        }
+
+        public async Task<PaginatedListViewModel<CategoryViewModel>> GetAllCategoriesPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllCategoriesQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllCategoriesQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<CategoryViewModel> categoriesViewModel = new();
+
+            foreach (var category in result.Categories)
+            {
+                categoriesViewModel.Add(new CategoryViewModel
+                {
+                    Id = category.Id,
+                    Name = category.Name
+                });
+            }
+
+            PaginatedListViewModel<CategoryViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.CategoriesCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.CategoriesCount, pageSize);
+            paginatedList.Items = categoriesViewModel;
+
+            return paginatedList;
         }
 
         public async Task<CategoryViewModel> GetCategoryAsync(int id)
