@@ -13,6 +13,7 @@ using KadoshShared.ExtensionMethods;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
 using KadoshDomain.Queries.CustomerQueries.DTOs;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerTotalDebt;
+using KadoshWebsite.Infrastructure;
 
 namespace KadoshWebsite.Services
 {
@@ -111,6 +112,44 @@ namespace KadoshWebsite.Services
             return customerViewModels;
         }
 
+        public async Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllCustomersQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllCustomersQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            var customerViewModels = new List<CustomerViewModel>();
+
+            foreach (var customer in result.Customers)
+            {
+                customerViewModels.Add(new CustomerViewModel()
+                {
+                    Id = customer.Id,
+                    Name = customer.Name,
+                    Street = customer.Street,
+                    Number = customer.Number,
+                    Neighborhood = customer.Neighborhood,
+                    City = customer.City,
+                    State = customer.State,
+                    ZipCode = customer.ZipCode,
+                    Complement = customer.Complement
+                });
+            }
+
+            PaginatedListViewModel<CustomerViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.CustomersCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.CustomersCount, pageSize);
+            paginatedList.Items = customerViewModels;
+
+            return paginatedList;
+        }
         public async Task<CustomerViewModel> GetCustomerAsync(int id)
         {
             GetCustomerByIdQuery query = new();

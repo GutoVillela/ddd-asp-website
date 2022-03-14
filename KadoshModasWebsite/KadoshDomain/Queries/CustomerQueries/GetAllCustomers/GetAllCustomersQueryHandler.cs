@@ -1,6 +1,7 @@
 ﻿using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.CustomerQueries.DTOs;
 using KadoshDomain.Repositories;
+using KadoshShared.Constants.ErrorCodes;
 
 namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
 {
@@ -15,7 +16,16 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
 
         public override async Task<GetAllCustomersQueryResult> HandleAsync(GetAllCustomersQuery command)
         {
-            var customers = await _customerRepository.ReadAllAsync();
+            // Fail Fast Validations
+            command.Validate();
+            if (!command.IsValid)
+            {
+                AddNotifications(command);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_ALL_CUSTOMERS_QUERY);
+                return new GetAllCustomersQueryResult(errors);
+            }
+
+            var customers = await _customerRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
             HashSet<CustomerDTO> customersDTO = new();
 
             foreach (var customer in customers)
@@ -27,6 +37,8 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
             {
                 Customers = customersDTO
             };
+            result.CustomersCount = await _customerRepository.CountAllAsync();
+
             return result;
         }
     }

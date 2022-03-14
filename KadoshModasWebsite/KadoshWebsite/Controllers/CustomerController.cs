@@ -1,5 +1,6 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -20,9 +21,9 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> IndexAsync(int? page)
         {
-            var customers = await _service.GetAllCustomersAsync();
+            var customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
             return View(customers);
         }
 

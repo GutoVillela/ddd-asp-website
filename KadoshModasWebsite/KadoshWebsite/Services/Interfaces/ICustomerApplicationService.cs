@@ -7,6 +7,7 @@ namespace KadoshWebsite.Services.Interfaces
     {
         Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer);
         Task<IEnumerable<CustomerViewModel>> GetAllCustomersAsync();
+        Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersPaginatedAsync(int currentPage, int pageSize);
         Task<CustomerViewModel> GetCustomerAsync(int id);
         Task<ICommandResult> UpdateCustomerAsync(CustomerViewModel customer);
         Task<ICommandResult> DeleteCustomerAsync(int id);
