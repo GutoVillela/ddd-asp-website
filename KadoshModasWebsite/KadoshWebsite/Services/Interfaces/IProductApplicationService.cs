@@ -7,6 +7,7 @@ namespace KadoshWebsite.Services.Interfaces
     {
         Task<ICommandResult> CreateProductAsync(ProductViewModel product);
         Task<IEnumerable<ProductViewModel>> GetAllProductsAsync();
+        Task<PaginatedListViewModel<ProductViewModel>> GetAllProductsPaginatedAsync(int currentPage, int pageSize);
         Task<ProductViewModel> GetProductAsync(int id);
         Task<ICommandResult> UpdateProductAsync(ProductViewModel product);
         Task<ICommandResult> DeleteProductAsync(int id);

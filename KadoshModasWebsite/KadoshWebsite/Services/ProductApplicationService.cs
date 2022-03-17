@@ -7,6 +7,7 @@ using KadoshDomain.Queries.ProductQueries.GetProductById;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -70,6 +71,34 @@ namespace KadoshWebsite.Services
             }
 
             return productsViewModel;
+        }
+
+        public async Task<PaginatedListViewModel<ProductViewModel>> GetAllProductsPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllProductsQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllProductsQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<ProductViewModel> productsViewModel = new();
+
+            foreach (var product in result.Products)
+            {
+                productsViewModel.Add(GetViewModelFromDTO(product));
+            }
+
+            PaginatedListViewModel<ProductViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.ProductsCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.ProductsCount, pageSize);
+            paginatedList.Items = productsViewModel;
+
+            return paginatedList;
         }
 
         public async Task<ProductViewModel> GetProductAsync(int id)

@@ -15,7 +15,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
             AddNotifications(new Contract<Notification>()
                 .Requires()
                 .IsGreaterOrEqualsThan(CurrentPage, 0, nameof(CurrentPage), CustomerValidationsErrors.QUERY_CURRENT_PAGE_LOWER_THAN_ZERO)
-                .IsGreaterOrEqualsThan(PageSize, 0, nameof(PageSize), CategoryValidationsErrors.QUERY_PAGE_SIZE_LOWER_THAN_ZERO)
+                .IsGreaterOrEqualsThan(PageSize, 0, nameof(PageSize), CustomerValidationsErrors.QUERY_PAGE_SIZE_LOWER_THAN_ZERO)
             );
         }
     }

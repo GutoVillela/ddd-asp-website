@@ -8,5 +8,7 @@
         public const string PRODUCT_PRICE_IS_ZERO = "O campo preço do produto precisa ser maior do que zero";
         public const string INVALID_PRODUCT_BRAND = "O campo marca do produto está inválido";
         public const string INVALID_PRODUCT_CATEGORY = "O campo categoria do produto está inválido";
+        public const string QUERY_CURRENT_PAGE_LOWER_THAN_ZERO = "A página atual da consulta paginada não pode ser menor do que zero";
+        public const string QUERY_PAGE_SIZE_LOWER_THAN_ZERO = "O tamanho da página da consulta paginada não pode ser menor do que zero";
     }
 }
