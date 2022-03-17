@@ -61,5 +61,6 @@
         public const int ERROR_INVALID_GET_ALL_CATEGORIES_QUERY = 54;
         public const int ERROR_INVALID_GET_ALL_CUSTOMERS_QUERY = 55;
         public const int ERROR_INVALID_GET_ALL_PRODUCTS_QUERY = 56;
+        public const int ERROR_INVALID_GET_ALL_STORES_QUERY = 57;
     }
 }

@@ -6,6 +6,7 @@ using KadoshDomain.Queries.StoreQueries.GetStoreById;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -127,6 +128,44 @@ namespace KadoshWebsite.Services
             command.Id = id;
 
             return await _deleteStoreHandler.HandleAsync(command);
+        }
+
+        public async Task<PaginatedListViewModel<StoreViewModel>> GetAllStoresPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllStoresQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllStoresQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            var storeViewModels = new List<StoreViewModel>();
+
+            foreach (var store in result.Stores)
+            {
+                storeViewModels.Add(new StoreViewModel()
+                {
+                    Id = store.Id,
+                    Name = store.Name,
+                    Street = store.Street,
+                    Number = store.Number,
+                    Neighborhood = store.Neighborhood,
+                    City = store.City,
+                    State = store.State,
+                    ZipCode = store.ZipCode,
+                    Complement = store.Complement
+                });
+            }
+            PaginatedListViewModel<StoreViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.StoresCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.StoresCount, pageSize);
+            paginatedList.Items = storeViewModels;
+
+            return paginatedList;
         }
     }
 }
