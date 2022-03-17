@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UserViewModel>
+﻿@model PaginatedListViewModel<UserViewModel>
 @{
     ViewData["Title"] = "Cadastro de usuários";
 }
@@ -34,7 +34,7 @@
                             await Html.RenderPartialAsync("_CheckForAlert");
                         }
                         <table class="table table-bordered table-striped table-hover table-responsive">
-                            <caption>Listando @Model.Count() usuários</caption>
+                            <caption>Listando @Model.Items.Count() usuários de um total de @Model.TotalItemsCount</caption>
                             <thead>
                                 <tr class="table-primary">
                                     <th>Usuário</th>
@@ -42,7 +42,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model is null || !Model.Any())
+                                @if (Model is null || !Model.Items.Any())
                                 {
                                     <tr>
                                         <td colspan="3" class="text-center">Nenhum usuário cadastrado</td>
@@ -50,7 +50,7 @@
                                 }
                                 else
                                 {
-                                    @foreach (var item in Model)
+                                    @foreach (var item in Model.Items)
                                     {
                                         <tr>
                                             <td>@item.Name</td>
@@ -67,6 +67,7 @@
                                 }
                             </tbody>
                         </table>
+                        @Html.Partial("_Pagination", new ViewDataDictionary(ViewData) { { "Controller", "User"}, { "Action", "Index" } })
                     </div>
                 </div>
             </div>

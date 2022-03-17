@@ -7,6 +7,7 @@ namespace KadoshWebsite.Services.Interfaces
     {
         Task<ICommandResult> CreateUserAsync(UserViewModel user);
         Task<IEnumerable<UserViewModel>> GetAllUsersAsync();
+        Task<PaginatedListViewModel<UserViewModel>> GetAllUsersPaginatedAsync(int currentPage, int pageSize);
         Task<UserViewModel> GetUserAsync(int id);
         Task<ICommandResult> UpdateUserAsync(UserViewModel user);
         Task<ICommandResult> DeleteUserAsync(int id);

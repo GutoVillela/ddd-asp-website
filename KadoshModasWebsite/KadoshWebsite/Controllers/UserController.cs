@@ -1,12 +1,12 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshWebsite.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KadoshWebsite.Controllers
 {
@@ -23,9 +23,9 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAsync(int? page)
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
             return View(users);
         }
 

@@ -10,6 +10,7 @@ using KadoshDomain.Commands.UserCommands.AuthenticateUser;
 using KadoshDomain.Queries.UserQueries.GetAllUsers;
 using KadoshDomain.Queries.UserQueries.GetUserById;
 using KadoshShared.ExtensionMethods;
+using KadoshWebsite.Infrastructure;
 
 namespace KadoshWebsite.Services
 {
@@ -142,6 +143,42 @@ namespace KadoshWebsite.Services
                 throw new ApplicationException("Não existe sessão habilitada para validar usuário");
 
             _session.SetString(AuthorizationConstants.LOGGED_IN_USERNAME_SESSION, authenticatedUsername);
+        }
+
+        public async Task<PaginatedListViewModel<UserViewModel>> GetAllUsersPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllUsersQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllUsersQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            var usersViewModels = new List<UserViewModel>();
+
+            foreach (var user in result.Users)
+            {
+                usersViewModels.Add(new UserViewModel()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    UserName = user.UserName,
+                    UserNameBeforeEdit = user.UserName,
+                    Role = user.Role,
+                    StoreId = user.StoreId
+                });
+            }
+
+            PaginatedListViewModel<UserViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.UsersCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.UsersCount, pageSize);
+            paginatedList.Items = usersViewModels;
+
+            return paginatedList;
         }
     }
 }
