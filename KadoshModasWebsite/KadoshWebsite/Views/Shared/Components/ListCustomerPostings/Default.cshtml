@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CustomerPostingViewModel>
+﻿@model ListCustomerPostingsComponentViewModel
 @using KadoshDomain.ExtensionMethods
 @using KadoshShared.ExtensionMethods
 @using System.Globalization
@@ -16,7 +16,13 @@
                         @{
                             await Html.RenderPartialAsync("_CheckForAlert");
                         }
-                        <table class="table table-bordered table-striped table-hover table-responsive">
+                        <div id="loadingPostingSpinner">
+                            @{ await Html.RenderPartialAsync("_LoadingSpinner"); }
+                        </div>
+                        <div id="customerPostingsList">
+                        </div>
+
+                        @*<table class="table table-bordered table-striped table-hover table-responsive">
                             <caption>Listando @Model.Count() lançamentos</caption>
                             <thead>
                                 <tr class="table-primary">
@@ -55,10 +61,22 @@
                                     }
                                 }
                             </tbody>
-                        </table>
+                        </table>*@
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let getCustomerPostingsByCustomerPaginatedUrl = '@Url.Action("GetCustomerPostingsByCustomerPaginated", "CustomerPostings")';
+    let filterPostingsByCustumerId = '@Model.FilterByCustumerId';
+
+    window.addEventListener("load", function() {
+        if(typeof RenderPaginatedCustomerPostings != "function")
+            console.error('The script "customerPostingList.js" is missing on the parent View.');
+        else
+            RenderPaginatedCustomerPostings(1);
+    });
+</script>

@@ -16,5 +16,11 @@ namespace KadoshDomain.Queriables
             return x => x.Sale;
         }
 
+        //TODO Review method name
+        public static Expression<Func<CustomerPosting, DateTime>> OrderByCustomerPostingDate()
+        {
+            return x => x.PostingDate;
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 
@@ -16,10 +17,12 @@ namespace KadoshWebsite.Services
             _getAllPostingsFromCustomerQueryHandler = getAllPostingsFromCustomerQueryHandler;
         }
 
-        public async Task<IEnumerable<CustomerPostingViewModel>> GetAllPostingsFromCustomerAsync(int customerId)
+        public async Task<PaginatedListViewModel<CustomerPostingViewModel>> GetAllPostingsFromCustomerPaginatedAsync(int customerId, int currentPage, int pageSize)
         {
             GetAllPostingsFromCustomerQuery query = new();
             query.CustomerId = customerId;
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
 
             var result = await _getAllPostingsFromCustomerQueryHandler.HandleAsync(query);
 
@@ -33,7 +36,14 @@ namespace KadoshWebsite.Services
                 customerPostingsViewModel.Add(GetViewModelFromDTO(posting));
             }
 
-            return customerPostingsViewModel;
+            PaginatedListViewModel<CustomerPostingViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.CustomerPostingsCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.CustomerPostingsCount, pageSize);
+            paginatedList.Items = customerPostingsViewModel;
+
+            return paginatedList;
 
         }
 

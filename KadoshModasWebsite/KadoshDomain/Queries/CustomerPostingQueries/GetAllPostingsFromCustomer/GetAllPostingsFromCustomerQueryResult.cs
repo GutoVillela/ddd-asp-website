@@ -8,11 +8,12 @@ namespace KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer
     {
         public GetAllPostingsFromCustomerQueryResult() { }
 
-        public GetAllPostingsFromCustomerQueryResult(IEnumerable<Error> errors)
-        {
-            Errors = errors as IReadOnlyCollection<Error>;
-        }
+        public GetAllPostingsFromCustomerQueryResult(IEnumerable<Error> errors) : base(errors) { }
 
         public IEnumerable<CustomerPostingDTO> CustomerPostings { get; set; } = new List<CustomerPostingDTO>();
+
+        public int CustomerPostingsCount { get; set; }
+
+        
     }
 }

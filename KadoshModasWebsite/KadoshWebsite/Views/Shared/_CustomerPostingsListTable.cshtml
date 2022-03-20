@@ -1,0 +1,46 @@
+﻿@using KadoshDomain.ExtensionMethods
+@using KadoshShared.ExtensionMethods
+@using KadoshWebsite.Infrastructure
+@model PaginatedListViewModel<CustomerPostingViewModel>
+
+<table class="table table-bordered table-striped table-hover table-responsive">
+    <caption>Listando @Model.Items.Count() lançamentos de um total de @Model.TotalItemsCount</caption>
+    <thead>
+        <tr class="table-primary">
+            <th>Venda</th>
+            <th>Data do lançamento</th>
+            <th>Valor</th>
+            <th>Tipo de Lançamento</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || !Model.Items.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-center">Nenhum lançamento</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.SaleId</td>
+                    <td>@item.PostingDate.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
+                    <td>@item.Value.ToString("C", FormatProviderManager.CultureInfo)</td>
+                    <td>
+                        @if (item.PostingType.IsCreditType())
+                        {
+                            <span class="badge outline-badge-primary">@item.PostingType.ToDescription()</span>
+                        }
+                        else
+                        {
+                            <span class="badge outline-badge-danger">@item.PostingType.ToDescription()</span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@Html.Partial("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedCustomerPostings"} })

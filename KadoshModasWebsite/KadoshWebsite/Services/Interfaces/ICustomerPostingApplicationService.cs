@@ -4,6 +4,6 @@ namespace KadoshWebsite.Services.Interfaces
 {
     public interface ICustomerPostingApplicationService
     {
-        Task<IEnumerable<CustomerPostingViewModel>> GetAllPostingsFromCustomerAsync(int customerId);
+        Task<PaginatedListViewModel<CustomerPostingViewModel>> GetAllPostingsFromCustomerPaginatedAsync(int customerId, int currentPage, int pageSize);
     }
 }

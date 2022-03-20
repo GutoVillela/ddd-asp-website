@@ -1,4 +1,5 @@
-﻿using KadoshDomain.Queries.Base;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.CustomerPostingQueries.DTOs;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
@@ -25,7 +26,15 @@ namespace KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer
                 return new GetAllPostingsFromCustomerQueryResult(errors);
             }
 
-            var customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerAsync(command.CustomerId!.Value);
+            IEnumerable<CustomerPosting> customerPostings;
+
+            bool isQueryPaginated = command.PageSize != 0 && command.CurrentPage != 0;
+
+            if (isQueryPaginated)
+                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerPaginatedAsync(command.CustomerId!.Value, command.CurrentPage, command.PageSize);
+            else
+                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerAsync(command.CustomerId!.Value);
+
             List<CustomerPostingDTO> customerPostingDTOs = new();  
 
             foreach(var posting in customerPostings!)
@@ -37,6 +46,11 @@ namespace KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer
             {
                 CustomerPostings = customerPostingDTOs
             };
+
+            if (isQueryPaginated)
+                result.CustomerPostingsCount = await _customerPostingRepository.CountAllAsync();
+            else
+                result.CustomerPostingsCount = customerPostingDTOs.Count;
 
             return result;
         }
