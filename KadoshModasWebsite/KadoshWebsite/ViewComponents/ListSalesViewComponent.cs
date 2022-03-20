@@ -1,28 +1,26 @@
 ﻿using KadoshWebsite.Models;
-using KadoshWebsite.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.ViewComponents
 {
     public class ListSalesViewComponent : ViewComponent
     {
-        private readonly ISaleApplicationService _saleService;
+        //public async Task<IViewComponentResult> InvokeAsync(int? filterByCustumerId)
+        //{
+        //    ListSalesComponentViewModel model = new()
+        //    {
+        //        FilterByCustomerId = filterByCustumerId
+        //    };
+        //    return View(model);
+        //}
 
-        public ListSalesViewComponent(ISaleApplicationService saleService)
+        public IViewComponentResult Invoke(int? filterByCustumerId)
         {
-            _saleService = saleService;
-        }
-
-        public async Task<IViewComponentResult> InvokeAsync(int? filterByCustumerId)
-        {
-            IEnumerable<SaleViewModel> sales = new List<SaleViewModel>();
-
-            if(filterByCustumerId.HasValue)
-                sales = await _saleService.GetAllSalesByCustomerAsync(filterByCustumerId.Value);
-            else
-                sales = await _saleService.GetAllSalesAsync();
-
-            return View(sales);
+            ListSalesComponentViewModel model = new()
+            {
+                FilterByCustomerId = filterByCustumerId
+            };
+            return View(model);
         }
     }
 }

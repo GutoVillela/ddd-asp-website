@@ -23,6 +23,21 @@ namespace KadoshRepository.Repositories
                 .ToListAsync();
         }
 
+
+        public override async Task<IEnumerable<Sale>> ReadAllPagedAsync(int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet
+                .AsNoTracking()
+                .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeCustomer())
+                .OrderByDescending(SaleQueriable.OrderBySaleDate())
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public override async Task<Sale?> ReadAsync(int id)
         {
             Sale? sale = await _dbSet
@@ -49,6 +64,7 @@ namespace KadoshRepository.Repositories
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
                 .Where(SaleQueriable.GetSalesByCustomer(customerId))
+                .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .ToListAsync();
         }
 
@@ -61,6 +77,28 @@ namespace KadoshRepository.Repositories
                 .Where(SaleQueriable.GetSalesByCustomer(customerId))
                 .Where(SaleQueriable.GetSalesBySituation(ESaleSituation.Open))
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Sale>> ReadAllFromCustomerPaginatedAsync(int customerId, int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet.AsNoTracking()
+                .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludePostings())
+                .Where(SaleQueriable.GetSalesByCustomer(customerId))
+                .OrderByDescending(SaleQueriable.OrderBySaleDate())
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAllFromCustomerAsync(int customerId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Where(SaleQueriable.GetSalesByCustomer(customerId))
+                .CountAsync();
         }
     }
 }

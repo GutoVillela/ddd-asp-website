@@ -8,11 +8,10 @@ namespace KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId
     {
         public GetAllSalesByCustomerIdQueryResult() { }
 
-        public GetAllSalesByCustomerIdQueryResult(IEnumerable<Error> errors)
-        {
-            Errors = errors as IReadOnlyCollection<Error>;
-        }
+        public GetAllSalesByCustomerIdQueryResult(IEnumerable<Error> errors) : base(errors) { }
 
         public IEnumerable<SaleBaseDTO> Sales { get; set; } = new List<SaleBaseDTO>();
+
+        public int SalesCount { get; set; }
     }
 }

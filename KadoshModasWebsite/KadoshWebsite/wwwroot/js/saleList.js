@@ -35,3 +35,29 @@
         }
     });
 }
+
+
+function RenderPaginatedSales(page) {
+    $.ajax({
+        method: 'GET',
+        url: getSalesPaginatedUrl,
+        data: { page: page, filterByCustumerId: filterByCustumerId },
+        beforeSend: function () {
+            ShowLoadingSpinner();
+        }
+    }).done(function (salesPartial) {
+        $('#salesList').html(salesPartial);
+    }).fail(function () {
+        alert("error");// TODO Toast nicely error message
+    }).always(function () {
+        HideLoadingSpinner();
+    });
+}
+
+function ShowLoadingSpinner() {
+    $('#loadingSpinner').show();
+}
+
+function HideLoadingSpinner() {
+    $('#loadingSpinner').hide();
+}

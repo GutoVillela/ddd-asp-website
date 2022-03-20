@@ -1,5 +1,6 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
+using KadoshWebsite.Infrastructure;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -94,6 +95,19 @@ namespace KadoshWebsite.Controllers
                 return Ok();
 
             return BadRequest(result.Message);
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> GetSalesPaginatedAsync(int? page, int? filterByCustumerId)
+        {
+            PaginatedListViewModel<SaleViewModel> sales;
+
+            if(filterByCustumerId is null)
+                sales = await _saleService.GetAllSalesPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            else
+                sales = await _saleService.GetAllSalesByCustomerPaginatedAsync(filterByCustumerId!.Value, page ?? 1, PaginationManager.PAGE_SIZE);
+            
+            return PartialView("_SalesListTable", sales);
         }
 
         private async Task LoadCustomersSellersStoresAndProductsToViewData()

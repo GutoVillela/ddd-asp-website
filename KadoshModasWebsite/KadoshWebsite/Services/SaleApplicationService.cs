@@ -120,6 +120,34 @@ namespace KadoshWebsite.Services
             return salesViewModel;
         }
 
+        public async Task<PaginatedListViewModel<SaleViewModel>> GetAllSalesPaginatedAsync(int currentPage, int pageSize)
+        {
+            GetAllSalesQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllSalesQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<SaleViewModel> salesViewModel = new();
+
+            foreach (var sale in result.Sales)
+            {
+                salesViewModel.Add(GetViewModelFromDTO(sale));
+            }
+
+            PaginatedListViewModel<SaleViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.SalesCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.SalesCount, pageSize);
+            paginatedList.Items = salesViewModel;
+
+            return paginatedList;
+        }
+
         public async Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId)
         {
             GetAllSalesByCustomerIdQuery query = new();
@@ -138,6 +166,35 @@ namespace KadoshWebsite.Services
             }
 
             return salesViewModel;
+        }
+
+        public async Task<PaginatedListViewModel<SaleViewModel>> GetAllSalesByCustomerPaginatedAsync(int customerId, int currentPage, int pageSize)
+        {
+            GetAllSalesByCustomerIdQuery query = new();
+            query.CustomerId = customerId;
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+
+            var result = await _getAllSalesByCustomerIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<SaleViewModel> salesViewModel = new();
+
+            foreach (var sale in result.Sales)
+            {
+                salesViewModel.Add(GetViewModelFromDTO(sale));
+            }
+
+            PaginatedListViewModel<SaleViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.SalesCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.SalesCount, pageSize);
+            paginatedList.Items = salesViewModel;
+
+            return paginatedList;
         }
 
         public async Task<ICommandResult> PayOffSaleAsync(int saleId)

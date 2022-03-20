@@ -1,4 +1,5 @@
-﻿using KadoshDomain.Queries.Base;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Queries.Base;
 using KadoshDomain.Queries.SaleQueries.DTOs;
 using KadoshDomain.Repositories;
 using KadoshShared.Constants.ErrorCodes;
@@ -25,7 +26,15 @@ namespace KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId
                 return new GetAllSalesByCustomerIdQueryResult(errors);
             }
 
-            var sales = await _saleRepository.ReadAllFromCustomerAsync(command.CustomerId!.Value);
+            IEnumerable<Sale> sales;
+
+            bool queryIsNotPaginated = command.PageSize == 0 || command.CurrentPage == 0;
+
+            if (queryIsNotPaginated)
+                sales = await _saleRepository.ReadAllFromCustomerAsync(command.CustomerId!.Value);
+            else
+                sales = await _saleRepository.ReadAllFromCustomerPaginatedAsync(command.CustomerId!.Value, command.CurrentPage, command.PageSize);
+
             HashSet<SaleBaseDTO> salesDTO = new();
 
             foreach (var sale in sales)
@@ -37,6 +46,12 @@ namespace KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId
             {
                 Sales = salesDTO
             };
+
+            if (queryIsNotPaginated)
+                result.SalesCount = salesDTO.Count;
+            else
+                result.SalesCount = await _saleRepository.CountAllFromCustomerAsync(command.CustomerId!.Value);
+
             return result;
         }
     }

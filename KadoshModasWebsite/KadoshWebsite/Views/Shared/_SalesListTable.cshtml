@@ -1,0 +1,68 @@
+﻿@using KadoshWebsite.Infrastructure
+@model PaginatedListViewModel<SaleViewModel>
+
+<table class="table table-bordered table-striped table-hover table-responsive">
+    <caption>Listando @Model.Items.Count() vendas de um total de @Model.TotalItemsCount</caption>
+    <thead>
+        <tr class="table-primary">
+            <th scope="col">#</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || !Model.Items.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center">Nenhuma venda cadastrada</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <th scope="row">@item.Id</th>
+                    <td>@item.CustomerName</td>
+                    <td>@item.SaleDate!.Value.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
+                    <td>@item.SaleTotalFormatted</td>
+                    <td>
+                        @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)
+                        {
+                            <span class="badge outline-badge-primary">Em aberto</span>
+                        }
+                        else if (item.Status == KadoshDomain.Enums.ESaleSituation.Completed)
+                        {
+                            <span class="badge outline-badge-info">Pago</span>
+                        }
+                        else if (item.Status == KadoshDomain.Enums.ESaleSituation.Canceled)
+                        {
+                            <span class="badge outline-badge-danger">Cancelado</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Sale" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary text-white mb-1" title="Detalhes da venda">
+                            <i class="uil uil-notes"></i>
+                        </a>
+                        <a asp-controller="Sale" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white mb-1" title="Apagar venda">
+                            <i class="uil uil-times"></i>
+                        </a>
+                        <a asp-controller="Sale" asp-action="PrintReceipt" asp-route-id="@item.Id" class="btn btn-info text-white mb-1" title="Imprimir recibo">
+                            <i class="uil uil-invoice"></i>
+                        </a>
+                        @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)
+                        {
+                            <button class="btn btn-success text-white mb-1" onclick="PayOffSaleUrl(@item.Id)" title="Quitar compra">
+                                <i class="uil uil-check"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@Html.Partial("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedSales"} })
