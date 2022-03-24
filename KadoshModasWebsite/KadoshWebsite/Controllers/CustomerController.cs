@@ -21,9 +21,16 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync(int? page)
+        public async Task<IActionResult> IndexAsync(int? page, string? queryByName)
         {
-            var customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            PaginatedListViewModel<CustomerViewModel> customers;
+            
+            if(string.IsNullOrEmpty(queryByName))
+                customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            else
+                customers = await _service.GetAllCustomersByNamePaginatedAsync(queryByName, page ?? 1, PaginationManager.PAGE_SIZE);
+
+            ViewData["QueryByName"] = queryByName;
             return View(customers);
         }
 
