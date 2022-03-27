@@ -11,5 +11,7 @@ namespace KadoshWebsite.Services.Interfaces
         Task<IEnumerable<SaleViewModel>> GetAllSalesByCustomerAsync(int customerId);
         Task<PaginatedListViewModel<SaleViewModel>> GetAllSalesByCustomerPaginatedAsync(int customerId, int currentPage, int pageSize);
         Task<ICommandResult> PayOffSaleAsync(int saleId);
+        Task<SaleViewModel> GetSaleAsync(int saleId);
+        Task<ICommandResult> InformPaymentAsync(int saleId, decimal amountToInform);
     }
 }

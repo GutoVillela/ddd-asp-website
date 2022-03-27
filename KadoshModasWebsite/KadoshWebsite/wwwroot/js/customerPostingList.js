@@ -1,8 +1,20 @@
 ﻿function RenderPaginatedCustomerPostings(page) {
+    var url;
+    var requestData;
+
+    if (filterPostingsByCustumerId && filterPostingsByCustumerId != '') {
+        url = getCustomerPostingsByCustomerPaginatedUrl;
+        requestData = { page: page, filterByCustumerId: filterPostingsByCustumerId };
+    }
+    else {
+        url = getCustomerPostingsBySalePaginatedUrl;
+        requestData = { page: page, filterBySaleId: filterPostingsBySaleId };
+    }
+
     $.ajax({
         method: 'GET',
-        url: getCustomerPostingsByCustomerPaginatedUrl,
-        data: { page: page, filterByCustumerId: filterPostingsByCustumerId },
+        url: url,
+        data: requestData,
         beforeSend: function () {
             ShowPostingsLoadingSpinner();
         }

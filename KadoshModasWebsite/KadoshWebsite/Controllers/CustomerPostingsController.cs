@@ -25,5 +25,16 @@ namespace KadoshWebsite.Controllers
 
             return PartialView("_CustomerPostingsListTable", customerPostings);
         }
+
+        [HttpGet]
+        public async Task<PartialViewResult> GetCustomerPostingsBySalePaginatedAsync(int? page, int? filterBySaleId)
+        {
+            PaginatedListViewModel<CustomerPostingViewModel> customerPostings = new();
+
+            if (filterBySaleId.HasValue)
+                customerPostings = await _customerPostingsService.GetAllPostingsFromSalePaginatedAsync(filterBySaleId.Value, page ?? 1, PaginationManager.PAGE_SIZE);
+
+            return PartialView("_CustomerPostingsListTable", customerPostings);
+        }
     }
 }

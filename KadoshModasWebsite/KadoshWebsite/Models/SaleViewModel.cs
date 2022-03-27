@@ -54,6 +54,10 @@ namespace KadoshWebsite.Models
 
         public DateTime? SaleDate { get; set; }
 
-        public ESaleSituation Status { get; set; } 
+        public ESaleSituation Status { get; set; }
+
+        public decimal TotalPaid { get; set; } = 0;
+
+        public decimal TotalToPay { get; set; } = 0;
     }
 }

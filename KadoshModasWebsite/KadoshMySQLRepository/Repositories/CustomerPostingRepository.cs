@@ -13,6 +13,22 @@ namespace KadoshRepository.Repositories
             
         }
 
+        public async Task<int> CountAllFromCustomerAsync(int customerId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsByCustomerId(customerId))
+                .CountAsync();
+        }
+
+        public async Task<int> CountAllFromSaleAsync(int saleId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsBySaleId(saleId))
+                .CountAsync();
+        }
+
         public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromCustomerAsync(int customerId)
         {
             return await _dbSet
@@ -30,6 +46,29 @@ namespace KadoshRepository.Repositories
                 .AsNoTracking()
                 .Include(CustomerPostingsQueriable.IncludeSale())
                 .Where(CustomerPostingsQueriable.GetCustomerPostingsByCustomerId(customerId))
+                .OrderByDescending(CustomerPostingsQueriable.OrderByCustomerPostingDate())
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromSaleAsync(int saleId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(CustomerPostingsQueriable.IncludeSale())
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsBySaleId(saleId))
+                .OrderByDescending(CustomerPostingsQueriable.OrderByCustomerPostingDate())
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromSalePaginatedAsync(int saleId, int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet
+                .AsNoTracking()
+                .Include(CustomerPostingsQueriable.IncludeSale())
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsBySaleId(saleId))
                 .OrderByDescending(CustomerPostingsQueriable.OrderByCustomerPostingDate())
                 .Skip(amountToTake)
                 .Take(pageSize)

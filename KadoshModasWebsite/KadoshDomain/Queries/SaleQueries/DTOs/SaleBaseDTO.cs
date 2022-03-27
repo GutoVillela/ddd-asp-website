@@ -25,6 +25,10 @@ namespace KadoshDomain.Queries.SaleQueries.DTOs
 
         public decimal Total { get; set; }
 
+        public decimal TotalPaid { get; set; }
+
+        public decimal TotalToPay { get; set; }
+
         public static implicit operator SaleBaseDTO(Sale sale)
         {
             SaleBaseDTO saleDTO;
@@ -48,6 +52,8 @@ namespace KadoshDomain.Queries.SaleQueries.DTOs
             saleDTO.SaleDate = sale.SaleDate;
             saleDTO.Situation = sale.Situation;
             saleDTO.Total = sale.Total;
+            saleDTO.TotalPaid = sale.TotalPaid;
+            saleDTO.TotalToPay = sale.TotalToPay;
 
             foreach(var item in sale.SaleItems)
             {

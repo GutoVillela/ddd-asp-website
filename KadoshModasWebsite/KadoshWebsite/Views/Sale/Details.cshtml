@@ -1,0 +1,206 @@
+﻿@using KadoshWebsite.Infrastructure
+@using KadoshWebsite.ViewComponents
+@model SaleViewModel
+@{
+    ViewData["Title"] = $"Detalhe da venda {@Model.Id}";
+}
+
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Sale" asp-action="Index">Vendas</a></li>
+                <li class="breadcrumb-item active">Venda #@Model.Id</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="uil uil-user icon-size-1-5"></i> Detalhes da venda
+                </div>
+                <div class="card-body row">
+                    <div class="col-12">
+                        <ul class="nav nav-tabs" id="customerTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="sale-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">Detalhes</button>
+                            </li>
+
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#postings" type="button" role="tab" aria-controls="postings" aria-selected="false">Lançamentos</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="customerTabsContent">
+                            <div class="tab-pane fade show active p-3" id="details" role="tabpanel" aria-labelledby="sale-tab">
+                                <div class="card @(Model.Status == KadoshDomain.Enums.ESaleSituation.Completed ? "outline-badge-success" : "outline-badge-primary") mb-3">
+                                    <div class="card-content align-self-center">
+                                        <div class="card-body p-4">
+                                            <div class="d-md-flex">
+                                                <div class="content px-md-3 my-3 my-md-0 ">
+                                                    <p class="text-center h5">
+                                                        @if (Model.Status == KadoshDomain.Enums.ESaleSituation.Completed)
+                                                        {
+                                                            <span>Pago</span>
+                                                        }
+                                                        else if (Model.Status == KadoshDomain.Enums.ESaleSituation.Open)
+                                                        {
+                                                            <span>Em aberto</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>Cancelado</span>
+                                                        }
+                                                    </p>
+                                                    <span class="mb-0 font-w-600 h1">@Model.SaleTotalFormatted</span><br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if (Model.TotalToPay > 0)
+                                {
+                                    <div class="card outline-badge-primary mb-3">
+                                        <div class="card-content">
+                                            <div class="card-body p-4">
+                                                <div class="d-md-flex">
+                                                    <div class="my-auto">
+                                                        <i class="uil uil-bill icon-size-1-5"></i>
+                                                    </div>
+                                                    <div class="content px-md-3 my-3 my-md-0">
+                                                        <span class="mb-0 font-w-600 h5">Saldo devedor do cliente: @Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)</span><br>
+                                                        <p class="mb-0 font-w-500 tx-s-12">Consulte os lançamentos da venda para saber os detalhes do saldo.</p>
+
+                                                    </div>
+                                                    <div class="my-auto ms-auto">
+                                                        <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Quitar compra">
+                                                            <i class="uil uil-dollar-alt icon-size-1-5"></i> Informar pagamento
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="tab-pane fade p-3" id="postings" role="tabpanel" aria-labelledby="postings-tab">
+                                @await Component.InvokeAsync(nameof(ListCustomerPostingsViewComponent).Replace("ViewComponent", ""), new { filterBySaleId = Model.Id })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sale Items -->
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="uil uil-box icon-size-1-5"></i> Produtos da venda
+                </div>
+                <div class="card-body">
+
+                    <div class="col-md-12 mb-3 repeater">
+                        <table class="table table-hover" id="saleItemsTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Produto</th>
+                                    <th scope="col">Preço</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Desconto</th>
+                                    <th scope="col">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.SaleItems.Count(); i++)
+                                {
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@Model.SaleItems.ToArray()[i].ProductName</td>
+                                        <td>@Model.SaleItems.ToArray()[i].Price.ToString("C", FormatProviderManager.CultureInfo)</td>
+                                        <td>@Model.SaleItems.ToArray()[i].Quantity</td>
+                                        <td>@Model.SaleItems.ToArray()[i].DiscountInPercentage!.Value.ToString("N2")</td>
+                                        <td>@Model.SaleItems.ToArray()[i].SubtotalFormated</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 rounded-3">
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="uil uil-shopping-bag icon-size-1-5"></i> Resumo da venda
+                </div>
+                <div class="card-body container">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Data da venda</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.SaleDate!.Value.ToString(FormatProviderManager.DateTimeFormat)</span>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Cliente</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.CustomerName</span>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Total</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleTotal" class="fw-bold fs-4">@Model.SaleTotalFormatted</span>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Entrada</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.DownPayment!.Value.ToString("C", FormatProviderManager.CultureInfo)</span>
+                        </div>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+<script>
+    let informPaymentUrl = '@Url.Action("InformPayment", "Sale")';
+</script>
+<script src="~/js/customerPostingList.js"></script>
+<script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
+<script src="~/js/saleDetailsView.js"></script>
+}

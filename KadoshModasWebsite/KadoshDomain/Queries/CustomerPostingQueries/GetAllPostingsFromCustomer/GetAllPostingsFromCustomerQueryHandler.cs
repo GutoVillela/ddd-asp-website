@@ -15,25 +15,25 @@ namespace KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer
             _customerPostingRepository = customerPostingRepository;
         }
 
-        public override async Task<GetAllPostingsFromCustomerQueryResult> HandleAsync(GetAllPostingsFromCustomerQuery command)
+        public override async Task<GetAllPostingsFromCustomerQueryResult> HandleAsync(GetAllPostingsFromCustomerQuery query)
         {
             // Fail Fast Validations
-            command.Validate();
-            if (!command.IsValid)
+            query.Validate();
+            if (!query.IsValid)
             {
-                AddNotifications(command);
+                AddNotifications(query);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_ALL_POSTINGS_FROM_CUSTOMER_QUERY);
                 return new GetAllPostingsFromCustomerQueryResult(errors);
             }
 
             IEnumerable<CustomerPosting> customerPostings;
 
-            bool isQueryPaginated = command.PageSize != 0 && command.CurrentPage != 0;
+            bool isQueryPaginated = query.PageSize != 0 && query.CurrentPage != 0;
 
             if (isQueryPaginated)
-                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerPaginatedAsync(command.CustomerId!.Value, command.CurrentPage, command.PageSize);
+                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerPaginatedAsync(query.CustomerId!.Value, query.CurrentPage, query.PageSize);
             else
-                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerAsync(command.CustomerId!.Value);
+                customerPostings = await _customerPostingRepository.ReadAllPostingsFromCustomerAsync(query.CustomerId!.Value);
 
             List<CustomerPostingDTO> customerPostingDTOs = new();  
 
@@ -48,7 +48,7 @@ namespace KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer
             };
 
             if (isQueryPaginated)
-                result.CustomerPostingsCount = await _customerPostingRepository.CountAllAsync();
+                result.CustomerPostingsCount = await _customerPostingRepository.CountAllFromCustomerAsync(query.CustomerId!.Value);
             else
                 result.CustomerPostingsCount = customerPostingDTOs.Count;
 

@@ -19,5 +19,11 @@
         public const string ERROR_COULD_NOT_FIND_SALE = "Não foi possível encontrar a venda para o ID informado";
         public const string ERROR_COULD_NOT_CREATE_SALE_PAYOFF_POSTING = "Não foi possível realizar o lançamento da quitação da venda";
         public const string SUCCESS_ON_SALE_PAYOFF_COMMAND = "Venda quitada com sucesso";
+        public const string INVALID_SALE_INFORM_PAYMENT_COMMAND = "Não foi possível informar o pagamento da venda";
+        public const string SUCCESS_ON_INFORM_SALE_PAYMENT_COMMAND = "Pagamento registrado com sucesso";
+        public const string THERE_IS_NO_VALUE_TO_INFORM_ON_INFORM_SALE_PAYMENT_COMMAND = "A venda não possui valor para ser lançado";
+        public const string INVALID_SITUATION_ON_INFORM_SALE_PAYMENT_COMMAND = "A venda está concluída ou cancelada. Só é possível informar pagamentos em vendas em aberto";
+        public const string SUCCESS_ON_INFORM_SALE_PAYMENT_COMMAND_PAYOFF = "Pagamento registrado com sucesso. A venda foi quitada. Foi realizado um lançamento no valor de {0}";
+        public const string ERROR_INVALID_POSTING_TO_INFORMING_PAYMENT = "Não foi possível realizar o informe de pagamento. A operação foi abortada";
     }
 }

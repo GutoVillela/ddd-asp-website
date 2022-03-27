@@ -7,7 +7,7 @@ namespace KadoshDomain.Queries.Base
 {
     public abstract class QueryHandlerBase <TRequest, TResult> : Notifiable<Notification>, IQueryHandler<TRequest, TResult> where TRequest : IQueryRequest where TResult : IQueryResult
     {
-        public abstract Task<TResult> HandleAsync(TRequest command);
+        public abstract Task<TResult> HandleAsync(TRequest query);
 
         protected virtual ICollection<Error> GetErrorsFromNotifications(int errorCode)
         {

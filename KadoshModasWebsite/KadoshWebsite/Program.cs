@@ -14,6 +14,7 @@ using KadoshDomain.Commands.ProductCommands.UpdateProduct;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
+using KadoshDomain.Commands.SaleCommands.InformPayment;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
 using KadoshDomain.Commands.StoreCommands.CreateStore;
 using KadoshDomain.Commands.StoreCommands.DeleteStore;
@@ -27,6 +28,7 @@ using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshDomain.Queries.CategoryQueries.GetAllCategories;
 using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
+using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromSale;
 using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
 using KadoshDomain.Queries.CustomerQueries.GetCustomersByName;
@@ -35,6 +37,7 @@ using KadoshDomain.Queries.ProductQueries.GetAllProducts;
 using KadoshDomain.Queries.ProductQueries.GetProductById;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
+using KadoshDomain.Queries.SaleQueries.GetSaleById;
 using KadoshDomain.Queries.StoreQueries.GetAllStores;
 using KadoshDomain.Queries.StoreQueries.GetStoreById;
 using KadoshDomain.Queries.UserQueries.GetAllUsers;
@@ -115,6 +118,7 @@ builder.Services.AddScoped<ICommandHandler<AuthenticateUserCommand>, Authenticat
 builder.Services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserHandler>();
 builder.Services.AddScoped<ICommandHandler<DeleteUserCommand>, DeleteUserHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler>();
+builder.Services.AddScoped<ICommandHandler<InformSalePaymentCommand>, InformSalePaymentHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();
@@ -134,6 +138,8 @@ builder.Services.AddScoped<IQueryHandler<GetStoreByIdQuery, GetStoreByIdQueryRes
 builder.Services.AddScoped<IQueryHandler<GetAllUsersQuery, GetAllUsersQueryResult>, GetAllUsersQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult>, GetUserByIdQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult>, GetCustomersByNameQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult>, GetSaleByIdQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromSaleQuery, GetAllPostingsFromSaleQueryResult>, GetAllPostingsFromSaleQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

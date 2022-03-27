@@ -6,11 +6,12 @@ namespace KadoshWebsite.ViewComponents
 {
     public class ListCustomerPostingsViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(int? filterByCustumerId)
+        public IViewComponentResult Invoke(int? filterByCustumerId, int? filterBySaleId)
         {
             ListCustomerPostingsComponentViewModel model = new()
             {
-                FilterByCustumerId = filterByCustumerId
+                FilterByCustumerId = filterByCustumerId,
+                FilterBySaleId = filterBySaleId
             };
 
             return View(model);

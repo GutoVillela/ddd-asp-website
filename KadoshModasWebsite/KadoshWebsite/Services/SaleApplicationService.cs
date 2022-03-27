@@ -1,12 +1,14 @@
 ﻿using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
+using KadoshDomain.Commands.SaleCommands.InformPayment;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
 using KadoshDomain.Entities;
 using KadoshDomain.Enums;
 using KadoshDomain.Queries.SaleQueries.DTOs;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
+using KadoshDomain.Queries.SaleQueries.GetSaleById;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
@@ -24,24 +26,35 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<CreateSaleInInstallmentsCommand> _createSaleInInstallmentsHandler;
         private readonly ICommandHandler<CreateSaleOnCreditCommand> _createSaleOnCreditHandler;
         private readonly ICommandHandler<PayOffSaleCommand> _payOffSaleHandler;
+        private readonly ICommandHandler<InformSalePaymentCommand> _informSalePaymentHandler;
 
         private readonly IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> _getAllSalesQueryHandler;
         private readonly IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> _getAllSalesByCustomerIdQueryHandler;
+        private readonly IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult> _getSaleByIdQueryHandler;
+
+        private readonly IProductApplicationService _productService;
+
 
         public SaleApplicationService(
             ICommandHandler<CreateSaleInCashCommand> createSaleInCashHandler,
             ICommandHandler<CreateSaleInInstallmentsCommand> createSaleInInstallmentsHandler,
             ICommandHandler<CreateSaleOnCreditCommand> createSaleOnCreditHandler,
             ICommandHandler<PayOffSaleCommand> payOffSaleHandler,
+            ICommandHandler<InformSalePaymentCommand> informSalePaymentHandler,
             IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> getAllSalesQueryHandler,
-            IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> getAllSalesByCustomerIdQueryHandler)
+            IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> getAllSalesByCustomerIdQueryHandler,
+            IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult> getSaleByIdQueryHandler,
+            IProductApplicationService productService)
         {
             _createSaleInCashHandler = createSaleInCashHandler;
             _createSaleInInstallmentsHandler = createSaleInInstallmentsHandler;
             _createSaleOnCreditHandler = createSaleOnCreditHandler;
             _payOffSaleHandler = payOffSaleHandler;
+            _informSalePaymentHandler = informSalePaymentHandler;
             _getAllSalesQueryHandler = getAllSalesQueryHandler;
             _getAllSalesByCustomerIdQueryHandler = getAllSalesByCustomerIdQueryHandler;
+            _getSaleByIdQueryHandler = getSaleByIdQueryHandler;
+            _productService = productService;
         }
 
         public async Task<ICommandResult> CreateSaleAsync(SaleViewModel sale)
@@ -205,6 +218,40 @@ namespace KadoshWebsite.Services
             return await _payOffSaleHandler.HandleAsync(command);
         }
 
+        public async Task<SaleViewModel> GetSaleAsync(int saleId)
+        {
+            GetSaleByIdQuery query = new();
+            query.SaleId = saleId;
+
+            var result = await _getSaleByIdQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            SaleViewModel saleViewModel = GetViewModelFromDTO(result.Sale!);
+
+            // Get Items Product's Name
+            List<SaleItemViewModel> saleItems = saleViewModel.SaleItems.ToList();
+            foreach (var item in saleItems)
+            {
+                // TODO Double check if that's the only way to fetch the product name
+                var product = await _productService.GetProductAsync(item.ProductId);
+                item.ProductName = product.Name!;
+            }
+            saleViewModel.SaleItems = saleItems;
+
+            return saleViewModel;
+        }
+
+        public async Task<ICommandResult> InformPaymentAsync(int saleId, decimal amountToInform)
+        {
+            InformSalePaymentCommand command = new();
+            command.SaleId = saleId;
+            command.AmountToInform = amountToInform;
+
+            return await _informSalePaymentHandler.HandleAsync(command);
+        }
+
         #region Private methods
         private SaleViewModel GetViewModelFromDTO(SaleBaseDTO sale)
         {
@@ -220,7 +267,9 @@ namespace KadoshWebsite.Services
                 DownPayment = sale.DownPayment,
                 SaleTotalFormatted = sale.Total.ToString("C", FormatProviderManager.CultureInfo),
                 SaleDate = sale.SaleDate,
-                Status = sale.Situation
+                Status = sale.Situation,
+                TotalPaid = sale.TotalPaid,
+                TotalToPay = sale.TotalToPay
             };
         }
 

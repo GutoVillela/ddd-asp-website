@@ -30,7 +30,9 @@
 
 <script>
     let getCustomerPostingsByCustomerPaginatedUrl = '@Url.Action("GetCustomerPostingsByCustomerPaginated", "CustomerPostings")';
+    let getCustomerPostingsBySalePaginatedUrl = '@Url.Action("GetCustomerPostingsBySalePaginated", "CustomerPostings")';
     let filterPostingsByCustumerId = '@Model.FilterByCustumerId';
+    let filterPostingsBySaleId = '@Model.FilterBySaleId';
 
     window.addEventListener("load", function() {
         if(typeof RenderPaginatedCustomerPostings != "function")

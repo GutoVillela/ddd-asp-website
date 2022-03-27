@@ -16,9 +16,11 @@ namespace KadoshRepository.Repositories
 
         public override async Task<IEnumerable<Sale>> ReadAllAsync()
         {
-            return await _dbSet.AsNoTracking()
+            return await _dbSet
+                .AsNoTracking()
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeCustomer())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .ToListAsync();
         }
@@ -43,6 +45,7 @@ namespace KadoshRepository.Repositories
             Sale? sale = await _dbSet
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeCustomer())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .SingleOrDefaultAsync(SaleQueriable.GetSalesById(id));
             return sale;

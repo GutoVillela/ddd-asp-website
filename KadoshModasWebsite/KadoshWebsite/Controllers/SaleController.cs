@@ -110,6 +110,31 @@ namespace KadoshWebsite.Controllers
             return PartialView("_SalesListTable", sales);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DetailsAsync(int? id)
+        {
+            if (!id.HasValue)
+                return NotFound();
+
+            var model = await _saleService.GetSaleAsync(id.Value);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InformPaymentAsync(int? saleId, decimal? amountToInform)
+        {
+            ArgumentNullException.ThrowIfNull(saleId);
+            ArgumentNullException.ThrowIfNull(amountToInform);
+
+            var result = await _saleService.InformPaymentAsync(saleId.Value, amountToInform.Value);
+
+            if (result.Success)
+                return Ok(result.Message);
+
+            return BadRequest(result.Message);
+        }
+
         private async Task LoadCustomersSellersStoresAndProductsToViewData()
         {
             await SelectListLoaderHelper.LoadCustomersToViewData(_customerService, ViewData);

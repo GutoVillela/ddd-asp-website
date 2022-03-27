@@ -11,6 +11,11 @@ namespace KadoshDomain.Queriables
             return x => x.Sale.CustomerId == customerId;
         }
 
+        public static Expression<Func<CustomerPosting, bool>> GetCustomerPostingsBySaleId(int saleId)
+        {
+            return x => x.SaleId == saleId;
+        }
+
         public static Expression<Func<CustomerPosting, Sale?>> IncludeSale()
         {
             return x => x.Sale;
