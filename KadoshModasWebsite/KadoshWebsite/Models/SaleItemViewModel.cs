@@ -9,7 +9,7 @@ namespace KadoshWebsite.Models
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public decimal? DiscountInPercentage { get; set; } = 0;
-        public string SubtotalFormated { get => (Price * Quantity).ToString("C", FormatProviderManager.CultureInfo); }
+        public string SubtotalFormated { get => ((Price * Quantity) - (Price * Quantity) * (DiscountInPercentage!.Value / 100)).ToString("C", FormatProviderManager.CultureInfo); }
 
     }
 }

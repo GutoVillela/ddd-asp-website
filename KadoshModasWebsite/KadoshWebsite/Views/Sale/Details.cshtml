@@ -58,7 +58,14 @@
                                                             <span>Cancelado</span>
                                                         }
                                                     </p>
-                                                    <span class="mb-0 font-w-600 h1">@Model.SaleTotalFormatted</span><br>
+
+                                                    @if (Model.Status != KadoshDomain.Enums.ESaleSituation.Completed)
+                                                    {
+                                                        <span class="mb-0 font-w-600 h1" title="Valor em aberto da venda @Model.Id">
+                                                            @Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)
+                                                        </span>
+                                                        <br>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -74,12 +81,12 @@
                                                         <i class="uil uil-bill icon-size-1-5"></i>
                                                     </div>
                                                     <div class="content px-md-3 my-3 my-md-0">
-                                                        <span class="mb-0 font-w-600 h5">Saldo devedor do cliente: @Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)</span><br>
+                                                        <span class="mb-0 font-w-600 h5">Saldo já pago pelo cliente: @Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span><br>
                                                         <p class="mb-0 font-w-500 tx-s-12">Consulte os lançamentos da venda para saber os detalhes do saldo.</p>
 
                                                     </div>
                                                     <div class="my-auto ms-auto">
-                                                        <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Quitar compra">
+                                                        <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Informar pagamento na venda">
                                                             <i class="uil uil-dollar-alt icon-size-1-5"></i> Informar pagamento
                                                         </button>
                                                     </div>
@@ -126,7 +133,7 @@
                                         <td>@Model.SaleItems.ToArray()[i].ProductName</td>
                                         <td>@Model.SaleItems.ToArray()[i].Price.ToString("C", FormatProviderManager.CultureInfo)</td>
                                         <td>@Model.SaleItems.ToArray()[i].Quantity</td>
-                                        <td>@Model.SaleItems.ToArray()[i].DiscountInPercentage!.Value.ToString("N2")</td>
+                                        <td>@Model.SaleItems.ToArray()[i].DiscountInPercentage!.Value.ToString("N2")%</td>
                                         <td>@Model.SaleItems.ToArray()[i].SubtotalFormated</td>
                                     </tr>
                                 }
@@ -146,6 +153,18 @@
                     <i class="uil uil-shopping-bag icon-size-1-5"></i> Resumo da venda
                 </div>
                 <div class="card-body container">
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Loja</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.StoreName</span>
+                        </div>
+                        <hr />
+                    </div>
+
                     <div class="row">
                         <div class="col-6 mb-3">
                             <span class="text-start">Data da venda</span>
@@ -186,6 +205,28 @@
                         </div>
                         <div class="col-6 mb-3 text-end">
                             <span id="saleSubtotal" class="fw-bold">@Model.DownPayment!.Value.ToString("C", FormatProviderManager.CultureInfo)</span>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Valor pago</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span>
+                        </div>
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <span class="text-start">Valor a pagar</span>
+
+                        </div>
+                        <div class="col-6 mb-3 text-end">
+                            <span id="saleSubtotal" class="fw-bold">@Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)</span>
                         </div>
                         <hr />
                     </div>

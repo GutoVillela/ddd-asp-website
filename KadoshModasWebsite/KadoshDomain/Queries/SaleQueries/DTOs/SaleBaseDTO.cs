@@ -15,6 +15,8 @@ namespace KadoshDomain.Queries.SaleQueries.DTOs
 
         public int StoreId { get; set; }
 
+        public string StoreName { get; set; }
+
         public IList<SaleItemDTO> SaleItems { get; set; } = new List<SaleItemDTO>();
 
         public decimal DownPayment { get; set; } = 0;
@@ -48,6 +50,7 @@ namespace KadoshDomain.Queries.SaleQueries.DTOs
             saleDTO.CustomerName = sale.Customer?.Name;
             saleDTO.SellerId = sale.SellerId;
             saleDTO.StoreId = sale.StoreId;
+            saleDTO.StoreName = sale.Store?.Name ?? string.Empty;
             saleDTO.DownPayment = sale.DownPayment;
             saleDTO.SaleDate = sale.SaleDate;
             saleDTO.Situation = sale.Situation;

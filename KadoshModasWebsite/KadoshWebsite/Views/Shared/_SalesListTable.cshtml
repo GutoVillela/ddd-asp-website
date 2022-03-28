@@ -7,6 +7,7 @@
         <tr class="table-primary">
             <th scope="col">#</th>
             <th>Cliente</th>
+            <th>Loja</th>
             <th>Data</th>
             <th>Valor</th>
             <th>Status</th>
@@ -27,12 +28,15 @@
                 <tr>
                     <th scope="row">@item.Id</th>
                     <td>@item.CustomerName</td>
+                    <td>@item.StoreName</td>
                     <td>@item.SaleDate!.Value.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
                     <td>@item.SaleTotalFormatted</td>
                     <td>
                         @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)
                         {
-                            <span class="badge outline-badge-primary">Em aberto</span>
+                            <span class="badge outline-badge-primary">
+                                Em aberto: @item.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)
+                            </span>
                         }
                         else if (item.Status == KadoshDomain.Enums.ESaleSituation.Completed)
                         {

@@ -260,6 +260,7 @@ namespace KadoshWebsite.Services
                 Id = sale.Id,
                 CustomerId = sale.CustomerId,
                 CustomerName = sale.CustomerName,
+                StoreName = sale.StoreName,
                 SellerId = sale.SellerId,
                 SaleItems = GetSaleItemsViewModelFromSaleItems(sale.SaleItems),
                 PaymentType = GetPaymentTypeFromSaleDTO(sale),

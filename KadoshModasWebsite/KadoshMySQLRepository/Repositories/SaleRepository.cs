@@ -21,6 +21,7 @@ namespace KadoshRepository.Repositories
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
                 .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeStore())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .ToListAsync();
         }
@@ -34,6 +35,7 @@ namespace KadoshRepository.Repositories
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
                 .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeStore())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .Skip(amountToTake)
                 .Take(pageSize)
@@ -46,6 +48,7 @@ namespace KadoshRepository.Repositories
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
                 .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeStore())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .SingleOrDefaultAsync(SaleQueriable.GetSalesById(id));
             return sale;
@@ -53,19 +56,23 @@ namespace KadoshRepository.Repositories
 
         public async Task<IEnumerable<Sale>> ReadAllIncludingCustomerAsync()
         {
-            return await _dbSet.AsNoTracking()
+            return await _dbSet
+                .AsNoTracking()
                 .Include(SaleQueriable.IncludeCustomer())
                 .Include(SaleQueriable.IncludePostings())
                 .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludeStore())
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Sale>> ReadAllFromCustomerAsync(int customerId)
         {
-            return await _dbSet.AsNoTracking()
+            return await _dbSet
+                .AsNoTracking()
                 .Include(SaleQueriable.IncludeCustomer())
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeStore())
                 .Where(SaleQueriable.GetSalesByCustomer(customerId))
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .ToListAsync();
@@ -85,10 +92,12 @@ namespace KadoshRepository.Repositories
         public async Task<IEnumerable<Sale>> ReadAllFromCustomerPaginatedAsync(int customerId, int currentPage, int pageSize)
         {
             int amountToTake = (currentPage - 1) * pageSize;
-            return await _dbSet.AsNoTracking()
+            return await _dbSet
+                .AsNoTracking()
                 .Include(SaleQueriable.IncludeCustomer())
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeStore())
                 .Where(SaleQueriable.GetSalesByCustomer(customerId))
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .Skip(amountToTake)
