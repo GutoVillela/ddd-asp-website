@@ -29,10 +29,27 @@ namespace KadoshWebsite.Controllers
         [HttpGet]
         public async Task<PartialViewResult> GetCustomerPostingsBySalePaginatedAsync(int? page, int? filterBySaleId)
         {
-            PaginatedListViewModel<CustomerPostingViewModel> customerPostings = new();
+            PaginatedCustomerPostingsViewModel customerPostings = new();
 
             if (filterBySaleId.HasValue)
                 customerPostings = await _customerPostingsService.GetAllPostingsFromSalePaginatedAsync(filterBySaleId.Value, page ?? 1, PaginationManager.PAGE_SIZE);
+
+            return PartialView("_CustomerPostingsListTable", customerPostings);
+        }
+
+        [HttpGet]
+        public async Task<PartialViewResult> GetCustomerPostingsByStoreAndDatePaginatedAsync(int? page, DateTime? date, int? storeId, bool getTotal)
+        {
+            PaginatedCustomerPostingsViewModel customerPostings = new();
+
+            if (date.HasValue && storeId.HasValue)
+                customerPostings = await _customerPostingsService.GetAllPostingsFromStoreAndDatePaginatedAsync(
+                    DateOnly.FromDateTime(date.Value),
+                    FormatProviderManager.TimeZone,
+                    storeId.Value, 
+                    getTotal,
+                    page ?? 1, 
+                    PaginationManager.PAGE_SIZE);
 
             return PartialView("_CustomerPostingsListTable", customerPostings);
         }

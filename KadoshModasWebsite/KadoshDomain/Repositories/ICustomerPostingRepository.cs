@@ -9,6 +9,8 @@ namespace KadoshDomain.Repositories
         Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromCustomerPaginatedAsync(int customerId, int currentPage, int pageSize);
         Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromSaleAsync(int saleId);
         Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromSalePaginatedAsync(int saleId, int currentPage, int pageSize);
+        Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromStoreAndDateAsync(DateTime startDateUtc, DateTime endDateUtc, int storeId);
+        Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromStoreAndDatePaginatedAsync(DateTime startDateUtc, DateTime endDateUtc, int storeId, int currentPage, int pageSize);
         Task<int> CountAllFromCustomerAsync(int customerId);
         Task<int> CountAllFromSaleAsync(int saleId);
     }

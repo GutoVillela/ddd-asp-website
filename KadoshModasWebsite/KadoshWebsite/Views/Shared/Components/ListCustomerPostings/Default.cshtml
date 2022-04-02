@@ -31,8 +31,12 @@
 <script>
     let getCustomerPostingsByCustomerPaginatedUrl = '@Url.Action("GetCustomerPostingsByCustomerPaginated", "CustomerPostings")';
     let getCustomerPostingsBySalePaginatedUrl = '@Url.Action("GetCustomerPostingsBySalePaginated", "CustomerPostings")';
+    let getCustomerPostingsByStoreAndDatePaginatedUrl = '@Url.Action("GetCustomerPostingsByStoreAndDatePaginated", "CustomerPostings")';
     let filterPostingsByCustumerId = '@Model.FilterByCustumerId';
     let filterPostingsBySaleId = '@Model.FilterBySaleId';
+    let filterPostingsByDate = '@Model.FilterByDate';
+    let filterPostingsByStore = '@Model.FilterByStore';
+    let getTotal = '@Model.ShowTotal';
 
     window.addEventListener("load", function() {
         if(typeof RenderPaginatedCustomerPostings != "function")

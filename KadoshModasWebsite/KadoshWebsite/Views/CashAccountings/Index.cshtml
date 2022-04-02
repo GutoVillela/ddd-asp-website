@@ -1,0 +1,74 @@
+﻿@using KadoshWebsite.Util
+@using KadoshWebsite.ViewComponents
+@model CashAccountingViewModel
+@{
+    ViewData["Title"] = "Fechamento de caixa";
+}
+
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item">Fechamento de caixa</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
+
+<div class="row">
+    <div class="col-lg-4 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <i class="uil uil-bill icon-size-1-5"></i> Fechamento de caixa
+            </div>
+            <div class="card-body">
+                <form asp-action="Index" method="post" class="row">
+                    <!-- Stores -->
+                    <div class="col-12 mb-3">
+                        <label asp-for="StoreId"></label>
+                        @Html.DropDownListFor(m => m.StoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg" })
+                        <span asp-validation-for="StoreId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="col-12 mb-3">
+                        <label asp-for="Date"></label>
+                        <input class="form-control" asp-for="Date" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="col-12 mb-3">
+                        <input type="submit" value="Fechar Caixa" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <i class="uil uil-bill icon-size-1-5"></i> Fechamento de caixa
+            </div>
+            <div class="card-body row">
+                @await Component.InvokeAsync(nameof(ListCustomerPostingsViewComponent).Replace("ViewComponent", ""), new { filterByDate = Model?.Date, filterByStore = Model?.StoreId, showTotal = true })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/js/toastMessage.js"></script>
+    <script src="~/js/cashAccounting.js"></script>
+    <script src="~/js/customerPostingList.js"></script>
+}

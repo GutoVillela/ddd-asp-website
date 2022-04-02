@@ -9,5 +9,8 @@
         public const string NULL_POSTING_DATE = "O campo data do lançamento está nulo";
         public const string QUERY_CURRENT_PAGE_LOWER_THAN_ZERO = "A página atual da consulta paginada não pode ser menor do que zero";
         public const string QUERY_PAGE_SIZE_LOWER_THAN_ZERO = "O tamanho da página da consulta paginada não pode ser menor do que zero";
+        public const string NULL_QUERY_DATE = "O campo data está nulo para buscar os lançamentos";
+        public const string NULL_QUERY_STORE_ID = "O campo ID da loja não pode estar nulo para buscar os lançamentos";
+        public const string NULL_QUERY_TIMEZONE = "É necessário definir o fuso horário de destino para a busca dos lançamentos";
     }
 }

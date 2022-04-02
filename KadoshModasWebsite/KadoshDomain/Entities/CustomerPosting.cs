@@ -41,5 +41,27 @@ namespace KadoshDomain.Entities
         {
             return Type.IsCreditType();
         }
+
+        public static decimal CalculateTotalCredit(IEnumerable<CustomerPosting> customerPostings)
+        {
+            decimal totalCredit = 0;
+            foreach (var item in customerPostings)
+            {
+                if(item.IsCreditType())
+                    totalCredit += item.Value;
+            }
+            return totalCredit;
+        }
+
+        public static decimal CalculateTotalDebit(IEnumerable<CustomerPosting> customerPostings)
+        {
+            decimal totalCredit = 0;
+            foreach (var item in customerPostings)
+            {
+                if (!item.IsCreditType())
+                    totalCredit += item.Value;
+            }
+            return totalCredit;
+        }
     }
 }

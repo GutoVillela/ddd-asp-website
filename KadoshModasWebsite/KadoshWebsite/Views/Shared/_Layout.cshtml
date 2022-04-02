@@ -11,7 +11,7 @@
 
     <!-- THEME CSS FILES-->
     <link rel="stylesheet" href="~/theme/css/main.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/theme/vendors/sweetalert/sweetalert.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/theme/vendors/sweetalert/sweetalert.css" asp-append-version="true" />
 </head>
 <body>
     <!-- START: Header-->
@@ -129,7 +129,7 @@
                 <li class="dropdown">
                     <a href="#"><i class="uil uil-angle-right-b mr-1"></i> Financeiro</a>
                     <ul>
-                        <li class="active"><a href="#"><i class="uil uil-bill icon-size-1-5"></i> Fechamento de caixa</a></li>
+                        <li class="active"><a asp-area="" asp-controller="CashAccountings" asp-action="Index"><i class="uil uil-bill icon-size-1-5"></i> Fechamento de caixa</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -158,9 +158,23 @@
     <main role="main" class="pb-3">
         <div class="container-fluid site-width">
             @RenderBody()
+
+            <!-- ERROR TOAST -->
+            <div aria-live="polite" aria-atomic="true" class="position-relative">
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+                    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body" id="errorText">
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </main>
-
 
     <footer class="border-top footer text-muted">
         <div class="container">

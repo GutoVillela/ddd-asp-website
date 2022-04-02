@@ -12,6 +12,6 @@ namespace KadoshDomain.Queries.Base
         }
 
         public IReadOnlyCollection<Error>? Errors { get; protected set; }
-        public bool Success { get => Errors?.Any() ?? true; }
+        public bool Success { get => !Errors?.Any() ?? true; }
     }
 }

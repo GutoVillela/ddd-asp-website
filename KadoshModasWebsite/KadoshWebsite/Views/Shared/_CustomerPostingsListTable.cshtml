@@ -1,7 +1,7 @@
 ﻿@using KadoshDomain.ExtensionMethods
 @using KadoshShared.ExtensionMethods
 @using KadoshWebsite.Infrastructure
-@model PaginatedListViewModel<CustomerPostingViewModel>
+@model PaginatedCustomerPostingsViewModel
 
 <table class="table table-bordered table-striped table-hover table-responsive">
     <caption>Listando @Model.Items.Count() lançamentos de um total de @Model.TotalItemsCount</caption>
@@ -26,7 +26,7 @@
             {
                 <tr>
                     <td>@item.SaleId</td>
-                    <td>@item.PostingDate.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
+                    <td>@TimeZoneInfo.ConvertTimeFromUtc(item.PostingDate, FormatProviderManager.TimeZone).ToString(FormatProviderManager.DateTimeFormat)</td>
                     <td>@item.Value.ToString("C", FormatProviderManager.CultureInfo)</td>
                     <td>
                         @if (item.PostingType.IsCreditType())
@@ -43,4 +43,51 @@
         }
     </tbody>
 </table>
+
 @Html.Partial("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedCustomerPostings"} })
+
+@if (Model.ShowTotal)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card outline-badge-success mb-3">
+                <div class="card-content align-self-center">
+                    <div class="card-body p-4">
+                        <div class="d-md-flex">
+                            <div class="content px-md-3 my-3 my-md-0 ">
+                                <p class="text-center h5">
+                                    Entrada
+                                </p>
+
+                                <span class="mb-0 font-w-600 h1" title="Lançamentos de entrada">
+                                    @Model.TotalCredit.ToString("C", FormatProviderManager.CultureInfo)
+                                </span>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card outline-badge-danger mb-3">
+                <div class="card-content align-self-center">
+                    <div class="card-body p-4">
+                        <div class="d-md-flex">
+                            <div class="content px-md-3 my-3 my-md-0 ">
+                                <p class="text-center h5">
+                                    Saída
+                                </p>
+
+                                <span class="mb-0 font-w-600 h1" title="Lançamentos de saída">
+                                    @Model.TotalDebit.ToString("C", FormatProviderManager.CultureInfo)
+                                </span>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

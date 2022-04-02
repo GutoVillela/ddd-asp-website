@@ -29,7 +29,7 @@
                     <th scope="row">@item.Id</th>
                     <td>@item.CustomerName</td>
                     <td>@item.StoreName</td>
-                    <td>@item.SaleDate!.Value.ToLocalTime().ToString(FormatProviderManager.DateTimeFormat)</td>
+                    <td>@TimeZoneInfo.ConvertTimeFromUtc(item.SaleDate!.Value, FormatProviderManager.TimeZone).ToString(FormatProviderManager.DateTimeFormat)</td>
                     <td>@item.SaleTotalFormatted</td>
                     <td>
                         @if (item.Status == KadoshDomain.Enums.ESaleSituation.Open)

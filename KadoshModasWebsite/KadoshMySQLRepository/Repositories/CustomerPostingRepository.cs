@@ -52,6 +52,29 @@ namespace KadoshRepository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromStoreAndDateAsync(DateTime startDateUtc, DateTime endDateUtc, int storeId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(CustomerPostingsQueriable.IncludeSale())
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsByStoreAndDate(startDateUtc, endDateUtc, storeId))
+                .OrderByDescending(CustomerPostingsQueriable.OrderByCustomerPostingDate())
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromStoreAndDatePaginatedAsync(DateTime startDateUtc, DateTime endDateUtc, int storeId, int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet
+                .AsNoTracking()
+                .Include(CustomerPostingsQueriable.IncludeSale())
+                .Where(CustomerPostingsQueriable.GetCustomerPostingsByStoreAndDate(startDateUtc, endDateUtc, storeId))
+                .OrderByDescending(CustomerPostingsQueriable.OrderByCustomerPostingDate())
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<CustomerPosting>> ReadAllPostingsFromSaleAsync(int saleId)
         {
             return await _dbSet

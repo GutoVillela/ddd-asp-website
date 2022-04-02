@@ -4,11 +4,15 @@
 
     if (filterPostingsByCustumerId && filterPostingsByCustumerId != '') {
         url = getCustomerPostingsByCustomerPaginatedUrl;
-        requestData = { page: page, filterByCustumerId: filterPostingsByCustumerId };
+        requestData = { page: page, filterByCustumerId: filterPostingsByCustumerId, getTotal: getTotal };
+    }
+    else if (filterPostingsBySaleId && filterPostingsBySaleId != '') {
+        url = getCustomerPostingsBySalePaginatedUrl;
+        requestData = { page: page, filterBySaleId: filterPostingsBySaleId, getTotal: getTotal };
     }
     else {
-        url = getCustomerPostingsBySalePaginatedUrl;
-        requestData = { page: page, filterBySaleId: filterPostingsBySaleId };
+        url = getCustomerPostingsByStoreAndDatePaginatedUrl;
+        requestData = { page: page, date: filterPostingsByDate, storeId: filterPostingsByStore, getTotal: getTotal };
     }
 
     $.ajax({
@@ -20,8 +24,8 @@
         }
     }).done(function (salesPartial) {
         $('#customerPostingsList').html(salesPartial);
-    }).fail(function () {
-        alert("error");// TODO Toast nicely error message
+    }).fail(function (error) {
+        ToastErrorMessage(error.responseText)
     }).always(function () {
         HidePostingsSpinner();
     });

@@ -16,6 +16,14 @@ namespace KadoshDomain.Queriables
             return x => x.SaleId == saleId;
         }
 
+        public static Expression<Func<CustomerPosting, bool>> GetCustomerPostingsByStoreAndDate(DateTime startDateUtc, DateTime endDateUtc, int storeId)
+        {
+            // TODO figure out some way to garantee that x.Sale is not null.
+            return x => x.PostingDate >= startDateUtc
+                        && x.PostingDate <= endDateUtc
+                        && x.Sale.StoreId == storeId;
+        }
+
         public static Expression<Func<CustomerPosting, Sale?>> IncludeSale()
         {
             return x => x.Sale;

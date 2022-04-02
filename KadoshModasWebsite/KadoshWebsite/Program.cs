@@ -28,6 +28,7 @@ using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshDomain.Queries.CategoryQueries.GetAllCategories;
 using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
+using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromDate;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromSale;
 using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
@@ -140,6 +141,7 @@ builder.Services.AddScoped<IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResul
 builder.Services.AddScoped<IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult>, GetCustomersByNameQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult>, GetSaleByIdQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromSaleQuery, GetAllPostingsFromSaleQueryResult>, GetAllPostingsFromSaleQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromStoreAndDateQuery, GetAllPostingsFromStoreAndDateQueryResult>, GetAllPostingsFromStoreAndDateQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();
