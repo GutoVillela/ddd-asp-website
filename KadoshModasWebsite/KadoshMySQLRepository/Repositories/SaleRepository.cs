@@ -78,6 +78,7 @@ namespace KadoshRepository.Repositories
                 .ToListAsync();
         }
 
+        // TODO Change method do fetch all from given sale situation not only open sales
         public async Task<IEnumerable<Sale>> ReadAllOpenFromCustomerAsync(int customerId)
         {
             return await _dbSet
@@ -124,6 +125,36 @@ namespace KadoshRepository.Repositories
                 .Where(SaleQueriable.GetSalesByDate(startDateUtc, endDateUtc))
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Sale>> ReadAllFromSituationAsync(ESaleSituation saleSituation)
+        {
+            return await _dbSet
+                .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludePostings())
+                .Where(SaleQueriable.GetSalesBySituation(saleSituation))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Sale>> ReadAllFromSituationPaginatedAsync(ESaleSituation saleSituation, int currentPage, int pageSize)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            return await _dbSet
+                .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludePostings())
+                .Where(SaleQueriable.GetSalesBySituation(saleSituation))
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountAllFromSituationAsync(ESaleSituation saleSituation)
+        {
+            return await _dbSet
+                .Where(SaleQueriable.GetSalesBySituation(saleSituation))
+                .CountAsync();
         }
     }
 }

@@ -26,11 +26,11 @@
         @{
             await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
             { 
-                { "CardTitle", "Vendas da semana" }, 
+                { "CardTitle", "Total a receber" }, 
                 { "BootstrapColorClass", "success"}, 
                 { "IconClass", "uil uil-dollar-sign"},
                 { "ControllerToGetInfo", "Home" },
-                { "ActionToGetInfo", "GetWeekSells"},
+                { "ActionToGetInfo", "GetTotalToReceiveFromSales"},
                 { "ElementInfoId", "weekSellsLabel"},
                 { "LoadingSpinnerId", "weekSellsLoadingSpinner"}
             });
@@ -44,7 +44,7 @@
                 { "BootstrapColorClass", "danger"},  
                 { "IconClass", "uil uil-sad"},
                 { "ControllerToGetInfo", "Home" },
-                { "ActionToGetInfo", "GetWeekSells"},
+                { "ActionToGetInfo", "GetDelinquentCustomersCount"},
                 { "ElementInfoId", "weekSellsLabel1"},
                 { "LoadingSpinnerId", "weekSellsLoadingSpinner1"} 
             });

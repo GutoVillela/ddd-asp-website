@@ -31,8 +31,36 @@ namespace KadoshWebsite.Controllers
         {
             try
             {
-                int salesOfTheWeekCount = await _reportService.GetWeekSellsAsync(FormatProviderManager.TimeZone);
+                int salesOfTheWeekCount = await _reportService.GetWeekSellsCountAsync(FormatProviderManager.TimeZone);
                 return Ok(salesOfTheWeekCount);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTotalToReceiveFromSalesAsync()
+        {
+            try
+            {
+                decimal totalToReceive = await _reportService.GetTotalToReceiveFromSalesAsync();
+                return Ok(totalToReceive.ToString("C", FormatProviderManager.CultureInfo));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDelinquentCustomersCountAsync()
+        {
+            try
+            {
+                int delinquentCustomersCount = await _reportService.GetDelinquentCustomersCountAsync(FormatProviderManager.INTERVAL_BEFORE_DELINQUENT_IN_DAYS);
+                return Ok(delinquentCustomersCount);
             }
             catch (Exception ex)
             {

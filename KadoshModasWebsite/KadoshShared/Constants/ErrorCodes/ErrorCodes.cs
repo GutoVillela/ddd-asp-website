@@ -73,5 +73,7 @@
         public const int ERROR_INVALID_POSTING_TO_INFORMING_PAYMENT = 66;
         public const int ERROR_INVALID_GET_ALL_POSTINGS_FROM_DATE_QUERY = 67;
         public const int ERROR_INVALID_GET_SALES_OF_THE_WEEK_QUERY = 68;
+        public const int ERROR_INVALID_GET_ALL_DELINQUENT_CUSTOMERS_QUERY = 69;
+        public const int ERROR_INVALID_GET_ALL_OPEN_SALES_QUERY = 70;
     }
 }

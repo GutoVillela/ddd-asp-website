@@ -31,11 +31,13 @@ using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromDate;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromSale;
 using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
+using KadoshDomain.Queries.CustomerQueries.GetAllDelinquentCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
 using KadoshDomain.Queries.CustomerQueries.GetCustomersByName;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerTotalDebt;
 using KadoshDomain.Queries.ProductQueries.GetAllProducts;
 using KadoshDomain.Queries.ProductQueries.GetProductById;
+using KadoshDomain.Queries.SaleQueries.GetAllOpenSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
 using KadoshDomain.Queries.SaleQueries.GetSaleById;
@@ -145,6 +147,8 @@ builder.Services.AddScoped<IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResul
 builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromSaleQuery, GetAllPostingsFromSaleQueryResult>, GetAllPostingsFromSaleQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromStoreAndDateQuery, GetAllPostingsFromStoreAndDateQueryResult>, GetAllPostingsFromStoreAndDateQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetSalesOfTheWeekQuery, GetSalesOfTheWeekQueryResult>, GetSalesOfTheWeekQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllDelinquentCustomersQuery, GetAllDelinquentCustomersQueryResult>, GetAllDelinquentCustomersQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetAllOpenSalesQuery, GetAllOpenSalesQueryResult>, GetAllOpenSalesQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

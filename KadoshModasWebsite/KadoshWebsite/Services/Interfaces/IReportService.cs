@@ -2,6 +2,8 @@
 {
     public interface IReportService
     {
-        Task<int> GetWeekSellsAsync(TimeZoneInfo reportTimeZone); 
+        Task<int> GetWeekSellsCountAsync(TimeZoneInfo reportTimeZone);
+        Task<int> GetDelinquentCustomersCountAsync(int intervalSinceLastPaymentInDays);
+        Task<decimal> GetTotalToReceiveFromSalesAsync();
     }
 }
