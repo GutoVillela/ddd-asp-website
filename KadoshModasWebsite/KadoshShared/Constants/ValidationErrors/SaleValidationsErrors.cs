@@ -19,5 +19,6 @@
         public const string QUERY_PAGE_SIZE_LOWER_THAN_ZERO = "O tamanho da página da consulta paginada não pode ser menor do que zero";
         public const string NULL_AMOUNT_TO_INFORM = "O valor é obrigatório para informar pagamento na venda";
         public const string AMOUNT_TO_INFORM_LESS_OR_EQUALS_ZERO = "O valor deve ser maior do que zero para informar pagamento na venda";
+        public const string NULL_QUERY_LOCAL_TIMEZONE = "O fuso horário local deve ser informado para gerar o relatório";
     }
 }

@@ -39,6 +39,7 @@ using KadoshDomain.Queries.ProductQueries.GetProductById;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
 using KadoshDomain.Queries.SaleQueries.GetSaleById;
+using KadoshDomain.Queries.SaleQueries.GetSalesOfTheWeek;
 using KadoshDomain.Queries.StoreQueries.GetAllStores;
 using KadoshDomain.Queries.StoreQueries.GetStoreById;
 using KadoshDomain.Queries.UserQueries.GetAllUsers;
@@ -75,6 +76,7 @@ builder.Services.AddScoped<ICategoryApplicationService, CategoryApplicationServi
 builder.Services.AddScoped<IProductApplicationService, ProductApplicationService>();
 builder.Services.AddScoped<ISaleApplicationService, SaleApplicationService>();
 builder.Services.AddScoped<ICustomerPostingApplicationService, CustomerPostingApplicationService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 // Unit of Work Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -142,6 +144,7 @@ builder.Services.AddScoped<IQueryHandler<GetCustomersByNameQuery, GetCustomersBy
 builder.Services.AddScoped<IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult>, GetSaleByIdQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromSaleQuery, GetAllPostingsFromSaleQueryResult>, GetAllPostingsFromSaleQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromStoreAndDateQuery, GetAllPostingsFromStoreAndDateQueryResult>, GetAllPostingsFromStoreAndDateQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetSalesOfTheWeekQuery, GetSalesOfTheWeekQueryResult>, GetSalesOfTheWeekQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

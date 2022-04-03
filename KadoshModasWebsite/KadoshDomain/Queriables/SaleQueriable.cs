@@ -31,6 +31,11 @@ namespace KadoshDomain.Queriables
             return x => x.CustomerId == customerId;
         }
 
+        public static Expression<Func<Sale, bool>> GetSalesByDate(DateTime startDateUtc, DateTime endDateUtc)
+        {
+            return x => x.SaleDate >= startDateUtc && x.SaleDate <= endDateUtc;
+        }
+
         public static Expression<Func<Sale, bool>> GetSalesById(int saleId)
         {
             return x => x.Id == saleId;

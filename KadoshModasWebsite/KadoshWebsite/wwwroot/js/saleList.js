@@ -47,8 +47,13 @@ function RenderPaginatedSales(page) {
         }
     }).done(function (salesPartial) {
         $('#salesList').html(salesPartial);
-    }).fail(function () {
-        alert("error");// TODO Toast nicely error message
+    }).fail(function (error) {
+        if (typeof ToastErrorMessage != "function") {
+            console.error('The script "toastMessage.js" is missing on the parent View.');
+            console.error('Error: ' + error.responseText);
+        }
+        else
+            ToastErrorMessage(error.responseText);
     }).always(function () {
         HideLoadingSpinner();
     });

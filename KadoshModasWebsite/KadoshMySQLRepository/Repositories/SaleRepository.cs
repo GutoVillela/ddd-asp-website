@@ -112,5 +112,18 @@ namespace KadoshRepository.Repositories
                 .Where(SaleQueriable.GetSalesByCustomer(customerId))
                 .CountAsync();
         }
+
+        public async Task<IEnumerable<Sale>> ReadAllFromDateAsync(DateTime startDateUtc, DateTime endDateUtc)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(SaleQueriable.IncludeCustomer())
+                .Include(SaleQueriable.IncludeSaleItems())
+                .Include(SaleQueriable.IncludePostings())
+                .Include(SaleQueriable.IncludeStore())
+                .Where(SaleQueriable.GetSalesByDate(startDateUtc, endDateUtc))
+                .OrderByDescending(SaleQueriable.OrderBySaleDate())
+                .ToListAsync();
+        }
     }
 }

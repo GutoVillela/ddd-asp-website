@@ -72,5 +72,6 @@
         public const int ERROR_INVALID_SITUATION_ON_INFORM_SALE_PAYMENT_COMMAND = 65;
         public const int ERROR_INVALID_POSTING_TO_INFORMING_PAYMENT = 66;
         public const int ERROR_INVALID_GET_ALL_POSTINGS_FROM_DATE_QUERY = 67;
+        public const int ERROR_INVALID_GET_SALES_OF_THE_WEEK_QUERY = 68;
     }
 }

@@ -22,87 +22,51 @@
         <a asp-area="" asp-controller="Customer" asp-action="Index" class="btn btn-primary btn-block mb-2 text-white fs-6"><i class="uil uil-shopping-bag icon-size-1-5"></i> Fichas dos clientes</a>
     </div>
 
-    <div class="col-12 mt-3">
-        <div class="card outline-badge-primary">
-            <div class="card-content">
-                <div class="card-body p-4">
-                    <div class="d-md-flex">
-                        <div class="my-auto">
-                            <i class="uil uil-shopping-bag icon-size-1-5"></i>
-                        </div>
-                        <div class="content px-md-3 my-3 my-md-0">
-                            <span class="mb-0 font-w-600 h5">Registrar uma nova venda</span><br>
-                            <p class="mb-0 font-w-500 tx-s-12">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis.</p>
-
-                        </div>
-                        <div class="my-auto ms-auto">
-                            <a href="#" class="btn btn-outline-primary font-w-600 my-auto text-nowrap">Nova venda</a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12  col-md-6 col-lg-3 mt-3">
-        <div class="card border-bottom-0">
-            <div class="card-content border-bottom border-primary border-w-5">
-                <div class="card-body p-4">
-                    <div class="d-flex">
-                        <div class="circle-50 outline-badge-primary"> <span class="cf card-liner-icon cf-ltc mt-2"><i class="uil uil-users-alt icon-size-1-5"></i></span></div>
-                        <div class="media-body align-self-center ps-3">
-                            <span class="mb-0 h6 font-w-600">Vendas da semana</span><br>
-                            <p class="mb-0 font-w-500 h6">100</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12  col-md-6 col-lg-3 mt-3">
-        <div class="card border-bottom-0">
-            <div class="card-content border-bottom border-warning border-w-5">
-                <div class="card-body p-4">
-                    <div class="d-flex">
-                        <div class="circle-50 outline-badge-warning"> <span class="cf card-liner-icon cf-xlm mt-2"><i class="uil uil-users-alt icon-size-1-5"></i></span></div>
-                        <div class="media-body align-self-center ps-3">
-                            <span class="mb-0 h6 font-w-600">Valor a entrar</span><br>
-                            <p class="mb-0 font-w-500 h6">$17.99805</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12  col-md-6 col-lg-3 mt-3">
-        <div class="card border-bottom-0">
-            <div class="card-content border-bottom border-success border-w-5">
-                <div class="card-body p-4">
-                    <div class="d-flex">
-                        <div class="circle-50 outline-badge-success"> <span class="cf card-liner-icon cf-link mt-2"><i class="uil uil-users-alt icon-size-1-5"></i></span></div>
-                        <div class="media-body align-self-center ps-3">
-                            <span class="mb-0 h6 font-w-600">Valor definido</span><br>
-                            <p class="mb-0 font-w-500 h6">$52.09805</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12  col-md-6 col-lg-3 mt-3">
-        <div class="card border-bottom-0">
-            <div class="card-content border-bottom border-info border-w-5">
-                <div class="card-body p-4">
-                    <div class="d-flex">
-                        <div class="circle-50 outline-badge-info"> <span class="cf card-liner-icon cf-xmr mt-2"><i class="uil uil-users-alt icon-size-1-5"></i></span></div>
-                        <div class="media-body align-self-center ps-3">
-                            <span class="mb-0 h6 font-w-600">Monero</span><br>
-                            <p class="mb-0 font-w-500 h6">$64.52</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="col-12 col-md-6 col-lg-4 mt-3">
+        @{
+            await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
+            { 
+                { "CardTitle", "Vendas da semana" }, 
+                { "BootstrapColorClass", "success"}, 
+                { "IconClass", "uil uil-dollar-sign"},
+                { "ControllerToGetInfo", "Home" },
+                { "ActionToGetInfo", "GetWeekSells"},
+                { "ElementInfoId", "weekSellsLabel"},
+                { "LoadingSpinnerId", "weekSellsLoadingSpinner"}
+            });
+        }                                                                                          
+    </div>                                                                                         
+    <div class="col-12  col-md-6 col-lg-4 mt-3">                                                   
+        @{                                                                                         
+            await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
+            { 
+                { "CardTitle", "Clientes inadimplentes" }, 
+                { "BootstrapColorClass", "danger"},  
+                { "IconClass", "uil uil-sad"},
+                { "ControllerToGetInfo", "Home" },
+                { "ActionToGetInfo", "GetWeekSells"},
+                { "ElementInfoId", "weekSellsLabel1"},
+                { "LoadingSpinnerId", "weekSellsLoadingSpinner1"} 
+            });
+        }                                                                                                         
+    </div>                                                                                                        
+    <div class="col-12  col-md-6 col-lg-4 mt-3">                                                                  
+        @{                                                                                                        
+            await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
+            { 
+                { "CardTitle", "Vendas da semana" }, 
+                { "BootstrapColorClass", "primary"}, 
+                { "IconClass", "uil uil-users-alt"}, 
+                { "ControllerToGetInfo", "Home" },
+                { "ActionToGetInfo", "GetWeekSells"},
+                { "ElementInfoId", "weekSellsLabel2"},
+                { "LoadingSpinnerId", "weekSellsLoadingSpinner2"} 
+            });
+        }                                                                                                         
+    </div>                                                                                                        
 </div>
+
+@section Scripts{
+    <script src="~/js/toastMessage.js"></script>
+    <script src="~/js/singleInfoCard.js"></script>
+}
