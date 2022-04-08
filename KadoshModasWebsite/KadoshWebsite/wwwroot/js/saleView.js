@@ -2,7 +2,9 @@
     // Apply Select2 only when every asset is fully loaded
     RenameAndApplySelect2ToSaleItemSelects();
     $('#ProductId0').select2("val", -1);// Reset first select
-    //HideProductLoadingSpinners(0);
+    $('#CustomerId').select2({
+        placeholder: "Selecione um cliente"
+    });
 });
 
 $(document).ready(function () {

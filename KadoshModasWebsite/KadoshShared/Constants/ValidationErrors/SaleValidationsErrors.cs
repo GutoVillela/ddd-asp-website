@@ -20,5 +20,9 @@
         public const string NULL_AMOUNT_TO_INFORM = "O valor é obrigatório para informar pagamento na venda";
         public const string AMOUNT_TO_INFORM_LESS_OR_EQUALS_ZERO = "O valor deve ser maior do que zero para informar pagamento na venda";
         public const string NULL_QUERY_LOCAL_TIMEZONE = "O fuso horário local deve ser informado para gerar o relatório";
+        public const string DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL = "O campo Entrada da Venda não pode ser maior ou igual que o valor total da venda";
+        public const string NULL_QUERY_START_DATE = "A data inicial deve ser fornecida para buscar as vendas";
+        public const string NULL_QUERY_END_DATE = "A data final deve ser fornecida para buscar as vendas";
+        public const string QUERY_START_DATE_GREATHER_THAN_END_DATE = "A data inicial não pode estar a frente da data final";
     }
 }

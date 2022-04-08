@@ -22,7 +22,8 @@
         <a asp-area="" asp-controller="Customer" asp-action="Index" class="btn btn-primary btn-block mb-2 text-white fs-6"><i class="uil uil-shopping-bag icon-size-1-5"></i> Fichas dos clientes</a>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-4 mt-3">
+    <!-- Cards -->
+    <div class="col-12 col-md-6 col-lg-4 mt-3 mb-3">
         @{
             await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
             { 
@@ -36,7 +37,7 @@
             });
         }                                                                                          
     </div>                                                                                         
-    <div class="col-12  col-md-6 col-lg-4 mt-3">                                                   
+    <div class="col-12  col-md-6 col-lg-4 mt-3 mb-3">
         @{                                                                                         
             await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
             { 
@@ -50,7 +51,7 @@
             });
         }                                                                                                         
     </div>                                                                                                        
-    <div class="col-12  col-md-6 col-lg-4 mt-3">                                                                  
+    <div class="col-12  col-md-6 col-lg-4 mt-3 mb-3">
         @{                                                                                                        
             await Html.RenderPartialAsync("_SingleInfoCard", new ViewDataDictionary(ViewData) 
             { 
@@ -63,10 +64,25 @@
                 { "LoadingSpinnerId", "weekSellsLoadingSpinner2"} 
             });
         }                                                                                                         
-    </div>                                                                                                        
+    </div>
+    
+    <div class="col-12 mb-3">
+        @{
+            await Html.RenderPartialAsync("_LineChart", new ViewDataDictionary(ViewData) 
+            { 
+                { "LineChartId", "monthSellsChart" },
+                { "LineChartMainLabel", "Vendas de 30 dias" },
+                { "LineChartController", "Home"},
+                { "LineChartActionToGetInfo", "GetSellsFromMonthToChart" },
+                { "LoadingSpinnerId", "monthSellsChartLoadingSpinner"} 
+            });
+        }   
+    </div>
 </div>
 
 @section Scripts{
     <script src="~/js/toastMessage.js"></script>
     <script src="~/js/singleInfoCard.js"></script>
+    <script src="~/lib/Chart.js/chart.min.js"></script>
+    <script src="~/js/lineChart.js"></script>
 }

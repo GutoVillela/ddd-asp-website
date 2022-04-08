@@ -68,6 +68,20 @@ namespace KadoshWebsite.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetSellsFromMonthToChartAsync()
+        {
+            try
+            {
+                var monthSalesReport = await _reportService.GetAllSalesFromLast30DaysAsync(FormatProviderManager.TimeZone);
+                return Ok(monthSalesReport);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -75,5 +75,6 @@
         public const int ERROR_INVALID_GET_SALES_OF_THE_WEEK_QUERY = 68;
         public const int ERROR_INVALID_GET_ALL_DELINQUENT_CUSTOMERS_QUERY = 69;
         public const int ERROR_INVALID_GET_ALL_OPEN_SALES_QUERY = 70;
+        public const int ERROR_INVALID_GET_SALES_BY_DATE_QUERY = 71;
     }
 }

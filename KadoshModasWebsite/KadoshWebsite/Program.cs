@@ -41,6 +41,7 @@ using KadoshDomain.Queries.SaleQueries.GetAllOpenSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSales;
 using KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId;
 using KadoshDomain.Queries.SaleQueries.GetSaleById;
+using KadoshDomain.Queries.SaleQueries.GetSalesByDate;
 using KadoshDomain.Queries.SaleQueries.GetSalesOfTheWeek;
 using KadoshDomain.Queries.StoreQueries.GetAllStores;
 using KadoshDomain.Queries.StoreQueries.GetStoreById;
@@ -149,6 +150,7 @@ builder.Services.AddScoped<IQueryHandler<GetAllPostingsFromStoreAndDateQuery, Ge
 builder.Services.AddScoped<IQueryHandler<GetSalesOfTheWeekQuery, GetSalesOfTheWeekQueryResult>, GetSalesOfTheWeekQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllDelinquentCustomersQuery, GetAllDelinquentCustomersQueryResult>, GetAllDelinquentCustomersQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetAllOpenSalesQuery, GetAllOpenSalesQueryResult>, GetAllOpenSalesQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetSalesByDateQuery, GetSalesByDateQueryResult>, GetSalesByDateQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

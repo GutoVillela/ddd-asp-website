@@ -4,6 +4,7 @@ using KadoshDomain.Enums;
 using KadoshShared.Entities;
 using System.ComponentModel.DataAnnotations;
 using KadoshDomain.ExtensionMethods;
+using KadoshShared.Constants.ValidationErrors;
 
 namespace KadoshDomain.Entities
 {
@@ -210,7 +211,7 @@ namespace KadoshDomain.Entities
                 .Requires()
                 .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%")
                 .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
-                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage), nameof(DownPayment), "O valor da entrada precisa ser menor que o valor total da venda")
+                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage), nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL)
                 .IsNotNull(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
             );
 

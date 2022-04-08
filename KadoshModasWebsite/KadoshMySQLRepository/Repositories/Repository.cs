@@ -21,7 +21,7 @@ namespace KadoshRepository.Repositories
             await _dbSet.AddAsync(entity);
         }
 
-        public virtual async void Delete(TEntity entity) 
+        public virtual void Delete(TEntity entity) 
         { 
             _dbSet.Remove(entity);
         }

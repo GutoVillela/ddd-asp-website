@@ -1,0 +1,29 @@
+﻿<div class="card border-bottom-0 p-5">
+    <div class="card-content border-bottom border-primary border-w-5">
+        <div class="card-body p-4">
+            <div id="@ViewData["LoadingSpinnerId"]">
+                @{
+                    await Html.RenderPartialAsync("_LoadingSpinner");
+                }
+            </div>
+            <canvas id="@ViewData["LineChartId"]"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("load", function() {
+        if(typeof Chart != "function")
+            console.error('The plugin "chart.js" is missing on the parent View.');
+
+        if(typeof LoadLineChart != "function")
+            console.error('The script "lineChart.js" is missing on the parent View.');
+        else
+            LoadLineChart(
+                '@ViewData["LineChartId"].ToString()',
+                '@ViewData["LineChartMainLabel"].ToString()',
+                '@Url.Action(ViewData["LineChartActionToGetInfo"].ToString(), ViewData["LineChartController"].ToString())',
+                '@ViewData["LoadingSpinnerId"].ToString()'
+            );
+    });
+</script>
