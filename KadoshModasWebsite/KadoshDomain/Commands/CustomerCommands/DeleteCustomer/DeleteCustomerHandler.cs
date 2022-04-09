@@ -37,17 +37,16 @@ namespace KadoshDomain.Commands.CustomerCommands.DeleteCustomer
 
                 // Entity validations
                 if (customer is null)
-                    AddNotification(nameof(customer), CustomerCommandMessages.ERROR_CUSTOMER_NOT_FOUND);
-
-                // Check validations
-                if (!IsValid)
                 {
+                    AddNotification(nameof(customer), CustomerCommandMessages.ERROR_CUSTOMER_NOT_FOUND);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_CUSTOMER_DELETE_COMMAND);
                     return new CommandResult(false, CustomerCommandMessages.INVALID_CUSTOMER_DELETE_COMMAND, errors);
+
                 }
 
-                // Persist data
-                _repository.Delete(customer!);
+                // Inactivate data (instead of deleting)
+                customer.Inactivate();
+                await _repository.UpdateAsync(customer);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();

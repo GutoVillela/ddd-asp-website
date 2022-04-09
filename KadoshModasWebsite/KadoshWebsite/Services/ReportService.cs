@@ -89,7 +89,6 @@ namespace KadoshWebsite.Services
             List<string> labels = new();
             List<string> salesInTheDay = new();//Data to display
 
-            // TODO Convert date to LocalDate before grouping
             var salesGroupedByDate = result.Sales.GroupBy(i => TimeZoneInfo.ConvertTimeFromUtc(i.SaleDate!.Value.Date, reportTimeZone)).ToList();
 
             foreach (var saleGroup in salesGroupedByDate)

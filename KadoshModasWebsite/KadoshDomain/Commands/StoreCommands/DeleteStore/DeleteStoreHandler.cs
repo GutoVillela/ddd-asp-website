@@ -37,17 +37,16 @@ namespace KadoshDomain.Commands.StoreCommands.DeleteStore
 
                 // Entity validations
                 if (store is null)
-                    AddNotification(nameof(store), StoreCommandMessages.COULD_NOT_FIND_STORE);
-
-                // Check validations
-                if (!IsValid)
                 {
+                    AddNotification(nameof(store), StoreCommandMessages.COULD_NOT_FIND_STORE);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_STORE_DELETE_COMMAND);
                     return new CommandResult(false, StoreCommandMessages.INVALID_STORE_DELETE_COMMAND, errors);
+
                 }
 
-                // Persist data
-                _storeRepository.Delete(store!);
+                // Inactivate data (instead of deleting)
+                store.Inactivate();
+                await _storeRepository.UpdateAsync(store);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();

@@ -50,7 +50,7 @@ namespace KadoshRepository.Repositories
                 .Include(SaleQueriable.IncludeCustomer())
                 .Include(SaleQueriable.IncludeStore())
                 .OrderByDescending(SaleQueriable.OrderBySaleDate())
-                .SingleOrDefaultAsync(SaleQueriable.GetSalesById(id));
+                .SingleOrDefaultAsync(SaleQueriable.GetById(id));
             return sale;
         }
 

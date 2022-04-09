@@ -1,4 +1,5 @@
-﻿using KadoshShared.Entities;
+﻿using KadoshDomain.Queriables;
+using KadoshShared.Entities;
 using KadoshShared.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,19 +29,22 @@ namespace KadoshRepository.Repositories
 
         public virtual async Task<TEntity?> ReadAsync(int id)
         {
-            TEntity? entity = await _dbSet.SingleOrDefaultAsync(x => x.Id == id);
+            TEntity? entity = await _dbSet.SingleOrDefaultAsync(QueriableBase<TEntity>.GetById(id));
             return entity;
         }
 
         public virtual async Task<TEntity?> ReadAsNoTrackingAsync(int id)
         {
-            TEntity? entity = await _dbSet.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            TEntity? entity = await _dbSet.AsNoTracking().SingleOrDefaultAsync(QueriableBase<TEntity>.GetById(id));
             return entity;
         }
 
         public virtual async Task<IEnumerable<TEntity>> ReadAllAsync()
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await _dbSet
+                .AsNoTracking()
+                .Where(QueriableBase<TEntity>.GetIfActive())
+                .ToListAsync();
         }
 
         public virtual async Task<IEnumerable<TEntity>> ReadAllPagedAsync(int currentPage, int pageSize)
@@ -48,6 +52,7 @@ namespace KadoshRepository.Repositories
             int amountToTake = (currentPage - 1) * pageSize;
             return await _dbSet
                 .AsNoTracking()
+                .Where(QueriableBase<TEntity>.GetIfActive())
                 .Skip(amountToTake)
                 .Take(pageSize)
                 .ToListAsync();
@@ -55,12 +60,14 @@ namespace KadoshRepository.Repositories
 
         public virtual async Task UpdateAsync(TEntity entity)
         {
+            //TODO remove Async from this method
             _context.Update(entity);
         }
 
         public virtual async Task<int> CountAllAsync()
         {
             return await _dbSet
+                .Where(QueriableBase<TEntity>.GetIfActive())
                 .CountAsync();
         }
     }

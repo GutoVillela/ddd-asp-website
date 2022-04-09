@@ -37,17 +37,15 @@ namespace KadoshDomain.Commands.UserCommands.DeleteUser
 
                 // Entity validations
                 if (user is null)
-                    AddNotification(nameof(user), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
-
-                // Check validations
-                if (!IsValid)
                 {
+                    AddNotification(nameof(user), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_USER_DELETE_COMMAND);
                     return new CommandResult(false, UserCommandMessages.INVALID_USER_DELETE_COMMAND, errors);
                 }
 
-                // Persist data
-                _repository.Delete(user);
+                // Inactivate data (instead of deleting)
+                user.Inactivate();
+                await _repository.UpdateAsync(user);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();

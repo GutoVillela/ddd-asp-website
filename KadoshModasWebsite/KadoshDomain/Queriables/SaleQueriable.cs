@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace KadoshDomain.Queriables
 {
-    public static class SaleQueriable
+    public class SaleQueriable : QueriableBase<Sale>
     {
         public static Expression<Func<Sale, Customer?>> IncludeCustomer()
         {
@@ -34,11 +34,6 @@ namespace KadoshDomain.Queriables
         public static Expression<Func<Sale, bool>> GetSalesByDate(DateTime startDateUtc, DateTime endDateUtc)
         {
             return x => x.SaleDate >= startDateUtc && x.SaleDate <= endDateUtc;
-        }
-
-        public static Expression<Func<Sale, bool>> GetSalesById(int saleId)
-        {
-            return x => x.Id == saleId;
         }
 
         //TODO Review method name

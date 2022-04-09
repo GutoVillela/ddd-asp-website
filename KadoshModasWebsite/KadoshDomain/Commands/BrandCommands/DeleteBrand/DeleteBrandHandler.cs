@@ -37,17 +37,15 @@ namespace KadoshDomain.Commands.BrandCommands.DeleteBrand
 
                 // Entity validations
                 if (brand is null)
-                    AddNotification(nameof(brand), BrandCommandMessages.ERROR_BRAND_NOT_FOUND);
-
-                // Check validations
-                if (!IsValid)
                 {
+                    AddNotification(nameof(brand), BrandCommandMessages.ERROR_BRAND_NOT_FOUND);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_BRAND_DELETE_COMMAND);
                     return new CommandResult(false, BrandCommandMessages.INVALID_BRAND_DELETE_COMMAND, errors);
                 }
 
-                // Delete data
-                _repository.Delete(brand!);
+                // Inactivate data (instead of deleting)
+                brand.Inactivate();
+                await _repository.UpdateAsync(brand);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();

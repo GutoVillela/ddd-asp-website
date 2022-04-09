@@ -50,8 +50,9 @@ namespace KadoshDomain.Commands.CategoryCommands.DeleteCategory
                     return new CommandResult(false, CategoryCommandMessages.INVALID_CATEGORY_DELETE_COMMAND, errors);
                 }
 
-                // Delete data
-                _repository.Delete(category);
+                // Inactivate data (instead of deleting)
+                category.Inactivate();
+                await _repository.UpdateAsync(category);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();

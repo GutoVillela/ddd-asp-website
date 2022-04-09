@@ -37,17 +37,15 @@ namespace KadoshDomain.Commands.ProductCommands.DeleteProduct
 
                 // Entity validations
                 if (product is null)
-                    AddNotification(nameof(product), ProductCommandMessages.ERROR_PRODUCT_NOT_FOUND);
-
-                // Check validations
-                if (!IsValid)
                 {
+                    AddNotification(nameof(product), ProductCommandMessages.ERROR_PRODUCT_NOT_FOUND);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_PRODUCT_DELETE_COMMAND);
                     return new CommandResult(false, ProductCommandMessages.INVALID_PRODUCT_DELETE_COMMAND, errors);
                 }
 
-                // Delete data
-                _repository.Delete(product);
+                // Inactivate data (instead of deleting)
+                product.Inactivate();
+                await _repository.UpdateAsync(product);
 
                 // Commit changes
                 await _unitOfWork.CommitAsync();
