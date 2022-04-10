@@ -14,15 +14,18 @@ namespace KadoshDomain.Commands.SaleCommands.PayOffSale
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISaleRepository _saleRepository;
         private readonly ICustomerPostingRepository _customerPostingRepository;
+        private readonly IInstallmentRepository _installmentRepository;
 
         public PayOffSaleHandler(
             IUnitOfWork unitOfWork,
             ISaleRepository saleRepository,
-            ICustomerPostingRepository customerPostingRepository)
+            ICustomerPostingRepository customerPostingRepository,
+            IInstallmentRepository installmentRepository)
         {
             _unitOfWork = unitOfWork;
             _saleRepository = saleRepository;
             _customerPostingRepository = customerPostingRepository;
+            _installmentRepository = installmentRepository;
         }
 
         public override async Task<ICommandResult> HandleAsync(PayOffSaleCommand command)
@@ -46,6 +49,21 @@ namespace KadoshDomain.Commands.SaleCommands.PayOffSale
                     AddNotification(nameof(command.SaleId), SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_SALE_NOT_FOUND);
                     return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE, errors);
+                }
+
+                // PayOff all installments if sale is in installments
+                if(sale is SaleInInstallments)
+                {
+                    var installmentsFromSale = await _installmentRepository.ReadAllInstallmentsFromSaleAsync(sale.Id);
+
+                    foreach(Installment installment in installmentsFromSale)
+                    {
+                        if(installment.Situation == EInstallmentSituation.Open)
+                        {
+                            installment.PayOffInstallment();
+                            await _installmentRepository.UpdateAsync(installment);
+                        }
+                    }
                 }
 
                 // Create customer posting

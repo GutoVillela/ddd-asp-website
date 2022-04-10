@@ -25,5 +25,13 @@
         public const string INVALID_SITUATION_ON_INFORM_SALE_PAYMENT_COMMAND = "A venda está concluída ou cancelada. Só é possível informar pagamentos em vendas em aberto";
         public const string SUCCESS_ON_INFORM_SALE_PAYMENT_COMMAND_PAYOFF = "Pagamento registrado com sucesso. A venda foi quitada. Foi realizado um lançamento no valor de {0}";
         public const string ERROR_INVALID_POSTING_TO_INFORMING_PAYMENT = "Não foi possível realizar o informe de pagamento. A operação foi abortada";
+        public const string ERROR_CANNOT_INFORM_PAYMENT_TO_SALE_IN_INSTALLMENTS = "Não é possível informar um pagamento personalizado em uma venda parcelada. É necessário quitar as parcelas manualmente ou quitar a venda.";
+        public const string INVALID_PAYOFF_INSTALLMENT_COMMAND = "Comando de informar pagamento de parcela inválido";
+        public const string INVALID_PAYOFF_INSTALLMENT_SALE = "A venda {0} não é do tipo Parcelado e portanto não é possível informar pagamento de parcela para ela";
+        public const string ERROR_COULD_NOT_FIND_SALE_INSTALLMENT = "Não foi possível encontrar a parcela associada à venda";
+        public const string INVALID_SALE_SITUATION_ON_PAYOFF_INSTALLMENT_COMMAND = "A venda está concluída ou cancelada. Só é possível informar pagamentos da parcelas em vendas em aberto";
+        public const string INVALID_INSTALLMENT_SITUATION_ON_PAYOFF_INSTALLMENT_COMMAND = "A parcela já está quitada";
+        public const string ERROR_INVALID_POSTING_TO_PAYOFF_INSTALLMENT = "Lançamento para quitação de parcela inválido";
+        public const string SUCCESS_ON_PAYOFF_INSTALLMENT_COMMAND = "Parcela quitada com sucesso";
     }
 }

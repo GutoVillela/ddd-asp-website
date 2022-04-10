@@ -27,6 +27,8 @@ namespace KadoshWebsite.Models
 
         public IEnumerable<SaleItemViewModel> SaleItems { get; set; } = new List<SaleItemViewModel>();
 
+        public IEnumerable<SaleInstallmentViewModel> SaleInstallments { get; set; } = new List<SaleInstallmentViewModel>();
+
         [Required(ErrorMessage = "O tipo de pagamento é obrigatório")]
         [Display(Name = "Tipo de pagamento")]
         public ESalePaymentType PaymentType { get; set; }

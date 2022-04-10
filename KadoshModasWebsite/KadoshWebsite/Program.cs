@@ -15,6 +15,7 @@ using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
 using KadoshDomain.Commands.SaleCommands.InformPayment;
+using KadoshDomain.Commands.SaleCommands.PayOffInstallment;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
 using KadoshDomain.Commands.StoreCommands.CreateStore;
 using KadoshDomain.Commands.StoreCommands.DeleteStore;
@@ -125,6 +126,7 @@ builder.Services.AddScoped<ICommandHandler<CreateUserCommand>, CreateUserHandler
 builder.Services.AddScoped<ICommandHandler<DeleteUserCommand>, DeleteUserHandler>();
 builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler>();
 builder.Services.AddScoped<ICommandHandler<InformSalePaymentCommand>, InformSalePaymentHandler>();
+builder.Services.AddScoped<ICommandHandler<PayOffInstallmentCommand>, PayOffInstallmentHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();

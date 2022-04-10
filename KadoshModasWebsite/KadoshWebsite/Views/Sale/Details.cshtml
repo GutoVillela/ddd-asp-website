@@ -85,11 +85,14 @@
                                                         <p class="mb-0 font-w-500 tx-s-12">Consulte os lançamentos da venda para saber os detalhes do saldo.</p>
 
                                                     </div>
-                                                    <div class="my-auto ms-auto">
-                                                        <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Informar pagamento na venda">
-                                                            <i class="uil uil-dollar-alt icon-size-1-5"></i> Informar pagamento
-                                                        </button>
-                                                    </div>
+                                                    @if (Model.PaymentType != KadoshWebsite.Models.Enums.ESalePaymentType.InStallments)
+                                                    {
+                                                        <div class="my-auto ms-auto">
+                                                            <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Informar pagamento na venda">
+                                                                <i class="uil uil-dollar-alt icon-size-1-5"></i> Informar pagamento
+                                                            </button>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -113,7 +116,7 @@
                 </div>
                 <div class="card-body">
 
-                    <div class="col-md-12 mb-3 repeater">
+                    <div class="col-md-12 mb-3">
                         <table class="table table-hover" id="saleItemsTable">
                             <thead>
                                 <tr>
@@ -144,6 +147,71 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sale Installments -->
+        @if (Model.PaymentType == KadoshWebsite.Models.Enums.ESalePaymentType.InStallments)
+        {
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="uil uil-schedule icon-size-1-5"></i> Parcelas da venda
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12 mb-3">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Vencimento</th>
+                                        <th scope="col">Valor</th>
+                                        <th scope="col">Situação</th>
+                                        <th scope="col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var installment in Model.SaleInstallments)
+                                    {
+                                        <tr>
+                                            <td>@installment.Number</td>
+                                            <td>@installment.MaturityDate.ToString(FormatProviderManager.DateTimeFormat)</td>
+                                            <td>@installment.Value.ToString("C", FormatProviderManager.CultureInfo)</td>
+                                            <td>
+                                                @if (installment.Situation == KadoshDomain.Enums.EInstallmentSituation.Open)
+                                                {
+                                                    <span class="badge outline-badge-primary">
+                                                        Em aberto
+                                                    </span>
+                                                }
+                                                else if (installment.Situation == KadoshDomain.Enums.EInstallmentSituation.PaidWithoutDelay)
+                                                {
+                                                    <span class="badge outline-badge-success text-primary">Pago sem atraso</span>
+                                                }
+                                                else if (installment.Situation == KadoshDomain.Enums.EInstallmentSituation.PaidWithDelay)
+                                                {
+                                                    <span class="badge outline-badge-warning">Pago com atraso</span>
+                                                }
+                                                else if (installment.Situation == KadoshDomain.Enums.EInstallmentSituation.Canceled)
+                                                {
+                                                    <span class="badge outline-badge-danger">Cancelado</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (installment.Situation == KadoshDomain.Enums.EInstallmentSituation.Open)
+                                                {
+                                                    <a onclick="PayOffSaleInstallment(@Model.Id, @installment.Id, @installment.Number)" class="btn btn-success text-white mb-1" title="Quitar parcela @installment.Number">
+                                                        <i class="uil uil-check"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <div class="col-lg-4 rounded-3">
@@ -240,6 +308,7 @@
 @section scripts{
 <script>
     let informPaymentUrl = '@Url.Action("InformPayment", "Sale")';
+    let payOffInstallmentUrl = '@Url.Action("PayOffInstallment", "Sale")';
 </script>
 <script src="~/js/toastMessage.js"></script>
 <script src="~/js/customerPostingList.js"></script>

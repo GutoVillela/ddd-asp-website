@@ -15,7 +15,7 @@ namespace KadoshDomain.Commands.SaleCommands.InformPayment
         private readonly ISaleRepository _saleRepository;
         private readonly ICustomerPostingRepository _customerPostingRepository;
 
-        public InformSalePaymentHandler(IUnitOfWork unitOfWork, ICustomerRepository repository, ISaleRepository saleRepository, ICustomerPostingRepository customerPostingRepository)
+        public InformSalePaymentHandler(IUnitOfWork unitOfWork, ISaleRepository saleRepository, ICustomerPostingRepository customerPostingRepository)
         {
             _unitOfWork = unitOfWork;
             _saleRepository = saleRepository;
@@ -44,6 +44,13 @@ namespace KadoshDomain.Commands.SaleCommands.InformPayment
                     AddNotification(nameof(sale), SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_SALE_NOT_FOUND);
                     return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE, errors);
+                }
+
+                if(sale is SaleInInstallments)
+                {
+                    AddNotification(nameof(sale), SaleCommandMessages.ERROR_CANNOT_INFORM_PAYMENT_TO_SALE_IN_INSTALLMENTS);
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_CANNOT_INFORM_PAYMENT_TO_SALE_IN_INSTALLMENTS);
+                    return new CommandResult(false, SaleCommandMessages.ERROR_CANNOT_INFORM_PAYMENT_TO_SALE_IN_INSTALLMENTS, errors);
                 }
 
                 // Validate sale situation

@@ -135,6 +135,20 @@ namespace KadoshWebsite.Controllers
             return BadRequest(result.Message);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> PayOffInstallmentAsync(int? saleId, int? installmentId)
+        {
+            ArgumentNullException.ThrowIfNull(saleId);
+            ArgumentNullException.ThrowIfNull(installmentId);
+
+            var result = await _saleService.PayOffInstallmentAsync(saleId.Value, installmentId.Value);
+
+            if (result.Success)
+                return Ok(result.Message);
+
+            return BadRequest(result.Message);
+        }
+
         private async Task LoadCustomersSellersStoresAndProductsToViewData()
         {
             await SelectListLoaderHelper.LoadCustomersToViewData(_customerService, ViewData);

@@ -50,12 +50,23 @@ namespace KadoshDomain.Entities
 
         [Required]
         public EInstallmentSituation Situation { get; private set; }
+
         public DateTime? SettlementDate { get; private set; }
 
         [Required]
         public int SaleId { get; private set; }
 
         public SaleInInstallments? Sale { get; private set; }
+
+        public void PayOffInstallment()
+        {
+            if (DateTime.UtcNow > MaturityDate)
+                Situation = EInstallmentSituation.PaidWithDelay;
+            else
+                Situation = EInstallmentSituation.PaidWithoutDelay;
+
+            SettlementDate = DateTime.UtcNow;
+        }
 
         private void ValidateInstallment()
         {

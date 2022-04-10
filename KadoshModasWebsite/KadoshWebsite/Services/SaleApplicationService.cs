@@ -2,6 +2,7 @@
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
 using KadoshDomain.Commands.SaleCommands.InformPayment;
+using KadoshDomain.Commands.SaleCommands.PayOffInstallment;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
 using KadoshDomain.Entities;
 using KadoshDomain.Enums;
@@ -27,6 +28,7 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<CreateSaleOnCreditCommand> _createSaleOnCreditHandler;
         private readonly ICommandHandler<PayOffSaleCommand> _payOffSaleHandler;
         private readonly ICommandHandler<InformSalePaymentCommand> _informSalePaymentHandler;
+        private readonly ICommandHandler<PayOffInstallmentCommand> _payOffInstallmentHandler;
 
         private readonly IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> _getAllSalesQueryHandler;
         private readonly IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> _getAllSalesByCustomerIdQueryHandler;
@@ -41,6 +43,7 @@ namespace KadoshWebsite.Services
             ICommandHandler<CreateSaleOnCreditCommand> createSaleOnCreditHandler,
             ICommandHandler<PayOffSaleCommand> payOffSaleHandler,
             ICommandHandler<InformSalePaymentCommand> informSalePaymentHandler,
+            ICommandHandler<PayOffInstallmentCommand> payOffInstallmentHandler,
             IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> getAllSalesQueryHandler,
             IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> getAllSalesByCustomerIdQueryHandler,
             IQueryHandler<GetSaleByIdQuery, GetSaleByIdQueryResult> getSaleByIdQueryHandler,
@@ -51,6 +54,7 @@ namespace KadoshWebsite.Services
             _createSaleOnCreditHandler = createSaleOnCreditHandler;
             _payOffSaleHandler = payOffSaleHandler;
             _informSalePaymentHandler = informSalePaymentHandler;
+            _payOffInstallmentHandler = payOffInstallmentHandler;
             _getAllSalesQueryHandler = getAllSalesQueryHandler;
             _getAllSalesByCustomerIdQueryHandler = getAllSalesByCustomerIdQueryHandler;
             _getSaleByIdQueryHandler = getSaleByIdQueryHandler;
@@ -252,6 +256,15 @@ namespace KadoshWebsite.Services
             return await _informSalePaymentHandler.HandleAsync(command);
         }
 
+        public async Task<ICommandResult> PayOffInstallmentAsync(int saleId, int installmentId)
+        {
+            PayOffInstallmentCommand command = new();
+            command.SaleId = saleId;
+            command.InstallmentId = installmentId;
+
+            return await _payOffInstallmentHandler.HandleAsync(command);
+        }
+
         #region Private methods
         private SaleViewModel GetViewModelFromDTO(SaleBaseDTO sale)
         {
@@ -270,7 +283,8 @@ namespace KadoshWebsite.Services
                 SaleDate = sale.SaleDate,
                 Status = sale.Situation,
                 TotalPaid = sale.TotalPaid,
-                TotalToPay = sale.TotalToPay
+                TotalToPay = sale.TotalToPay,
+                SaleInstallments = GetInstallmentsFromSaleDTO(sale)
             };
         }
 
@@ -306,6 +320,30 @@ namespace KadoshWebsite.Services
                 return 0;
 
             return (sale as SaleInInstallmentsDTO)!.NumberOfInstallments;
+        }
+
+        private IEnumerable<SaleInstallmentViewModel> GetInstallmentsFromSaleDTO(SaleBaseDTO sale)
+        {
+            if(sale is not SaleInInstallmentsDTO)
+                return new List<SaleInstallmentViewModel>();
+
+            SaleInInstallmentsDTO saleInInstallments = sale as SaleInInstallmentsDTO;
+
+            List<SaleInstallmentViewModel> saleInstallmentsVM = new();
+
+            foreach(var installment in saleInInstallments.Installments)
+            {
+                saleInstallmentsVM.Add(new SaleInstallmentViewModel()
+                {
+                    Id = installment.Id,
+                    Number = installment.Number,
+                    MaturityDate = installment.MaturityDate,
+                    Value = installment.Value,
+                    Situation = installment.Situation
+                });
+            }
+
+            return saleInstallmentsVM;
         }
         #endregion Private methods
     }
