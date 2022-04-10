@@ -43,8 +43,10 @@
         }
     </tbody>
 </table>
-
-@Html.Partial("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedCustomerPostings"} })
+@if (Model is not null && Model.Items.Any())
+{
+    @Html.Partial("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedCustomerPostings"} })
+}
 
 @if (Model.ShowTotal)
 {

@@ -66,6 +66,8 @@
         }
     </tbody>
 </table>
-@{ 
-    await Html.RenderPartialAsync("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedSales"} });
+
+@if (Model is not null && Model.Items.Any())
+{
+    await Html.RenderPartialAsync("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "RenderPaginatedSales" } });
 }
