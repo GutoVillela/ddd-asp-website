@@ -30,4 +30,7 @@
         // defaults to false.
         //isFirstItemUndeletable: true
     });
+
+    // Clear repeater
+    $('*[data-repeater-list="Phones"]').empty();
 });
