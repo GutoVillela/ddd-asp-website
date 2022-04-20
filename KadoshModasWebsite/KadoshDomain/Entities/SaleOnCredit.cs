@@ -9,6 +9,10 @@ namespace KadoshDomain.Entities
         {
 
         }
+
+        public SaleOnCredit(int customerId, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, int sellerId, int storeId, IEnumerable<SaleItem> saleItems) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, saleItems as IReadOnlyCollection<SaleItem>, situation, sellerId, storeId)
+        {
+        }
         #endregion Constructors
 
     }

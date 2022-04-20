@@ -8,6 +8,7 @@ using KadoshWebsite.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 
 namespace KadoshWebsite.Controllers
 {
@@ -19,25 +20,33 @@ namespace KadoshWebsite.Controllers
         private readonly ISaleApplicationService _saleService;
         private readonly IUserApplicationService _userService;
         private readonly IStoreApplicationService _storeService;
+        private readonly ICustomerPostingApplicationService _customerPostingService;
 
-        public SaleController(ICustomerApplicationService customerService, IProductApplicationService productService, ISaleApplicationService saleService, IUserApplicationService userService, IStoreApplicationService storeService)
+        public SaleController(
+            ICustomerApplicationService customerService, 
+            IProductApplicationService productService,
+            ISaleApplicationService saleService, 
+            IUserApplicationService userService, 
+            IStoreApplicationService storeService,
+            ICustomerPostingApplicationService customerPostingService)
         {
             _customerService = customerService;
             _productService = productService;
             _saleService = saleService;
             _userService = userService;
             _storeService = storeService;
+            _customerPostingService = customerPostingService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAsync()
         {
             var sales = await _saleService.GetAllSalesAsync();
             return View(sales);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateAsync()
         {
             await LoadCustomersSellersStoresAndProductsToViewData();
             return View(new SaleViewModel());
@@ -147,6 +156,27 @@ namespace KadoshWebsite.Controllers
                 return Ok(result.Message);
 
             return BadRequest(result.Message);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PrintReceiptAsync(int? saleId)
+        {
+            ArgumentNullException.ThrowIfNull(saleId);
+            var model = new SaleReceiptViewModel
+            {
+                Sale = await _saleService.GetSaleAsync(saleId.Value)
+            };
+
+            var postings = await _customerPostingService.GetAllPostingsFromSalePaginatedAsync(model.Sale.Id!.Value, 0, 0);
+            model.Postings = postings.Items;
+
+            return new ViewAsPdf("PrintReceipt")
+            {
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                PageMargins = { Left = 1, Right = 1 },
+                Model = model
+            };
         }
 
         private async Task LoadCustomersSellersStoresAndProductsToViewData()

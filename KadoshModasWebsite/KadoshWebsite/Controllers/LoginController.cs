@@ -9,10 +9,12 @@ namespace KadoshWebsite.Controllers
     public class LoginController : BaseController
     {
         private readonly IUserApplicationService _userService;
+        private readonly IStoreApplicationService _storeApplicationService;
 
-        public LoginController(IUserApplicationService userService)
+        public LoginController(IUserApplicationService userService, IStoreApplicationService storeApplicationService)
         {
             _userService = userService;
+            _storeApplicationService = storeApplicationService;
         }
 
         [HttpGet]
@@ -22,12 +24,23 @@ namespace KadoshWebsite.Controllers
             var users = await _userService.GetAllUsersAsync();
             if (!users.Any())
             {
+                StoreViewModel model = new()
+                {
+                    Name = "Kadosh Modas",
+                    Street = "R. Valença do Minho",
+                    City = "São Paulo",
+                    Number = "413"
+                };
+
+                var resultStore = await _storeApplicationService.CreateStoreAsync(model);
+
                 UserViewModel user = new()
                 {
                     Name = "Administrador",
                     UserName = "admin",
                     Password = "admin",
-                    Role = KadoshDomain.Enums.EUserRole.Administrator
+                    Role = KadoshDomain.Enums.EUserRole.Administrator,
+                    StoreId = 1
                 };
                 var result = await _userService.CreateUserAsync(user);
             }

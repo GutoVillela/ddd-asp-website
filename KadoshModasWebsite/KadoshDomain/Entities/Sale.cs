@@ -24,6 +24,7 @@ namespace KadoshDomain.Entities
             SellerId = sellerId;
             StoreId = storeId;
             _postings = new List<CustomerPosting>();
+            ValidateSale();
         }
 
         protected Sale(Customer customer, EFormOfPayment formOfPayment, decimal discountInPercentage, decimal downPayment, DateTime saleDate, ESaleSituation situation, User seller, Store store, IReadOnlyCollection<SaleItem> saleItems)
@@ -38,6 +39,7 @@ namespace KadoshDomain.Entities
             Store = store;
             SaleItems = saleItems;
             _postings = new List<CustomerPosting>();
+            ValidateSale();
         }
 
         protected Sale(

@@ -76,6 +76,31 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInCash
                     products.Add(productInfo);
                 }
 
+                // Create sale items
+                IList<SaleItem> saleItems = new List<SaleItem>();
+                foreach (var commandSaleItem in command.SaleItems)
+                {
+                    var product = products.FirstOrDefault(p => p.Id == commandSaleItem.ProductId);
+                    SaleItem item = new(
+                        saleId: 0,
+                        productId: product!.Id,
+                        amount: commandSaleItem.Amount,
+                        price: product.Price,
+                        discountInPercentage: commandSaleItem.DiscountInPercentage,
+                        situation: Enums.ESaleItemSituation.AcquiredOnPurchase);
+
+                    AddNotifications(item);
+
+                    // Check validations
+                    if (!IsValid)
+                    {
+                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ITEM);
+                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_ITEM, errors);
+                    }
+
+                    saleItems.Add(item);
+                }
+
                 //Create Sale
                 SaleInCash saleInCash = new(
                     customerId: command.CustomerId!.Value,
@@ -83,6 +108,7 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInCash
                     discountInPercentage: command.DiscountInPercentage,
                     downPayment: command.DownPayment,
                     saleDate: command.SaleDate!.Value,
+                    saleItems: saleItems,
                     situation: ESaleSituation.Completed,
                     sellerId: command.SellerId!.Value,
                     storeId: command.StoreId!.Value,
@@ -101,34 +127,6 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInCash
 
                 // Save sale
                 await _saleInCashRepository.CreateAsync(saleInCash);
-
-                // Create sale items
-                IList<SaleItem> saleItems = new List<SaleItem>();
-                foreach (var commandSaleItem in command.SaleItems)
-                {
-                    var product = products.FirstOrDefault(p => p.Id == commandSaleItem.ProductId);
-                    SaleItem item = new(
-                        saleId: saleInCash.Id,
-                        productId: product!.Id,
-                        amount: commandSaleItem.Amount,
-                        price: product.Price,
-                        discountInPercentage: commandSaleItem.DiscountInPercentage,
-                        situation: Enums.ESaleItemSituation.AcquiredOnPurchase);
-
-                    AddNotifications(item);
-
-                    // Check validations
-                    if (!IsValid)
-                    {
-                        var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ITEM);
-                        return new CommandResult(false, SaleCommandMessages.ERROR_INVALID_SALE_ITEM, errors);
-                    }
-
-                    saleItems.Add(item);
-                    await _saleItemRepository.CreateAsync(item);
-                }
-
-                saleInCash.SetSaleItems(saleItems);
 
                 // Create customer posting
                 CustomerPosting customerPosting = new(

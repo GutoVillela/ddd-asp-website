@@ -78,38 +78,13 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit
                     products.Add(productInfo);
                 }
 
-                //Create Sale
-                SaleOnCredit saleOnCredit = new(
-                    customerId: command.CustomerId!.Value,
-                    formOfPayment: command.FormOfPayment!.Value,
-                    discountInPercentage: command.DiscountInPercentage,
-                    downPayment: command.DownPayment,
-                    saleDate: command.SaleDate!.Value,
-                    situation: ESaleSituation.Open,
-                    sellerId: command.SellerId!.Value,
-                    storeId: command.StoreId!.Value
-                    );
-
-                // Entity validations
-                AddNotifications(saleOnCredit);
-
-                // Check validations
-                if (!IsValid)
-                {
-                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND);
-                    return new CommandResult(false, SaleCommandMessages.INVALID_SALE_ON_CREDIT_CREATE_COMMAND, errors);
-                }
-
-                // Save sale
-                await _saleOnCreditRepository.CreateAsync(saleOnCredit);
-
                 // Create sale items
                 IList<SaleItem> saleItems = new List<SaleItem>();
                 foreach (var commandSaleItem in command.SaleItems)
                 {
                     var product = products.FirstOrDefault(p => p.Id == commandSaleItem.ProductId);
                     SaleItem item = new(
-                        saleId: saleOnCredit.Id,
+                        saleId: 0,
                         productId: product!.Id,
                         amount: commandSaleItem.Amount,
                         price: product.Price,
@@ -126,10 +101,33 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit
                     }
 
                     saleItems.Add(item);
-                    await _saleItemRepository.CreateAsync(item);
                 }
 
-                saleOnCredit.SetSaleItems(saleItems);
+                //Create Sale
+                SaleOnCredit saleOnCredit = new(
+                    customerId: command.CustomerId!.Value,
+                    formOfPayment: command.FormOfPayment!.Value,
+                    discountInPercentage: command.DiscountInPercentage,
+                    downPayment: command.DownPayment,
+                    saleDate: command.SaleDate!.Value,
+                    situation: ESaleSituation.Open,
+                    sellerId: command.SellerId!.Value,
+                    storeId: command.StoreId!.Value,
+                    saleItems: saleItems
+                    );
+
+                // Entity validations
+                AddNotifications(saleOnCredit);
+
+                // Check validations
+                if (!IsValid)
+                {
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND);
+                    return new CommandResult(false, SaleCommandMessages.INVALID_SALE_ON_CREDIT_CREATE_COMMAND, errors);
+                }
+
+                // Save sale
+                await _saleOnCreditRepository.CreateAsync(saleOnCredit);
 
                 // Create customer posting if there's any Down Payment
                 if (saleOnCredit.DownPayment > 0)

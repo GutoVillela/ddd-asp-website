@@ -61,6 +61,7 @@ using KadoshWebsite.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -213,5 +214,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Index}");
+
+// Rotativa
+RotativaConfiguration.Setup(app.Environment.WebRootPath);
 
 app.Run();
