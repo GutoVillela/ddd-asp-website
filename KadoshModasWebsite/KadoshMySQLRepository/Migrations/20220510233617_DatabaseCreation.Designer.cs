@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KadoshRepository.Migrations
 {
     [DbContext(typeof(StoreDataContext))]
-    [Migration("20220411144800_DatabaseCreation")]
+    [Migration("20220510233617_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,6 +281,9 @@ namespace KadoshRepository.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Situation")
+                        .HasColumnType("int");
+
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
@@ -299,10 +302,7 @@ namespace KadoshRepository.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("Situation")
-                        .HasColumnType("int");
-
-                    b.HasKey("SaleId", "ProductId");
+                    b.HasKey("SaleId", "ProductId", "Situation");
 
                     b.HasIndex("ProductId");
 

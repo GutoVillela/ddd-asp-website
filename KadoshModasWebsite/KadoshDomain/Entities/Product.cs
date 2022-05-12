@@ -64,5 +64,35 @@ namespace KadoshDomain.Entities
                 .IsGreaterThan(Price, 0, nameof(Price), "Preço do produto inválido!")
             );
         }
+
+        public void SetCategory(Category category)
+        {
+            if (category is null)
+                throw new ArgumentNullException(nameof(category));
+
+            if (!category.IsValid)
+            {
+                AddNotification(nameof(category), "A categoria informada não está válida para ser atribuída ao produto");
+                return;
+            }
+
+            Category = category;
+            CategoryId = category.Id;
+        }
+
+        public void SetBrand(Brand brand)
+        {
+            if (brand is null)
+                throw new ArgumentNullException(nameof(brand));
+
+            if (!brand.IsValid)
+            {
+                AddNotification(nameof(brand), "A marca informada não está válida para ser atribuída ao produto");
+                return;
+            }
+
+            Brand = brand;
+            BrandId = brand.Id;
+        }
     }
 }

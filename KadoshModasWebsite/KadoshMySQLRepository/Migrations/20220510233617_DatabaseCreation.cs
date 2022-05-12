@@ -351,17 +351,17 @@ namespace KadoshRepository.Migrations
                 {
                     SaleId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    Situation = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     DiscountInPercentage = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    Situation = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     LastUpdateDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SalesItems", x => new { x.SaleId, x.ProductId });
+                    table.PrimaryKey("PK_SalesItems", x => new { x.SaleId, x.ProductId, x.Situation });
                     table.ForeignKey(
                         name: "FK_SalesItems_Products_ProductId",
                         column: x => x.ProductId,

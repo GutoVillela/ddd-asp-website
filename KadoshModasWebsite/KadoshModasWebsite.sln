@@ -21,7 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infrastructure", "4 - I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KadoshRepository", "KadoshMySQLRepository\KadoshRepository.csproj", "{C3D405AB-3FFD-451F-A44B-599E8A9A44E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KadoshWebsite", "KadoshWebsite\KadoshWebsite.csproj", "{F448305A-E81F-419F-9802-52AE6954FCCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KadoshWebsite", "KadoshWebsite\KadoshWebsite.csproj", "{F448305A-E81F-419F-9802-52AE6954FCCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kadosh.LegacyRepository", "Kadosh.LegacyRepository\Kadosh.LegacyRepository.csproj", "{B28D178D-C734-4D36-834B-EE520A504FE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{F448305A-E81F-419F-9802-52AE6954FCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F448305A-E81F-419F-9802-52AE6954FCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F448305A-E81F-419F-9802-52AE6954FCCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B28D178D-C734-4D36-834B-EE520A504FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B28D178D-C734-4D36-834B-EE520A504FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B28D178D-C734-4D36-834B-EE520A504FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B28D178D-C734-4D36-834B-EE520A504FE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +65,7 @@ Global
 		{942BA7E1-8C56-4C21-A371-66AFC12AFFFC} = {14CB1083-D10B-48F3-9BED-41FB3B3E7298}
 		{C3D405AB-3FFD-451F-A44B-599E8A9A44E1} = {5A4D3ED9-8944-43D3-A563-9BBC22E07736}
 		{F448305A-E81F-419F-9802-52AE6954FCCD} = {C697E637-85FF-456D-BE18-A3C61539FB9A}
+		{B28D178D-C734-4D36-834B-EE520A504FE5} = {5A4D3ED9-8944-43D3-A563-9BBC22E07736}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16F1404D-E218-490F-ADF6-976A61684531}

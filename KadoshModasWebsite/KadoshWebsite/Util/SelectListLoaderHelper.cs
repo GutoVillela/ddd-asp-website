@@ -82,5 +82,43 @@ namespace KadoshWebsite.Util
             }
             return sellersListItems;
         }
+
+        public static async Task LoadBrandsToViewDataAsync(IBrandApplicationService brandService, ViewDataDictionary viewData, int? selectedBrand = null)
+        {
+            var stores = await brandService.GetAllBrandsAsync();
+            viewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] = GetSelectListItemsFromBrands(stores, selectedBrand);
+        }
+
+        private static IEnumerable<SelectListItem> GetSelectListItemsFromBrands(IEnumerable<BrandViewModel> brands, int? selectedBrand = null)
+        {
+            List<SelectListItem> storeListItems = new();
+            foreach (var brand in brands)
+            {
+                if (selectedBrand is not null && brand.Id == selectedBrand)
+                    storeListItems.Add(new SelectListItem(text: brand.Name, value: brand.Id.ToString(), selected: true));
+                else
+                    storeListItems.Add(new SelectListItem(text: brand.Name, value: brand.Id.ToString()));
+            }
+            return storeListItems;
+        }
+
+        public static async Task LoadCategoriesToViewDataAsync(ICategoryApplicationService categoryService, ViewDataDictionary viewData, int? selectedCategory = null)
+        {
+            var stores = await categoryService.GetAllCategoriesAsync();
+            viewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] = GetSelectListItemsFromCategories(stores, selectedCategory);
+        }
+
+        private static IEnumerable<SelectListItem> GetSelectListItemsFromCategories(IEnumerable<CategoryViewModel> categories, int? selectedCategory = null)
+        {
+            List<SelectListItem> storeListItems = new();
+            foreach (var category in categories)
+            {
+                if (selectedCategory is not null && category.Id == selectedCategory)
+                    storeListItems.Add(new SelectListItem(text: category.Name, value: category.Id.ToString(), selected: true));
+                else
+                    storeListItems.Add(new SelectListItem(text: category.Name, value: category.Id.ToString()));
+            }
+            return storeListItems;
+        }
     }
 }

@@ -241,6 +241,42 @@ namespace KadoshDomain.Entities
                 );
         }
 
+        public void SetCustomer(Customer customer)
+        {
+            if (customer == null)
+                throw new ArgumentNullException(nameof(customer));
+
+            if (!customer.IsValid)
+                throw new ArgumentException("Cliente inválido");
+
+            Customer = customer;
+            CustomerId = customer.Id;
+        }
+
+        public void SetSeller(User seller)
+        {
+            if (seller == null)
+                throw new ArgumentNullException(nameof(seller));
+
+            if (!seller.IsValid)
+                throw new ArgumentException("Vendedor inválido");
+
+            Seller = seller;
+            SellerId = seller.Id;
+        }
+
+        public void SetStore(Store store)
+        {
+            if (store == null)
+                throw new ArgumentNullException(nameof(store));
+
+            if (!store.IsValid)
+                throw new ArgumentException("Loja inválido");
+
+            Store = store;
+            StoreId = store.Id;
+        }
+
         public static decimal CalculateTotal(IEnumerable<SaleItem> saleItems, decimal discountInPercentage)
         {
             if(saleItems is null)

@@ -7,3 +7,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar aviso"></button>
     </div>
 }
+@if(TempData[ViewConstants.VIEW_ERROR_MESSAGE] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="uil uil-info-circle"></i> @TempData[ViewConstants.VIEW_ERROR_MESSAGE]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar aviso"></button>
+    </div>
+}

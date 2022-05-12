@@ -1,0 +1,124 @@
+﻿@using KadoshWebsite.Models
+@using KadoshWebsite.Util
+@model ImportFromLegacyViewModel
+
+@{
+    ViewData["Title"] = "Importar dados do sistema legado";
+}
+
+<!-- START: Breadcrumbs-->
+<div class="row">
+    <div class="col-12  align-self-center">
+        <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+
+            <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                <li class="breadcrumb-item"><a href="#">Configurações</a></li>
+                <li class="breadcrumb-item">Importar dados do sistema legado</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END: Breadcrumbs-->
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="uil uil-file-import icon-size-1-5"></i> Importar dados do sistema legado
+                </div>
+                <div class="card-body row">
+                    <div class="col-md-12">
+                        @{
+                            await Html.RenderPartialAsync("_CheckForAlert");
+                        }
+                        <div class="card outline-badge-danger mb-3">
+                            <div class="card-content">
+                                <div class="card-body p-4">
+                                    <div class="d-md-flex">
+                                        <div class="my-auto">
+                                            <i class="uil uil-exclamation-triangle icon-size-1-5"></i>
+                                        </div>
+                                        <div class="content px-md-3 my-3 my-md-0">
+                                            <span class="mb-0 font-w-600 h5">Atenção!</span><br>
+                                            <p class="mb-0 font-w-500 tx-s-12">Importar dados do sistema legado pode demorar dependendo do volume de dados a ser importado. Enquanto o processo estiver em execução você não poderá fechar esta página.</p>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" class="row">
+                        <!-- Server -->
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group flex-nowrap">
+                                <span class="input-group-text" id="addon-wrapping"><i class="uil uil-server-connection icon-size-1-5"></i></span>
+                                <div class="form-floating w-100">
+                                    <input asp-for="Server" class="form-control" placeholder="Servidor do legado" />
+                                    <label asp-for="Server"></label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="Server" class="text-danger"></span>
+                        </div>
+
+                        <!-- Database -->
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group flex-nowrap">
+                                <span class="input-group-text" id="addon-wrapping"><i class="uil uil-database icon-size-1-5"></i></span>
+                                <div class="form-floating w-100">
+                                    <input asp-for="LegacyDatabaseName" class="form-control" placeholder="Nome do banco de dados do sistema legado" />
+                                    <label asp-for="LegacyDatabaseName"></label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="LegacyDatabaseName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                @Html.DropDownListFor(m => m.DefaultCategoryId, ViewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select", Title = "A categoria que será atribuída para os produtos sem categoria do legado" })
+                                <label asp-for="DefaultCategoryId"></label>
+                            </div>
+                        </div>
+
+                        <!-- Brand -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                @Html.DropDownListFor(m => m.DefaultBrandId, ViewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select", Title = "A marca que será atribuída para os produtos sem marca do legado"  })
+                                <label asp-for="DefaultBrandId"></label>
+                            </div>
+                        </div>
+
+                        <!-- Seller -->
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DefaultSellerId"></label>
+                            @Html.DropDownListFor(m => m.DefaultSellerId, ViewData[ViewConstants.VIEW_SELLERS_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg", Title = "O vendedor que será associado às vendas importadas do legado" })
+                            <span asp-validation-for="DefaultSellerId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Store -->
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DefaultStoreId"></label>
+                            @Html.DropDownListFor(m => m.DefaultStoreId, ViewData[ViewConstants.VIEW_STORE_SELECT_LIST_ITEMS] as IEnumerable<SelectListItem>, new { Class = "form-select form-control-lg", Title = "A loja que será associada às vendas do legado" })
+                            <span asp-validation-for="DefaultStoreId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-md-12">
+                            <input type="submit" value="Importar" class="btn btn-primary" />
+                            <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

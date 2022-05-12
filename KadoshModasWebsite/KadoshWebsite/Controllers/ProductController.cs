@@ -132,46 +132,8 @@ namespace KadoshWebsite.Controllers
 
         private async Task LoadBrandsAndCategoriesToViewData(int? selectedBrand = null, int? selectedCategory = null)
         {
-            await LoadBrandsToViewData(selectedBrand);
-            await LoadCategoriesToViewData(selectedCategory);
-        }
-
-        private async Task LoadBrandsToViewData(int? selectedBrand = null)
-        {
-            var stores = await _brandService.GetAllBrandsAsync();
-            ViewData[ViewConstants.VIEW_BRAND_SELECT_LIST_ITEMS] = GetSelectListItemsFromBrands(stores, selectedBrand);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromBrands(IEnumerable<BrandViewModel> brands, int? selectedBrand = null)
-        {
-            List<SelectListItem> storeListItems = new();
-            foreach (var brand in brands)
-            {
-                if (selectedBrand is not null && brand.Id == selectedBrand)
-                    storeListItems.Add(new SelectListItem(text: brand.Name, value: brand.Id.ToString(),  selected: true));
-                else
-                    storeListItems.Add(new SelectListItem(text: brand.Name, value: brand.Id.ToString()));
-            }
-            return storeListItems;
-        }
-
-        private async Task LoadCategoriesToViewData(int? selectedCategory = null)
-        {
-            var stores = await _categoryService.GetAllCategoriesAsync();
-            ViewData[ViewConstants.VIEW_CATEGORY_SELECT_LIST_ITEMS] = GetSelectListItemsFromCategories(stores, selectedCategory);
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItemsFromCategories(IEnumerable<CategoryViewModel> categories, int? selectedCategory = null)
-        {
-            List<SelectListItem> storeListItems = new();
-            foreach (var category in categories)
-            {
-                if (selectedCategory is not null && category.Id == selectedCategory)
-                    storeListItems.Add(new SelectListItem(text: category.Name, value: category.Id.ToString(), selected: true));
-                else
-                    storeListItems.Add(new SelectListItem(text: category.Name, value: category.Id.ToString()));
-            }
-            return storeListItems;
+            await SelectListLoaderHelper.LoadBrandsToViewDataAsync(_brandService, ViewData, selectedBrand);
+            await SelectListLoaderHelper.LoadCategoriesToViewDataAsync(_categoryService, ViewData, selectedCategory);
         }
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)

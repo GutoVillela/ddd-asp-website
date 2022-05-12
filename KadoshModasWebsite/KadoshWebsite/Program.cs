@@ -1,3 +1,4 @@
+using Kadosh.LegacyRepository.Repositories;
 using KadoshDomain.Commands.BrandCommands.CreateBrand;
 using KadoshDomain.Commands.BrandCommands.DeleteBrand;
 using KadoshDomain.Commands.BrandCommands.UpdateBrand;
@@ -17,6 +18,7 @@ using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
 using KadoshDomain.Commands.SaleCommands.InformPayment;
 using KadoshDomain.Commands.SaleCommands.PayOffInstallment;
 using KadoshDomain.Commands.SaleCommands.PayOffSale;
+using KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy;
 using KadoshDomain.Commands.StoreCommands.CreateStore;
 using KadoshDomain.Commands.StoreCommands.DeleteStore;
 using KadoshDomain.Commands.StoreCommands.UpdateStore;
@@ -24,6 +26,8 @@ using KadoshDomain.Commands.UserCommands.AuthenticateUser;
 using KadoshDomain.Commands.UserCommands.CreateUser;
 using KadoshDomain.Commands.UserCommands.DeleteUser;
 using KadoshDomain.Commands.UserCommands.UpdateUser;
+using KadoshDomain.Entities;
+using KadoshDomain.LegacyEntities;
 using KadoshDomain.Queries.BrandQueries.GetAllBrands;
 using KadoshDomain.Queries.BrandQueries.GetBrandById;
 using KadoshDomain.Queries.CategoryQueries.GetAllCategories;
@@ -82,6 +86,7 @@ builder.Services.AddScoped<IProductApplicationService, ProductApplicationService
 builder.Services.AddScoped<ISaleApplicationService, SaleApplicationService>();
 builder.Services.AddScoped<ICustomerPostingApplicationService, CustomerPostingApplicationService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ISettingsApplicationService, SettingsApplicationService>();
 
 // Unit of Work Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -100,6 +105,14 @@ builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
 builder.Services.AddScoped<ICustomerPostingRepository, CustomerPostingRepository>();
 builder.Services.AddScoped<IInstallmentRepository, InstallmentRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+
+// Legacy Repositories Injection
+builder.Services.AddScoped<ILegacyRepository<Brand, BrandLegacy>, BrandLegacyRepository>();
+builder.Services.AddScoped<ILegacyRepository<Category, CategoryLegacy>, CategoryLegacyRepository>();
+builder.Services.AddScoped<ILegacyRepository<Product, ProductLegacy>, ProductLegacyRepository>();
+builder.Services.AddScoped<ILegacyRepository<Customer, CustomerLegacy>, CustomerLegacyRepository>();
+builder.Services.AddScoped<ILegacyRepository<Sale, SaleLegacy>, SaleLegacyRepository>();
+builder.Services.AddScoped<ILegacyRepository<CustomerPosting, CustomerPostingLegacy>, CustomerPostingLegacyRepository>();
 
 // Command Handlers
 builder.Services.AddScoped<ICommandHandler<CreateBrandCommand>, CreateBrandHandler>();
@@ -128,6 +141,7 @@ builder.Services.AddScoped<ICommandHandler<DeleteUserCommand>, DeleteUserHandler
 builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler>();
 builder.Services.AddScoped<ICommandHandler<InformSalePaymentCommand>, InformSalePaymentHandler>();
 builder.Services.AddScoped<ICommandHandler<PayOffInstallmentCommand>, PayOffInstallmentHandler>();
+builder.Services.AddScoped<ICommandHandler<ImportDataFromLegacyCommand>, ImportDataFromLegacyHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();

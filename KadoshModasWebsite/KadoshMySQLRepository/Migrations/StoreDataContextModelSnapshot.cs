@@ -279,6 +279,9 @@ namespace KadoshRepository.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Situation")
+                        .HasColumnType("int");
+
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
@@ -297,10 +300,7 @@ namespace KadoshRepository.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("Situation")
-                        .HasColumnType("int");
-
-                    b.HasKey("SaleId", "ProductId");
+                    b.HasKey("SaleId", "ProductId", "Situation");
 
                     b.HasIndex("ProductId");
 

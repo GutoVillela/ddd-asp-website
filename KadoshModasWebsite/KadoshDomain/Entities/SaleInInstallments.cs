@@ -52,6 +52,26 @@ namespace KadoshDomain.Entities
             InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
             ValidateSaleInInstallments();
         }
+
+        public SaleInInstallments(
+            int customerId,
+            EFormOfPayment formOfPayment,
+            decimal discountInPercentage,
+            decimal downPayment,
+            DateTime saleDate,
+            ESaleSituation situation,
+            int sellerId,
+            int storeId,
+            IReadOnlyCollection<SaleItem> saleItems,
+            IReadOnlyCollection<Installment> installments,
+            decimal interestOnTheTotalSaleInPercentage
+            ) : base(customerId, formOfPayment, discountInPercentage, downPayment, saleDate, situation, sellerId, storeId)
+        {
+            SaleItems = saleItems;
+            Installments = installments;
+            InterestOnTheTotalSaleInPercentage = interestOnTheTotalSaleInPercentage;
+            ValidateSaleInInstallments();
+        }
         #endregion Constructors
 
         public int NumberOfInstallments

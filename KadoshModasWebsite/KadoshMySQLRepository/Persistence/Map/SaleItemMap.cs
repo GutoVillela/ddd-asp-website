@@ -8,7 +8,7 @@ namespace KadoshRepository.Persistence.Map
     {
         public void Configure(EntityTypeBuilder<SaleItem> builder)
         {
-            builder.HasKey(x => new { x.SaleId, x.ProductId });
+            builder.HasKey(x => new { x.SaleId, x.ProductId, x.Situation });
             builder.Property(x => x.Amount).IsRequired();
             builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.DiscountInPercentage).IsRequired();

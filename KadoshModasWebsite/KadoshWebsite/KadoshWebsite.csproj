@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kadosh.LegacyRepository\Kadosh.LegacyRepository.csproj" />
     <ProjectReference Include="..\KadoshDomain\KadoshDomain.csproj" />
     <ProjectReference Include="..\KadoshMySQLRepository\KadoshRepository.csproj" />
     <ProjectReference Include="..\KadoshShared\KadoshShared.csproj" />
