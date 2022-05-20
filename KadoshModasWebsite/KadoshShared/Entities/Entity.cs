@@ -44,6 +44,11 @@ namespace KadoshShared.Entities
             IsActive = false;
         }
 
+        public void Activate()
+        {
+            IsActive = true;
+        }
+
         private void ValidateLastUpdateDate()
         {
             if(LastUpdateDate.HasValue)
