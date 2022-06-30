@@ -79,7 +79,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductInfo(int? productId)
+        public async Task<IActionResult> GetProductInfoAsync(int? productId)
         {
             if (productId is null)
                 return NotFound();
@@ -90,6 +90,27 @@ namespace KadoshWebsite.Controllers
                 return NotFound();
 
             return Ok(product);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductInfoByBarCodeAsync(string? barCode)
+        {
+            try
+            {
+                if (barCode is null)
+                    return NotFound();
+
+                ProductViewModel product = await _productService.GetProductByBarCodeAsync(barCode);
+
+                if (product is null)
+                    return NotFound();
+
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]

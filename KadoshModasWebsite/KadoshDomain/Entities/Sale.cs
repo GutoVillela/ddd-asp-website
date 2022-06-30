@@ -188,7 +188,7 @@ namespace KadoshDomain.Entities
 
         public void SetSettlementDate(DateTime settlementDate)
         {
-            settlementDate = settlementDate.ToUniversalTime();
+            SettlementDate = settlementDate.ToUniversalTime();
             ValidateSettlementDate();
         }
 
@@ -205,6 +205,17 @@ namespace KadoshDomain.Entities
         public void AddPosting(CustomerPosting posting)
         {
             _postings.Add(posting);
+        }
+
+        /// <summary>
+        /// Fix the sale status based on the sale total and sale items situation.
+        /// </summary>
+        public void FixSaleSituationBasedOnTotalAndItems()
+        {
+            if (Total <= 0 || 
+                !SaleItems.Any(x => x.Situation == ESaleItemSituation.AcquiredInExchange || x.Situation == ESaleItemSituation.AcquiredOnPurchase)
+            )
+                Situation = ESaleSituation.Canceled;
         }
 
         protected void ValidateSale()

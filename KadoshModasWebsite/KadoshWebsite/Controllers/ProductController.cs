@@ -130,6 +130,19 @@ namespace KadoshWebsite.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<PartialViewResult> GetProductsPaginatedAsync(int? page, string? productName)
+        {
+            PaginatedListViewModel<ProductViewModel> products;
+
+            if (string.IsNullOrEmpty(productName))
+                products = await _productService.GetAllProductsPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            else
+                products = await _productService.GetProductsByNamePaginatedAsync(productName, page ?? 1, PaginationManager.PAGE_SIZE);
+
+            return PartialView("_ProductSelectTable", products);
+        }
+
         private async Task LoadBrandsAndCategoriesToViewData(int? selectedBrand = null, int? selectedCategory = null)
         {
             await SelectListLoaderHelper.LoadBrandsToViewDataAsync(_brandService, ViewData, selectedBrand);

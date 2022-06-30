@@ -1,13 +1,29 @@
 ﻿$(window).on("load", function () {
-    // Apply Select2 only when every asset is fully loaded
-    RenameAndApplySelect2ToSaleItemSelects();
-    $('#ProductId0').select2("val", -1);// Reset first select
     $('#CustomerId').select2({
         placeholder: "Selecione um cliente"
+    });
+    $('#comboGetProducts').select2({
+        placeholder: "Selecione um produto"
     });
 });
 
 $(document).ready(function () {
+
+    // Prevent form submit on enter
+    document.getElementById("createSaleForm").onkeypress = function (e) {
+        var key = e.charCode || e.keyCode || 0;
+        if (key == 13) {
+            e.preventDefault();
+        }
+    }
+
+    document.getElementById("productBarCode").onkeypress = function (e) {
+        var key = e.charCode || e.keyCode || 0;
+        if (key == 13) {
+            AddItemToSaleByBarCode(e.target.value);
+            e.target.value = "";
+        }
+    }
 
     $('#DownPayment').maskMoney({ prefix: '', allowNegative: false, thousands: '', decimal: ',', affixesStay: false });
 
@@ -24,27 +40,6 @@ $(document).ready(function () {
     $('#btnRegisterSale').on('click', function () {
         let correctPrice = $('#DownPayment').val().replaceAll('.', '').replaceAll(',', '.');
         $('#DownPayment').val(correctPrice);
-    });
-
-    $('.repeater').repeater({
-        show: function () {
-            RenameAndApplySelect2ToSaleItemSelects();
-            $(this).slideDown();
-            //DisableSelectedOptionsFromSaleItemSelects(); // TODO implement disable selected options
-        },
-
-        hide: function (deleteElement) {
-            if (confirm('Tem certeza que deseja apagar este item?')) {
-                $(this).slideUp(deleteElement, function () {
-                    deleteElement();
-                    RenameAndApplySelect2ToSaleItemSelects();
-                    UpdateSaleSubtotal();
-                    //DisableSelectedOptionsFromSaleItemSelects(); // TODO implement disable selected options
-                });
-            }
-        },
-
-        isFirstItemUndeletable: true
     });
 
     $('#PaymentType').on('change', function () {
@@ -77,28 +72,149 @@ $(document).ready(function () {
     });
 });
 
-function RenameAndApplySelect2ToSaleItemSelects() {
-
-    $('#saleItemsTable > tbody > tr').each(function () {
-        var saleItemSelect = $(this).find(".sale-item-select")[0];
-        ApplySelect2ToSaleItemSelectByName(saleItemSelect.name);
-
-        var index = GetInputIndexAsInteger(saleItemSelect);
-        saleItemSelect.id = "ProductId" + index;
-
-        ApplyNewRowIndexes();
+function AddItemToSale(productId) {
+    $.ajax({
+        method: 'GET',
+        url: getProductInfoUrl,
+        data: { productId: productId },
+        //beforeSend: function () {
+        //    ShowProductLoadingSpinners(tableRowIndex);
+        //}
+    }).done(function (productData) {
+        var newRowIndex = GetNextItemTableRowIndex();
+        AddItemRowToProductsTable(productData, newRowIndex);
+        UpdateProductPriceByRowIndex(newRowIndex, productData.price);
+        RecalculateSubtotalFromSpecificRowIndex(newRowIndex);
+    }).fail(function () {
+        swal("Oops!", e.responseText, "error").then(() => {
+            $('#productBarCode').focus();
+        });
+    }).always(function () {
+        /*HideProductLoadingSpinners(tableRowIndex);*/
     });
 }
 
-function ApplySelect2ToSaleItemSelectByName(selectName) {
-    $('[name="' + selectName.replace('[', '\[').replace(']', '\]') + '"]').select2({
-        placeholder: 'Escolha um produto',
-        minimumResultsForSearch: 10
-    }).on('change', function () {
-
-        SetNewSelectedProductInfo(this.value, GetInputIndexAsInteger(this));
-        //DisableSelectedOptionsFromSaleItemSelects(this.id); // TODO implement disable selected options
+function AddItemToSaleByBarCode(productBarCode) {
+    $.ajax({
+        method: 'GET',
+        url: getProductInfoByBarCodeUrl,
+        data: { barCode: productBarCode }
+    }).done(function (productData) {
+        var newRowIndex = GetNextItemTableRowIndex();
+        AddItemRowToProductsTable(productData, newRowIndex);
+        UpdateProductPriceByRowIndex(newRowIndex, productData.price);
+        RecalculateSubtotalFromSpecificRowIndex(newRowIndex);
+    }).fail(function (e) {
+        swal("Oops!", e.responseText, "error").then(() => {
+            $('#productBarCode').focus();
+        });
     });
+}
+
+function GetNextItemTableRowIndex() {
+    return $('#saleItemsTable > tbody > tr').length;
+}
+
+function AddItemRowToProductsTable(productData, newRowIndex) {
+
+    var productIndex = CheckIfProductIsAlreadyAdded(productData.id);
+    if (productIndex != null) {
+        IncrementItemQuantityByRowIndex(productIndex);
+        return;
+    }
+
+    // Create table row
+    var table = $('#saleItemsTable > tbody')[0];
+    var newRow = document.createElement('tr');
+
+    // Fill in cells informations
+    newRow.innerHTML += CreateProductIndexCell(newRowIndex);
+    newRow.innerHTML += CreateProductNameCell(newRowIndex, productData.id, productData.name);
+    newRow.innerHTML += CreateProductPriceCell(newRowIndex, productData.price);
+    newRow.innerHTML += CreateProductQuantityCell(newRowIndex);
+    newRow.innerHTML += CreateProductDiscountCell(newRowIndex);
+    newRow.innerHTML += CreateProductSubtotalCell();
+    newRow.innerHTML += CreateProductActionsCell(newRowIndex);
+
+    // Append row to table
+    table.appendChild(newRow);
+
+}
+
+/**
+ * Check if a product is already added to Items Table. If the product is already added returns the table ID, otherwise returns null.
+ * @param {any} productId Product ID
+ */
+function CheckIfProductIsAlreadyAdded(productId) {
+    var itemIndex = null;
+    $('input[id^=ProductId]').each((index, element) => {
+        if (element.value == productId.toString())
+            itemIndex = index;
+    });
+    return itemIndex;
+}
+
+function IncrementItemQuantityByRowIndex(rowIndex) {
+    var quantityInput = $(`#saleItemsTable > tbody > tr:nth-child(${rowIndex + 1}) > td#productQuantity > input`);
+    var newValue = parseInt(quantityInput.val()) + 1;
+    quantityInput.val(newValue);
+    quantityInput.trigger('change');
+}
+
+function CreateProductIndexCell(itemIndex) {
+    return `<th scope="row" id="productCount">${itemIndex + 1}</th>`;
+}
+
+function CreateProductNameCell(itemIndex, productId, productName) {
+    return `<td style="max-width: 50%">
+                <input type="hidden" id="ProductId${itemIndex}" name="SaleItems[${itemIndex}][ProductId]" value="${productId}"/>
+                <span>${productName}</span>
+            </td>`;
+}
+
+function CreateProductPriceCell(itemIndex, productPrice) {
+    return `<td id="productPrice">
+                <div class="spinner-border text-primary visually-hidden" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <div class="row-data">
+                    R$ <span name="SaleItems[${itemIndex}][Price]">${productPrice}</span>
+                </div>
+            </td>`;
+}
+
+function CreateProductQuantityCell(itemIndex) {
+    return `<td id="productQuantity">
+                <input type="number" name="SaleItems[${itemIndex}][Quantity]" class="form-control" min="1" value="1" onchange="RecalculateSubtotal(this)" required />
+            </td>`;
+}
+
+function CreateProductDiscountCell(itemIndex) {
+    return `<td id="productDiscount" style="max-width: 5%">
+                <span class="badge bg-success" style="display: none">
+                0
+                <input type="number" id="discountValue" name="SaleItems[${itemIndex}][DiscountInPercentage]" class="bg-transparent border-0 text-white fw-bold w-50 p-0 m-0" value="0" min="0" max="100" readonly />
+                %
+                </span>
+            </td>`;
+}
+
+function CreateProductSubtotalCell() {
+    return `<td id="productSubtotal" class="fw-bold">
+                <div class="spinner-border text-primary visually-hidden" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <div class="row-data">
+                    R$ 0,00
+                </div>
+            </td>`;
+}
+
+function CreateProductActionsCell(itemIndex) {
+    return `<td><button type="button" title="Aplicar desconto no item" onclick="SetUpDiscountModal(this)" class="btn btn-primary btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#discountModal">
+                <i class="uil uil-percentage"></i>
+            </button>
+            <a class="btn btn-danger btn-sm" title="Apagar este produto da venda" onclick="RemoveItemFromTableByRowIndex(${itemIndex})"><i class="uil uil-times"></i></a></td>`;
 }
 
 function GetInputIndexAsInteger(inputObject) {
@@ -136,8 +252,6 @@ function DisableSelectedOptionsFromSaleItemSelects(selectIdToIgnore) {
                     $(currentOption).removeAttr('disabled');
             });
         });
-
-        ApplySelect2ToSaleItemSelectByName(this.name);
     });
 }
 
@@ -306,6 +420,7 @@ function ApplyDiscount() {
 
 function DismissDiscountModal() {
     $('#btnDismissModal').click();
+    $('#productBarCode').focus();
 }
 
 function UpdateSaleSubtotal() {
@@ -360,4 +475,29 @@ function UpdateInstallments() {
     let individualInstallmentPrice = saleTotal / installmentsNumber;
     var individualInstallmentPriceFormated = installmentsNumber + 'x de R$ ' + individualInstallmentPrice.toFixed(2).replace('.', ',');
     $('#saleInstallmentsLabel').text(individualInstallmentPriceFormated);
+}
+
+function AddSelectedProduct() {
+    // Check if any product was selected
+    var isAnyProductSelected = $('#productSelectTable tbody > tr.table-active').length > 0;
+    if (!isAnyProductSelected) {
+        swal("Oops!", 'Você precisa selecionar um produto antes de clicar em "Selecionar produto"', "error");
+        return;
+    }
+
+    // Get selected product ID
+    var selectedProductId = $('#productSelectTable tbody > tr.table-active > th').first().html();
+
+    // Add item to sale
+    AddItemToSale(selectedProductId);
+    DismissProductSelectModal();
+}
+
+function DismissProductSelectModal() {
+    $('#btnDismissProductModal').click();
+    $('#productBarCode').focus();
+}
+
+function RemoveItemFromTableByRowIndex(rowIndex) {
+    $(`#saleItemsTable > tbody > tr:nth-child(${rowIndex + 1})`).remove();
 }

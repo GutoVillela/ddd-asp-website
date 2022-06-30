@@ -24,3 +24,23 @@ body {
 input.form-control.input-validation-error {
     border: 2px solid red;
 }
+
+span.select2-dropdown.select2-dropdown--below, input.select2-search__field {
+    z-index: 9999 !important;
+}
+
+.select2-search .select2-search--dropdown {
+    z-index: 9999;
+}
+
+.select2-search__field {
+    z-index: 9999;
+}
+
+a.page-link:hover{
+    cursor: pointer;
+}
+
+#productSelectTable tbody > tr{
+    cursor: pointer;
+}

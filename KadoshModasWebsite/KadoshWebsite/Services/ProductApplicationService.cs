@@ -3,7 +3,9 @@ using KadoshDomain.Commands.ProductCommands.DeleteProduct;
 using KadoshDomain.Commands.ProductCommands.UpdateProduct;
 using KadoshDomain.Queries.ProductQueries.DTOs;
 using KadoshDomain.Queries.ProductQueries.GetAllProducts;
+using KadoshDomain.Queries.ProductQueries.GetProductByBarCode;
 using KadoshDomain.Queries.ProductQueries.GetProductById;
+using KadoshDomain.Queries.ProductQueries.GetProductsByName;
 using KadoshShared.Commands;
 using KadoshShared.ExtensionMethods;
 using KadoshShared.Handlers;
@@ -20,13 +22,17 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<UpdateProductCommand> _updateProductHandler;
         private readonly IQueryHandler<GetAllProductsQuery, GetAllProductsQueryResult> _getAllProductsQueryHandler;
         private readonly IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult> _getProductByIdQueryHandler;
+        private readonly IQueryHandler<GetProductsByNameQuery, GetProductsByNameQueryResult> _getProductsByNameQueryHandler;
+        private readonly IQueryHandler<GetProductByBarCodeQuery, GetProductByBarCodeQueryResult> _getProductByBarCodeQueryHandler;
 
         public ProductApplicationService(
             ICommandHandler<CreateProductCommand> createProductHandler,
             ICommandHandler<DeleteProductCommand> deleteProductHandler,
             ICommandHandler<UpdateProductCommand> updateProductHandler,
             IQueryHandler<GetAllProductsQuery, GetAllProductsQueryResult> getAllProductsQueryHandler,
-            IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult> getProductByIdQueryHandler
+            IQueryHandler<GetProductByIdQuery, GetProductByIdQueryResult> getProductByIdQueryHandler,
+            IQueryHandler<GetProductsByNameQuery, GetProductsByNameQueryResult> getProductsByNameQueryHandler,
+            IQueryHandler<GetProductByBarCodeQuery, GetProductByBarCodeQueryResult> getProductByBarCodeQueryHandler
             )
         {
             _createProductHandler = createProductHandler;
@@ -34,6 +40,8 @@ namespace KadoshWebsite.Services
             _updateProductHandler = updateProductHandler;
             _getAllProductsQueryHandler = getAllProductsQueryHandler;
             _getProductByIdQueryHandler = getProductByIdQueryHandler;
+            _getProductsByNameQueryHandler = getProductsByNameQueryHandler;
+            _getProductByBarCodeQueryHandler = getProductByBarCodeQueryHandler;
         }
 
         public async Task<ICommandResult> CreateProductAsync(ProductViewModel Product)
@@ -115,6 +123,51 @@ namespace KadoshWebsite.Services
             ProductViewModel ProductViewModel = GetViewModelFromDTO(result.Product!);
 
             return ProductViewModel;
+        }
+
+        public async Task<ProductViewModel> GetProductByBarCodeAsync(string barCode)
+        {
+
+            GetProductByBarCodeQuery query = new();
+            query.BarCode = barCode;
+
+            var result = await _getProductByBarCodeQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            ProductViewModel ProductViewModel = GetViewModelFromDTO(result.Product!);
+
+            return ProductViewModel;
+        }
+
+        public async Task<PaginatedListViewModel<ProductViewModel>> GetProductsByNamePaginatedAsync(string productName, int currentPage, int pageSize)
+        {
+            GetProductsByNameQuery query = new();
+            query.CurrentPage = currentPage;
+            query.PageSize = pageSize;
+            query.ProductName = productName;
+
+            var result = await _getProductsByNameQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            List<ProductViewModel> productsViewModel = new();
+
+            foreach (var product in result.Products)
+            {
+                productsViewModel.Add(GetViewModelFromDTO(product));
+            }
+
+            PaginatedListViewModel<ProductViewModel> paginatedList = new();
+            paginatedList.CurrentPage = currentPage;
+            paginatedList.PageSize = pageSize;
+            paginatedList.TotalItemsCount = result.ProductsCount;
+            paginatedList.TotalPages = PaginationManager.CalculateTotalPages(result.ProductsCount, pageSize);
+            paginatedList.Items = productsViewModel;
+
+            return paginatedList;
         }
 
         public async Task<ICommandResult> UpdateProductAsync(ProductViewModel Product)

@@ -1,4 +1,5 @@
-﻿using KadoshWebsite.Infrastructure;
+﻿using KadoshDomain.Enums;
+using KadoshWebsite.Infrastructure;
 
 namespace KadoshWebsite.Models
 {
@@ -11,5 +12,6 @@ namespace KadoshWebsite.Models
         public decimal? DiscountInPercentage { get; set; } = 0;
         public decimal Subtotal { get => (Price * Quantity) - (Price * Quantity) * (DiscountInPercentage ?? 0 / 100); }
         public string SubtotalFormated { get => Subtotal.ToString("C", FormatProviderManager.CultureInfo); }
+        public ESaleItemSituation Status { get; set; }
     }
 }

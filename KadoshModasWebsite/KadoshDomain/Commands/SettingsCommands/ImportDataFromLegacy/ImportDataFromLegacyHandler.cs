@@ -286,6 +286,7 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
                 sale.ImportedEntity.SetStore(defaultStore);
                 sale.ImportedEntity.SetSaleItems(FixSaleItemsProduct(sale.LegacyEntity.SaleItems, importedProducts));
                 sale.ImportedEntity.Activate();// Set IsActive to true for every sale
+                sale.ImportedEntity.FixSaleSituationBasedOnTotalAndItems();
                 await _saleRepository.CreateAsync(sale.ImportedEntity);
             }
 

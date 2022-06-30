@@ -90,5 +90,7 @@
         public const int ERROR_COULD_NOT_FIND_IMPORT_FROM_LEGACY_SELLER = 83;
         public const int ERROR_COULD_NOT_FIND_IMPORT_FROM_LEGACY_BRAND = 84;
         public const int ERROR_COULD_NOT_FIND_IMPORT_FROM_LEGACY_CATEGORY = 85;
+        public const int ERROR_INVALID_GET_PRODUCTS_BY_NAME_QUERY = 86;
+        public const int ERROR_INVALID_GET_PRODUCT_BY_BARCODE_QUERY = 87;
     }
 }

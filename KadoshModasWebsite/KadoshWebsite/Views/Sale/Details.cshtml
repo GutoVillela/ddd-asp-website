@@ -126,6 +126,7 @@
                                     <th scope="col">Quantidade</th>
                                     <th scope="col">Desconto</th>
                                     <th scope="col">Subtotal</th>
+                                    <th scope="col">Situação</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,6 +139,20 @@
                                         <td>@Model.SaleItems.ToArray()[i].Quantity</td>
                                         <td>@Model.SaleItems.ToArray()[i].DiscountInPercentage!.Value.ToString("N2")%</td>
                                         <td>@Model.SaleItems.ToArray()[i].SubtotalFormated</td>
+                                        <td>
+                                            @if (@Model.SaleItems.ToArray()[i].Status == KadoshDomain.Enums.ESaleItemSituation.AcquiredOnPurchase)
+                                            {
+                                                <span>Adquirido na compra</span>
+                                            }
+                                            else if (@Model.SaleItems.ToArray()[i].Status == KadoshDomain.Enums.ESaleItemSituation.AcquiredInExchange)
+                                            {
+                                                <span>Adquirido em troca</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Cancelado</span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

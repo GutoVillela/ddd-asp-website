@@ -1,0 +1,35 @@
+﻿<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-shopping-bag icon-size-1-5"></i> Selecione um produto
+        </div>
+        <div class="card-body row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="loadingSpinner">
+                            @{ await Html.RenderPartialAsync("_LoadingSpinner"); }
+                        </div>
+                        <div class="input-group mb-3">
+                            <input name="queryProductByName" id="queryProductByName" type="text" class="form-control" placeholder="Buscar por nome do produto" aria-label="Buscar por nome do produto" aria-describedby="buscar-produto">
+                            <a class="btn btn-outline-secondary" onclick="LoadProductsPaginated(1);"><i class="uil uil-search"></i></a>
+                        </div>
+                        <div id="productList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let getProductsPaginatedUrl = '@Url.Action("GetProductsPaginated", "Product")';
+
+    window.addEventListener("load", function() {
+        if(typeof LoadProductsPaginated != "function")
+            console.error('The script "productSelectTable.js" is missing on the parent View.');
+        else
+            LoadProductsPaginated(1);
+    });
+</script>

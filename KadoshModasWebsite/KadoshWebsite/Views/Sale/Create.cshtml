@@ -1,5 +1,6 @@
 ﻿@using KadoshWebsite.Models.Enums
 @using KadoshWebsite.Util
+@using KadoshWebsite.ViewComponents
 @model SaleViewModel
 @{
     ViewData["Title"] = $"Cadastro de Vendas";
@@ -24,7 +25,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create" method="post" class="row">
+        <form asp-action="Create" method="post" class="row" id="createSaleForm">
             <div class="col-lg-8">
 
                 <div class="col-md-12 mb-3">
@@ -58,7 +59,7 @@
                 </div>
 
                 <!-- Sale Items -->
-                <div class="col-12 mb-3">
+                @*<div class="col-12 mb-3">
                     <div class="card">
                         <div class="card-header">
                             <i class="uil uil-box icon-size-1-5"></i> Produtos da venda
@@ -127,6 +128,46 @@
                                         </tr>
                                     </tbody>
                                     <a data-repeater-create class="btn btn-success" title="Adicionar outro produto"><i class="uil uil-plus"></i> Adicionar um produto à venda</a>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>*@
+
+                <!-- Sale Items -->
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="uil uil-box icon-size-1-5"></i> Produtos da venda
+                        </div>
+                        <div class="card-body">
+
+                            <div class="col-md-12 mb-3">
+                                <table class="table table-hover" id="saleItemsTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Produto</th>
+                                            <th scope="col">Preço</th>
+                                            <th scope="col">Quantidade</th>
+                                            <th scope="col">Desconto</th>
+                                            <th scope="col">Subtotal</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <input id="productBarCode" class="form-control" placeholder="Código de barras" autocorrect="off" autocomplete="off" autofocus />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a class="btn btn-success" title="Buscar produto" data-bs-toggle="modal" data-bs-target="#productModal"><i class="uil uil-plus"></i> Buscar novo produto</a>
+                                        </div>
+                                    </div>
                                 </table>
                             </div>
 
@@ -251,6 +292,32 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Product Modal -->
+            <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productModalLabel">Buscar produto</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-group mb-3">
+                                        @await Component.InvokeAsync(nameof(ProductSelectViewComponent).Replace("ViewComponent", ""))
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnDismissProductModal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="AddSelectedProduct()">Selecionar produto</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -258,6 +325,7 @@
 @section Scripts {
 <script>
     let getProductInfoUrl = '@Url.Action("GetProductInfo")';
+    let getProductInfoByBarCodeUrl = '@Url.Action("GetProductInfoByBarCode")';
 </script>
 
 <script src="~/lib/jquery.repeater/jquery.repeater.min.js"></script>
@@ -265,6 +333,7 @@
 <script src="~/lib/jquery.mask/jquery.mask.min.js"></script>
 <script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
 <script src="~/js/saleView.js"></script>
+<script src="~/js/productSelectTable.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

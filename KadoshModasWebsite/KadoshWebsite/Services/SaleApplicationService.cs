@@ -296,7 +296,8 @@ namespace KadoshWebsite.Services
                 ProductId = x.ProductId,
                 Price = x.Price,
                 Quantity = x.Amount,
-                DiscountInPercentage = x.DiscountInPercentage
+                DiscountInPercentage = x.DiscountInPercentage,
+                Status = x.Status
             });
         }
 
