@@ -193,6 +193,9 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// Service Provider Manager
+ServiceProviderManager.SetServiceProvider(builder.Services.BuildServiceProvider());
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

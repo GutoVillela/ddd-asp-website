@@ -127,7 +127,7 @@ namespace KadoshRepository.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    BarCode = table.Column<string>(type: "longtext", nullable: true)
+                    BarCode = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
@@ -386,6 +386,12 @@ namespace KadoshRepository.Migrations
                 name: "IX_Installments_SaleId",
                 table: "Installments",
                 column: "SaleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_BarCode",
+                table: "Products",
+                column: "BarCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_BrandId",

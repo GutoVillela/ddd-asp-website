@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using KadoshWebsite.Models.Validators;
+using System.ComponentModel.DataAnnotations;
 
 namespace KadoshWebsite.Models
 {
@@ -11,6 +12,7 @@ namespace KadoshWebsite.Models
         public string? Name { get; set; }
 
         [Display(Name = "Código de Barras")]
+        [UniqueBarcodeValidation(ErrorMessage = "O código de barras informado já existe")]
         public string? BarCode { get; set; }
 
         [Required(ErrorMessage = "O preço do produto é obrigatório")]

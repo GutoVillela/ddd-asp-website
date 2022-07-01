@@ -24,7 +24,7 @@ namespace KadoshDomain.LegacyEntities
         {
             Product product = new(
                 name: legacyProduct.Name, 
-                barCode: legacyProduct.BarCode ?? string.Empty,
+                barCode: legacyProduct.BarCode,
                 price: legacyProduct.Price,
                 categoryId: 0, // At this moment the category and brand is not set from legacy yet
                 brandId: 0);

@@ -59,6 +59,12 @@
                                 <input asp-for="BarCode" class="form-control" placeholder="Código de Barras" />
                                 <label asp-for="BarCode"></label>
                             </div>
+                            <button title="Gerar um novo código de barras para o produto" class="btn btn-outline-secondary" type="button" id="btnGenerateBarCode" onclick="GenerateBarCode()">
+                                <div class="spinner-border text-primary visually-hidden" role="status" id="barCodeLoadingSpinner">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                                Gerar <i class="uil uil-bars"></i>
+                            </button>
                         </div>
                         <span asp-validation-for="BarCode" class="text-danger"></span>
                     </div>
@@ -90,6 +96,9 @@
 </div>
 
 @section Scripts {
+<script>
+    let generateBarCodeUrl = '@Url.Action("GenerateBarCode")';
+</script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

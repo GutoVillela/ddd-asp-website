@@ -143,6 +143,12 @@ namespace KadoshWebsite.Controllers
             return PartialView("_ProductSelectTable", products);
         }
 
+        [HttpGet]
+        public IActionResult GenerateBarCode()
+        {
+            return Ok(Guid.NewGuid().ToString());
+        }
+
         private async Task LoadBrandsAndCategoriesToViewData(int? selectedBrand = null, int? selectedCategory = null)
         {
             await SelectListLoaderHelper.LoadBrandsToViewDataAsync(_brandService, ViewData, selectedBrand);

@@ -29,7 +29,7 @@ namespace Kadosh.LegacyRepository.DAL
                 ProductLegacy product = new(name: dataReader["NOME"].ToString() ?? string.Empty, price: decimal.Parse(dataReader["PRECO"].ToString() ?? "0"))
                 {
                     Id = int.Parse(dataReader["ID_PRODUTO"].ToString() ?? "0"),
-                    BarCode = dataReader["CODIGO_DE_BARRA"].ToString(),
+                    BarCode = string.IsNullOrEmpty(dataReader["CODIGO_DE_BARRA"].ToString()) ? null : dataReader["CODIGO_DE_BARRA"].ToString(),
                     Category = dataReader["CATEGORIA"].ToString(),
                     Brand = dataReader["MARCA"].ToString(),
                     CreatedAt = DateTime.Parse(dataReader["DT_CRIACAO"].ToString()),

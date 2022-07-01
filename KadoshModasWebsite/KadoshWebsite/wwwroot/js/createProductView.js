@@ -12,3 +12,29 @@
 function ReplaceCharForInputText(inputTextId, charToFind, replaceTo) {
     $('#' + inputTextId).val($('#' + inputTextId).val().replace(charToFind, replaceTo));
 }
+
+function GenerateBarCode() {
+    $.ajax({
+        method: 'GET',
+        url: generateBarCodeUrl,
+        beforeSend: function () {
+            ShowBarCodeLoadingSpinner();
+        }
+    }).done(function (generatedBarCode) {
+        $('#BarCode').val(generatedBarCode);
+    }).fail(function () {
+        swal("Oops!", e.responseText, "error").then(() => {
+            $('#BarCode').focus();
+        });
+    }).always(function () {
+        HideBarCodeLoadingSpinner();
+    });
+}
+
+function ShowBarCodeLoadingSpinner() {
+    $('#barCodeLoadingSpinner').show();
+}
+
+function HideBarCodeLoadingSpinner() {
+    $('#barCodeLoadingSpinner').hide();
+}

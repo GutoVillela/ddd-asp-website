@@ -178,7 +178,7 @@ namespace KadoshRepository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BarCode")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
@@ -204,6 +204,9 @@ namespace KadoshRepository.Migrations
                         .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BarCode")
+                        .IsUnique();
 
                     b.HasIndex("BrandId");
 
