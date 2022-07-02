@@ -35,7 +35,11 @@ namespace KadoshDomain.Commands.UserCommands.AuthenticateUser
 
                 // Entity validations
                 if (user is null)
+                {
                     AddNotification(nameof(user), UserCommandMessages.ERROR_USERNAME_NOT_FOUND);
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_USERNAME_NOT_FOUND);
+                    return new CommandResult(false, UserCommandMessages.ERROR_USERNAME_NOT_FOUND, errors);
+                }
 
                 // Check validations
                 if (!IsValid)
@@ -55,7 +59,7 @@ namespace KadoshDomain.Commands.UserCommands.AuthenticateUser
                     return new CommandResult(false, UserCommandMessages.ERROR_AUTHENTICATION_FAILED, errors);
                 }
 
-                return new CommandResult(true, UserCommandMessages.SUCCESS_ON_DELETE_USER_COMMAND);
+                return new CommandResult(true, UserCommandMessages.SUCCESS_ON_AUTHENTICATE_USER_COMMAND);
 
             }
             catch

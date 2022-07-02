@@ -90,6 +90,9 @@ builder.Services.AddScoped<ICustomerPostingApplicationService, CustomerPostingAp
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ISettingsApplicationService, SettingsApplicationService>();
 
+//Services Injections
+builder.Services.AddScoped<ITokenService, TokenService>();
+
 // Unit of Work Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -191,6 +194,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
 });
 
+// Configure Authentication
+Settings.ConfigureAuthentication(builder);
+
 var app = builder.Build();
 
 // Service Provider Manager
@@ -212,24 +218,9 @@ app.UseRouting();
 app.UseSession();
 
 // Authorization Scheme (must come before app.UseAuthorization() )
-app.Use(async (context, next) =>
-{
-    var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
-    var authAttr = endpoint?.Metadata?.GetMetadata<AuthorizeAttribute>();
-    if (authAttr is not null && authAttr.Policy == nameof(LoggedInAuthorization))
-    {
-        var authService = context.RequestServices.GetRequiredService<IAuthorizationService>();
-        var result = await authService.AuthorizeAsync(context.User, context.GetRouteData(), authAttr.Policy);
-        if (!result.Succeeded)
-        {
-            var path = $"/Login";
-            context.Response.Redirect(path);
-            return;
-        }
-    }
-    await next();
-});
+Settings.ConfigureAuthorization(app);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

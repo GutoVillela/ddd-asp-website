@@ -1,10 +1,13 @@
 ﻿using KadoshWebsite.Infrastructure;
+using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
 {
+    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class CustomerPostingsController : Controller
     {
 
