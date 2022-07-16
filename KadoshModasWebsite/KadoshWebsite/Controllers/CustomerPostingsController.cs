@@ -1,4 +1,5 @@
 ﻿using KadoshWebsite.Infrastructure;
+using KadoshWebsite.Infrastructure.Authentication;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
 {
-    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class CustomerPostingsController : Controller
     {
 
@@ -19,6 +19,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<PartialViewResult> GetCustomerPostingsByCustomerPaginatedAsync(int? page, int? filterByCustumerId)
         {
             PaginatedListViewModel<CustomerPostingViewModel> customerPostings = new();
@@ -30,6 +31,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<PartialViewResult> GetCustomerPostingsBySalePaginatedAsync(int? page, int? filterBySaleId)
         {
             PaginatedCustomerPostingsViewModel customerPostings = new();
@@ -41,6 +43,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<PartialViewResult> GetCustomerPostingsByStoreAndDatePaginatedAsync(int? page, DateTime? date, int? storeId, bool getTotal)
         {
             PaginatedCustomerPostingsViewModel customerPostings = new();
@@ -55,6 +58,23 @@ namespace KadoshWebsite.Controllers
                     PaginationManager.PAGE_SIZE);
 
             return PartialView("_CustomerPostingsListTable", customerPostings);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.CUSTOMER_ROLE)]
+        public async Task<IActionResult> GetCustomerPostingsInfoByCustomerPaginatedAsync(int custumerId, int page, int pageSize)
+        {
+            try
+            {
+                PaginatedListViewModel<CustomerPostingViewModel> customerPostings = 
+                    await _customerPostingsService.GetAllPostingsFromCustomerPaginatedAsync(custumerId, page, pageSize);
+
+                return Ok(customerPostings);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

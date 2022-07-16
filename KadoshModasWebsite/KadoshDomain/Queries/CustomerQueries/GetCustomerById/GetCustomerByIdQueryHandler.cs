@@ -30,7 +30,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetCustomerById
             if (customer is null)
             {
                 AddNotification(nameof(customer), CustomerQueriesMessages.ERROR_CUSTOMER_ID_NOT_FOUND);
-                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_BRAND_NOT_FOUND);
+                var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_CUSTOMER_NOT_FOUND);
                 return new GetCustomerByIdQueryResult(errors);
             }
 

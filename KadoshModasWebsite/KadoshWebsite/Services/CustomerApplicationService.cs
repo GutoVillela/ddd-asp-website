@@ -15,6 +15,9 @@ using KadoshDomain.Queries.CustomerQueries.DTOs;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerTotalDebt;
 using KadoshWebsite.Infrastructure;
 using KadoshDomain.Queries.CustomerQueries.GetCustomersByName;
+using KadoshDomain.Queries.CustomerQueries.GetCustomerByUsername;
+using KadoshShared.Constants.ErrorCodes;
+using KadoshDomain.Commands.CustomerCommands.CreateCustomerUser;
 
 namespace KadoshWebsite.Services
 {
@@ -24,29 +27,35 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<DeleteCustomerCommand> _deleteCustomerHandler;
         private readonly ICommandHandler<UpdateCustomerCommand> _updateCustomerHandler;
         private readonly ICommandHandler<InformPaymentCommand> _informPaymentHandler;
+        private readonly ICommandHandler<CreateCustomerUserCommand> _createCustomerUserHandler;
         private readonly IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> _getAllCustomersQueryHandler;
         private readonly IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> _getCustomerByIdQueryHandler;
         private readonly IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> _getCustomerTotalDebtQueryHandler;
         private readonly IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult> _getCustomersByNameQueryHandler;
+        private readonly IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult> _getCustomerByUsernameQueryHandler;
 
         public CustomerApplicationService(
             ICommandHandler<CreateCustomerCommand> createCustomerHandler,
             ICommandHandler<DeleteCustomerCommand> deleteCustomerHandler,
             ICommandHandler<UpdateCustomerCommand> updateCustomerHandler,
             ICommandHandler<InformPaymentCommand> informPaymentHandler,
+            ICommandHandler<CreateCustomerUserCommand> createCustomerUserHandler,
             IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> getAllCustomersQueryHandler,
             IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> getCustomerByIdQueryHandler,
             IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> getCustomerTotalDebtQueryHandler,
-            IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult> getCustomersByNameQueryHandler)
+            IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult> getCustomersByNameQueryHandler,
+            IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult> getCustomerByUsernameQueryHandler)
         {
             _createCustomerHandler = createCustomerHandler;
             _deleteCustomerHandler = deleteCustomerHandler;
             _updateCustomerHandler = updateCustomerHandler;
             _informPaymentHandler = informPaymentHandler;
+            _createCustomerUserHandler = createCustomerUserHandler;
             _getAllCustomersQueryHandler = getAllCustomersQueryHandler;
             _getCustomerByIdQueryHandler = getCustomerByIdQueryHandler;
             _getCustomerTotalDebtQueryHandler = getCustomerTotalDebtQueryHandler;
             _getCustomersByNameQueryHandler = getCustomersByNameQueryHandler;
+            _getCustomerByUsernameQueryHandler = getCustomerByUsernameQueryHandler;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -100,18 +109,7 @@ namespace KadoshWebsite.Services
 
             foreach (var customer in result.Customers)
             {
-                customerViewModels.Add(new CustomerViewModel()
-                {
-                    Id = customer.Id,
-                    Name = customer.Name,
-                    Street = customer.Street,
-                    Number = customer.Number,
-                    Neighborhood = customer.Neighborhood,
-                    City = customer.City,
-                    State = customer.State,
-                    ZipCode = customer.ZipCode,
-                    Complement = customer.Complement
-                });
+                customerViewModels.Add(GetCustomerViewModelFromDTO(customer));
             }
             return customerViewModels;
         }
@@ -131,18 +129,7 @@ namespace KadoshWebsite.Services
 
             foreach (var customer in result.Customers)
             {
-                customerViewModels.Add(new CustomerViewModel()
-                {
-                    Id = customer.Id,
-                    Name = customer.Name,
-                    Street = customer.Street,
-                    Number = customer.Number,
-                    Neighborhood = customer.Neighborhood,
-                    City = customer.City,
-                    State = customer.State,
-                    ZipCode = customer.ZipCode,
-                    Complement = customer.Complement
-                });
+                customerViewModels.Add(GetCustomerViewModelFromDTO(customer));
             }
 
             PaginatedListViewModel<CustomerViewModel> paginatedList = new();
@@ -164,22 +151,7 @@ namespace KadoshWebsite.Services
             if (!result.Success)
                 throw new ApplicationException(result.Errors!.GetAsSingleMessage());
 
-            CustomerViewModel viewModel = new()
-            {
-                Id = result.Customer!.Id,
-                Name = result.Customer!.Name,
-                Gender = result.Customer!.Gender,
-                Email = result.Customer!.Email,
-                DocumentType = result.Customer!.DocumentType,
-                DocumentNumber = result.Customer!.DocumentNumber,
-                Street = result.Customer!.Street,
-                Number = result.Customer!.Number,
-                Neighborhood = result.Customer!.Neighborhood,
-                City = result.Customer!.City,
-                State = result.Customer!.State,
-                ZipCode = result.Customer!.ZipCode,
-                Complement = result.Customer!.Complement
-            };
+            CustomerViewModel viewModel = GetCustomerViewModelFromDTO(result.Customer!);
 
             viewModel.Phones = GetPhonesFromDTOAsViewModels(result.Customer!);
 
@@ -257,18 +229,7 @@ namespace KadoshWebsite.Services
 
             foreach (var customer in result.Customers)
             {
-                customerViewModels.Add(new CustomerViewModel()
-                {
-                    Id = customer.Id,
-                    Name = customer.Name,
-                    Street = customer.Street,
-                    Number = customer.Number,
-                    Neighborhood = customer.Neighborhood,
-                    City = customer.City,
-                    State = customer.State,
-                    ZipCode = customer.ZipCode,
-                    Complement = customer.Complement
-                });
+                customerViewModels.Add(GetCustomerViewModelFromDTO(customer));
             }
 
             PaginatedListViewModel<CustomerViewModel> paginatedList = new();
@@ -279,6 +240,60 @@ namespace KadoshWebsite.Services
             paginatedList.Items = customerViewModels;
 
             return paginatedList;
+        }
+
+        public async Task<CustomerViewModel?> GetCustomerUserByUsernameAsync(string username)
+        {
+            GetCustomerByUsernameQuery query = new();
+            query.Username = username;
+
+            var result = await _getCustomerByUsernameQueryHandler.HandleAsync(query);
+
+            if (!result.Success)
+            {
+                if(result.Errors.Any(x => x.Code == ErrorCodes.ERROR_CUSTOMER_USERNAME_NOT_FOUND))
+                    return null;
+
+                throw new ApplicationException(result.Errors!.GetAsSingleMessage());
+
+            }
+
+            CustomerViewModel viewModel = GetCustomerViewModelFromDTO(result.Customer!);
+
+            viewModel.Phones = GetPhonesFromDTOAsViewModels(result.Customer!);
+
+            return viewModel;
+        }
+
+        public async Task<ICommandResult> CreateCustomerUserAsync(int customerId, string username, string password)
+        {
+            CreateCustomerUserCommand command = new();
+            command.CustomerId = customerId;
+            command.Username = username;
+            command.Password = password;
+
+            return await _createCustomerUserHandler.HandleAsync(command);
+        }
+
+        private CustomerViewModel GetCustomerViewModelFromDTO(CustomerDTO customerDTO)
+        {
+            return new()
+            {
+                Id = customerDTO.Id,
+                Name = customerDTO.Name,
+                Gender = customerDTO.Gender,
+                Email = customerDTO.Email,
+                DocumentType = customerDTO.DocumentType,
+                DocumentNumber = customerDTO.DocumentNumber,
+                Street = customerDTO.Street,
+                Number = customerDTO.Number,
+                Neighborhood = customerDTO.Neighborhood,
+                City = customerDTO.City,
+                State = customerDTO.State,
+                ZipCode = customerDTO.ZipCode,
+                Complement = customerDTO.Complement,
+                Username = customerDTO.Username,
+            };
         }
 
         private Phone ConvertPhoneModelToValueObject(PhoneViewModel phoneViewModel)

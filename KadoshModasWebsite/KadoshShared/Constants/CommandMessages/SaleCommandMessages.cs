@@ -14,7 +14,7 @@
         public const string ERROR_COULD_NOT_CREATE_SALE_IN_CASH_POSTING = "Não foi possível realizar o lançamento da venda em à vista";
         public const string ERROR_COULD_NOT_CREATE_DOWN_PAYMENT_POSTING = "Não foi possível realizar o lançamento da entrada da venda";
         public const string ERROR_INVALID_SALE_INSTALLMENT = "Uma ou mais parcelas da venda estão inválidas";
-        public const string UNEXPECTED_EXCEPTION = "Uma exceção inesperada aconteceu";
+        public const string UNEXPECTED_EXCEPTION = "Uma exceção inesperada aconteceu";// TODO: Move message to a more generic class
         public const string INVALID_PAYOFF_SALE_COMMAND = "Não foi possível quitar a dívida";
         public const string ERROR_COULD_NOT_FIND_SALE = "Não foi possível encontrar a venda para o ID informado";
         public const string ERROR_COULD_NOT_CREATE_SALE_PAYOFF_POSTING = "Não foi possível realizar o lançamento da quitação da venda";
@@ -33,5 +33,8 @@
         public const string INVALID_INSTALLMENT_SITUATION_ON_PAYOFF_INSTALLMENT_COMMAND = "A parcela já está quitada";
         public const string ERROR_INVALID_POSTING_TO_PAYOFF_INSTALLMENT = "Lançamento para quitação de parcela inválido";
         public const string SUCCESS_ON_PAYOFF_INSTALLMENT_COMMAND = "Parcela quitada com sucesso";
+        public const string INVALID_CANCEL_SALE_COMMAND = "O comando para cancelar a venda está inválido";
+        public const string ERROR_COULD_NOT_CREATE_CASHBACK_POSTING = "Não foi possível realizar o lançamento de estorno da venda";
+        public const string SUCCESS_ON_CANCEL_SALE_COMMAND = "Venda estornada com sucesso";
     }
 }

@@ -18,6 +18,8 @@ namespace KadoshDomain.Queries.CustomerQueries.DTOs
 
         public string? DocumentNumber { get; set; }
 
+        public string? Username { get; set; }
+
         public ICollection<Phone> Phones { get; set; } = new HashSet<Phone>();
 
         #region Address
@@ -51,7 +53,8 @@ namespace KadoshDomain.Queries.CustomerQueries.DTOs
             City = customer.Address?.City,
             State = customer.Address?.State,
             ZipCode = customer.Address?.ZipCode,
-            Complement = customer.Address?.Complement
+            Complement = customer.Address?.Complement,
+            Username = customer.Username
         };
     }
 }

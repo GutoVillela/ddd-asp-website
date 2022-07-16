@@ -2,6 +2,7 @@
 using KadoshDomain.Queriables;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
+using KadoshRepository.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace KadoshRepository.Repositories
@@ -38,6 +39,26 @@ namespace KadoshRepository.Repositories
                 .Skip(amountToTake)
                 .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<Customer?> GetCustomerByUsernameAsync(string username)
+        {
+            return await _dbSet.FirstOrDefaultAsync(CustomerQueriable.GetCustomerByUsername(username));
+        }
+
+        public (string hash, byte[] salt, int iterations) GetPasswordHashed(string password)
+        {
+            return PasswordEncodeUtil.GetPasswordHashed(password);
+        }
+
+        public string GetPasswordHashed(string password, byte[] salt, int iterations)
+        {
+            return PasswordEncodeUtil.GetPasswordHashed(password, salt, iterations);
+        }
+
+        public async Task<bool> VerifyIfUsernameIsTakenAsync(string username)
+        {
+            return await _dbSet.AnyAsync(CustomerQueriable.GetCustomerByUsername(username));
         }
     }
 }

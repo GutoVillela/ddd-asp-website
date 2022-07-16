@@ -9,5 +9,10 @@ namespace KadoshDomain.Queriables
         {
             return x => x.Name.Contains(name);
         }
+
+        public static Expression<Func<Customer, bool>> GetCustomerByUsername(string username)
+        {
+            return x => x.Username == username;
+        }
     }
 }

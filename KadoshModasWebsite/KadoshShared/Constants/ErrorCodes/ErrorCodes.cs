@@ -92,5 +92,13 @@
         public const int ERROR_COULD_NOT_FIND_IMPORT_FROM_LEGACY_CATEGORY = 85;
         public const int ERROR_INVALID_GET_PRODUCTS_BY_NAME_QUERY = 86;
         public const int ERROR_INVALID_GET_PRODUCT_BY_BARCODE_QUERY = 87;
+        public const int ERROR_INVALID_CUSTOMER_AUTHENTICATE_COMMAND = 88;
+        public const int ERROR_CUSTOMER_USERNAME_NOT_FOUND = 89;
+        public const int ERROR_CUSTOMER_USER_PASSWORD_NOT_SET = 90;
+        public const int ERROR_INVALID_GET_CUSTOMER_BY_USERNAME_QUERY = 91;
+        public const int ERROR_INVALID_CUSTOMER_USER_CREATE_COMMAND = 92;
+        public const int ERROR_CUSTOMER_USER_ALREADY_CREATED = 93;
+        public const int ERROR_INVALID_CANCEL_SALE_COMMAND = 94;
+        public const int ERROR_COULD_NOT_CREATE_CASHBACK_POSTING = 95;
     }
 }

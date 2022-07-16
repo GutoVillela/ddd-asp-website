@@ -120,7 +120,7 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments
                 {
                     Installment installment = new(
                         number: installmentNumber,
-                        value: Sale.CalculateTotal(saleItems, command.DiscountInPercentage) / command.Installments.Count,
+                        value: Sale.CalculateTotal(saleItems, command.DiscountInPercentage, ESaleSituation.Open) / command.Installments.Count,
                         maturityDate: commandInstallment.MaturityDate,
                         situation: EInstallmentSituation.Open);
 

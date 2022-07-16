@@ -1,6 +1,7 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
 using KadoshWebsite.Infrastructure;
+using KadoshWebsite.Infrastructure.Authentication;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -11,7 +12,6 @@ using Rotativa.AspNetCore;
 
 namespace KadoshWebsite.Controllers
 {
-    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class SaleController : BaseController
     {
         private readonly ICustomerApplicationService _customerService;
@@ -38,6 +38,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> IndexAsync()
         {
             var sales = await _saleService.GetAllSalesAsync();
@@ -45,6 +46,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> CreateAsync()
         {
             await LoadCustomersSellersStoresAndProductsToViewData();
@@ -53,6 +55,7 @@ namespace KadoshWebsite.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> CreateAsync(SaleViewModel model)
         {
             if (ModelState.IsValid)
@@ -78,6 +81,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> GetProductInfoAsync(int? productId)
         {
             if (productId is null)
@@ -92,6 +96,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> GetProductInfoByBarCodeAsync(string? barCode)
         {
             try
@@ -113,6 +118,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> PayOffSale(int? saleId)
         {
             if (saleId is null)
@@ -127,6 +133,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<PartialViewResult> GetSalesPaginatedAsync(int? page, int? filterByCustumerId)
         {
             PaginatedListViewModel<SaleViewModel> sales;
@@ -140,6 +147,29 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Roles.CUSTOMER_ROLE)]
+        public async Task<IActionResult> GetSalesByCustomerPaginatedAsync(int page, int pageSize, int custumerId)
+        {
+            try
+            {
+                if(page < 1 || pageSize < 1)
+                    return BadRequest("O tamanho da página e a página devem ser maiores do que 0 para esta consulta");
+
+                if (custumerId <= 0)
+                    return BadRequest("O ID do cliente deve ser fornecido para esta consulta");
+
+                PaginatedListViewModel<SaleViewModel> sales = await _saleService.GetAllSalesIncludingProductsByCustomerPaginatedAsync(custumerId, page, pageSize);
+
+                return Ok(sales);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (!id.HasValue)
@@ -151,6 +181,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> InformPaymentAsync(int? saleId, decimal? amountToInform)
         {
             ArgumentNullException.ThrowIfNull(saleId);
@@ -165,6 +196,21 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
+        public async Task<IActionResult> CancelSaleAsync(int? saleId)
+        {
+            ArgumentNullException.ThrowIfNull(saleId);
+
+            var result = await _saleService.CancelSaleAsync(saleId.Value);
+
+            if (result.Success)
+                return Ok(result.Message);
+
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> PayOffInstallmentAsync(int? saleId, int? installmentId)
         {
             ArgumentNullException.ThrowIfNull(saleId);
@@ -179,6 +225,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> PrintReceiptAsync(int? saleId)
         {
             ArgumentNullException.ThrowIfNull(saleId);
@@ -197,6 +244,25 @@ namespace KadoshWebsite.Controllers
                 PageMargins = { Left = 1, Right = 1 },
                 Model = model
             };
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.CUSTOMER_ROLE)]
+        public async Task<IActionResult> GetSaleByIdAsync(int saleId)
+        {
+            try
+            {
+                var sale = await _saleService.GetSaleAsync(saleId);
+
+                if(sale is null)
+                    return NotFound();
+
+                return Ok(sale);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         private async Task LoadCustomersSellersStoresAndProductsToViewData()

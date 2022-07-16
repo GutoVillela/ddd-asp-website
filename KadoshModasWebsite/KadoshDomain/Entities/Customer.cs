@@ -54,6 +54,26 @@ namespace KadoshDomain.Entities
         {
             Id = id;
         }
+
+        public Customer(
+            int id,
+            string name,
+            Email? email,
+            Document? document,
+            EGender? gender,
+            Address? address,
+            string username,
+            string passwordHash,
+            byte[] passwordSalt,
+            int passwordSaltIterations
+            ) : this(name, email, document, gender, address)
+        {
+            Id = id;
+            Username = username;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            PasswordSaltIterations = passwordSaltIterations;
+        }
         #endregion Constructors
 
         [Required]
@@ -64,6 +84,16 @@ namespace KadoshDomain.Entities
         public Document? Document { get; private set; }
         public EGender? Gender { get; private set; }
         public Address? Address { get; private set; }
+
+        [MaxLength(20)]
+        public string? Username { get; private set; }
+
+        public string? PasswordHash { get; private set; }
+
+        public byte[]? PasswordSalt { get; private set; }
+
+        public int? PasswordSaltIterations { get; private set; }
+
         public IReadOnlyCollection<Phone>? Phones { get; private set; }
 
         public IReadOnlyCollection<Sale> Sales { get; private set; } =  new List<Sale>();
@@ -83,6 +113,22 @@ namespace KadoshDomain.Entities
             Address = address;
             Phones = phones;
             ValidateCustomer();
+        }
+
+        public void ClearCustomerUsernameAndPasswordData()
+        {
+            Username = null;
+            PasswordHash = null;
+            PasswordSalt = null;
+            PasswordSaltIterations = null;
+        }
+
+        public void SetUsernameAndPassword(string username, string passwordHash, byte[] passwordSalt, int passwordSaltIterations)
+        {
+            Username = username;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            PasswordSaltIterations = passwordSaltIterations;
         }
 
         private void ValidateCustomer()

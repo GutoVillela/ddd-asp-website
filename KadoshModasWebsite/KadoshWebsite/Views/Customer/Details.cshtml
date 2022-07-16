@@ -36,6 +36,9 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#postings" type="button" role="tab" aria-controls="postings" aria-selected="false">Lançamentos</button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#appLogin" type="button" role="tab" aria-controls="postings" aria-selected="false">Acesso ao APP Kadosh</button>
+                    </li>
                 </ul>
                 <div class="tab-content" id="customerTabsContent">
                     <div class="tab-pane fade show active p-3" id="sales" role="tabpanel" aria-labelledby="sales-tab">
@@ -65,6 +68,25 @@
                     </div>
                     <div class="tab-pane fade p-3" id="postings" role="tabpanel" aria-labelledby="postings-tab">
                         @await Component.InvokeAsync(nameof(ListCustomerPostingsViewComponent).Replace("ViewComponent", ""), new { filterByCustumerId = Model.Id })
+                    </div>
+                    <div class="tab-pane fade p-3" id="appLogin" role="tabpanel" aria-labelledby="postings-tab">
+                        <div class="card outline-badge-primary mb-3">
+                            <div class="card-content">
+                                <div class="card-body p-4">
+                                    <div class="d-md-flex">
+                                        <div class="my-auto">
+                                            <i class="uil uil-mobile-vibrate icon-size-1-5"></i>
+                                        </div>
+                                        <div class="content px-md-3 my-3 my-md-0">
+                                            <span class="mb-0 font-w-600 h5">ID de primeiro acesso: @Model.Id.Value.ToString().PadLeft(6, '0')</span><br>
+                                            <p class="mb-0 font-w-500 tx-s-12">Informe o ID de primeiro acesso ao cliente para possibilitar o uso do APP Kadosh.</p>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

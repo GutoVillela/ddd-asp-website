@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
-    public class SaleItem : Entity
+    public class SaleItem : Entity, ICloneable
     {
         #region Constructors
         public SaleItem(int saleId, int productId, int amount, decimal price, decimal discountInPercentage, ESaleItemSituation situation)
@@ -68,6 +68,11 @@ namespace KadoshDomain.Entities
         [Required]
         public ESaleItemSituation Situation { get; private set; }
 
+        public void UpdateSituation(ESaleItemSituation itemSituation)
+        {
+            Situation = itemSituation;
+        }
+
         private void ValidateSaleItem()
         {
             AddNotifications(new Contract<Notification>()
@@ -76,6 +81,19 @@ namespace KadoshDomain.Entities
                .IsGreaterOrEqualsThan(Price, 0, nameof(Price), "O preço do item da venda não pode ser negativo!")
                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto do item da venda deve estar entre 0 e 100%!")
            );
+        }
+
+        public object Clone()
+        {
+            return new SaleItem(
+                saleId: SaleId,
+                productId: ProductId,
+                amount: Amount,
+                price: Price,
+                discountInPercentage: DiscountInPercentage,
+                situation: Situation,
+                sale: Sale,
+                product: Product);
         }
     }
 }

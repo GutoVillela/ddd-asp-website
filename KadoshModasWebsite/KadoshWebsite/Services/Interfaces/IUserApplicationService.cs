@@ -1,4 +1,6 @@
-﻿using KadoshShared.Commands;
+﻿using KadoshDomain.Entities;
+using KadoshDomain.Enums;
+using KadoshShared.Commands;
 using KadoshWebsite.Models;
 
 namespace KadoshWebsite.Services.Interfaces
@@ -13,5 +15,6 @@ namespace KadoshWebsite.Services.Interfaces
         Task<ICommandResult> DeleteUserAsync(int id);
         Task<ICommandResult> AuthenticateUserAsync(string username, string password);
         void LoginAuthenticatedUser(string authenticatedUsername);
+        Task<ICommandResult> AuthenticateCustomerUserAsync(string username, string password);
     }
 }

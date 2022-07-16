@@ -11,6 +11,11 @@ namespace KadoshRepository.Persistence.Map
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(255);
             builder.Property(x => x.Gender);
+            builder.Property(x => x.Username).HasMaxLength(20);
+            builder.HasIndex(x => x.Username).IsUnique();
+            builder.Property(x => x.PasswordHash);
+            builder.Property(x => x.PasswordSalt);
+            builder.Property(x => x.PasswordSaltIterations);
 
             builder.OwnsOne(x => x.Email, 
                 email =>

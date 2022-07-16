@@ -10,5 +10,7 @@
         public const string QUERY_PAGE_SIZE_LOWER_THAN_ZERO = "O tamanho da página da consulta paginada não pode ser menor do que zero";
         public const string QUERY_NULL_INTERVAL_SINCE_LAST_PAYMENT = "O intervalo em dias desde o último pagamento deve ser fornecido para buscar os clients inadimplentes";
         public const string QUERY_INTERVAL_SINCE_LAST_PAYMENT_LOWER_THAN_OR_EQUALS_ZERO = "O intervalo em dias desde o último pagamento deve ser maior do que zero para buscar os clients inadimplentes";
+        public const string INVALID_CUSTOMER_USERNAME = "O campo nome de usuário está inválido";
+        public const string INVALID_CUSTOMER_PASSWORD = "O campo senha está inválido";
     }
 }

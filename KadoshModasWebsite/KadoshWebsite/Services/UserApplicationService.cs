@@ -11,6 +11,9 @@ using KadoshDomain.Queries.UserQueries.GetAllUsers;
 using KadoshDomain.Queries.UserQueries.GetUserById;
 using KadoshShared.ExtensionMethods;
 using KadoshWebsite.Infrastructure;
+using KadoshDomain.Enums;
+using KadoshDomain.Commands.CustomerCommands.AuthenticateCustomerUser;
+using KadoshDomain.Entities;
 
 namespace KadoshWebsite.Services
 {
@@ -24,6 +27,7 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<CreateUserCommand> _createUserHandler;
         private readonly ICommandHandler<DeleteUserCommand> _deleteUserHandler;
         private readonly ICommandHandler<UpdateUserCommand> _updateUserHandler;
+        private readonly ICommandHandler<AuthenticateCustomerUserCommand> _authenticateCustomerUserHandler;
 
         private readonly IQueryHandler<GetAllUsersQuery, GetAllUsersQueryResult> _getAllUsersQueryHandler;
         private readonly IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult> _getUserByIdQueryHandler;
@@ -34,6 +38,7 @@ namespace KadoshWebsite.Services
             ICommandHandler<CreateUserCommand> createUserHandler,
             ICommandHandler<DeleteUserCommand> deleteUserHandler,
             ICommandHandler<UpdateUserCommand> updateUserHandler,
+            ICommandHandler<AuthenticateCustomerUserCommand> authenticateCustomerUserHandler,
             IQueryHandler<GetAllUsersQuery, GetAllUsersQueryResult> getAllUsersQueryHandler,
             IQueryHandler<GetUserByIdQuery, GetUserByIdQueryResult> getUserByIdQueryHandler
             )
@@ -43,6 +48,7 @@ namespace KadoshWebsite.Services
             _createUserHandler = createUserHandler;
             _deleteUserHandler = deleteUserHandler;
             _updateUserHandler = updateUserHandler;
+            _authenticateCustomerUserHandler = authenticateCustomerUserHandler;
             _getAllUsersQueryHandler = getAllUsersQueryHandler;
             _getUserByIdQueryHandler = getUserByIdQueryHandler;
         }
@@ -179,6 +185,15 @@ namespace KadoshWebsite.Services
             paginatedList.Items = usersViewModels;
 
             return paginatedList;
+        }
+
+        public async Task<ICommandResult> AuthenticateCustomerUserAsync(string username, string password)
+        {
+            AuthenticateCustomerUserCommand command = new();
+            command.Username = username;
+            command.Password = password;
+
+            return await _authenticateCustomerUserHandler.HandleAsync(command);
         }
     }
 }

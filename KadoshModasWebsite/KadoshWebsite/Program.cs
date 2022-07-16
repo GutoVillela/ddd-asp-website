@@ -5,13 +5,16 @@ using KadoshDomain.Commands.BrandCommands.UpdateBrand;
 using KadoshDomain.Commands.CategoryCommands.CreateCategory;
 using KadoshDomain.Commands.CategoryCommands.DeleteCategory;
 using KadoshDomain.Commands.CategoryCommands.UpdateCategory;
+using KadoshDomain.Commands.CustomerCommands.AuthenticateCustomerUser;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomer;
+using KadoshDomain.Commands.CustomerCommands.CreateCustomerUser;
 using KadoshDomain.Commands.CustomerCommands.DeleteCustomer;
 using KadoshDomain.Commands.CustomerCommands.InformPayment;
 using KadoshDomain.Commands.CustomerCommands.UpdateCustomer;
 using KadoshDomain.Commands.ProductCommands.CreateProduct;
 using KadoshDomain.Commands.ProductCommands.DeleteProduct;
 using KadoshDomain.Commands.ProductCommands.UpdateProduct;
+using KadoshDomain.Commands.SaleCommands.CancelSale;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
@@ -38,6 +41,7 @@ using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromSale;
 using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetAllDelinquentCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
+using KadoshDomain.Queries.CustomerQueries.GetCustomerByUsername;
 using KadoshDomain.Queries.CustomerQueries.GetCustomersByName;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerTotalDebt;
 using KadoshDomain.Queries.ProductQueries.GetAllProducts;
@@ -147,6 +151,9 @@ builder.Services.AddScoped<ICommandHandler<UpdateUserCommand>, UpdateUserHandler
 builder.Services.AddScoped<ICommandHandler<InformSalePaymentCommand>, InformSalePaymentHandler>();
 builder.Services.AddScoped<ICommandHandler<PayOffInstallmentCommand>, PayOffInstallmentHandler>();
 builder.Services.AddScoped<ICommandHandler<ImportDataFromLegacyCommand>, ImportDataFromLegacyHandler>();
+builder.Services.AddScoped<ICommandHandler<AuthenticateCustomerUserCommand>, AuthenticateCustomerUserHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateCustomerUserCommand>, CreateCustomerUserHandler>();
+builder.Services.AddScoped<ICommandHandler<CancelSaleCommand>, CancelSaleHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();
@@ -175,6 +182,7 @@ builder.Services.AddScoped<IQueryHandler<GetAllOpenSalesQuery, GetAllOpenSalesQu
 builder.Services.AddScoped<IQueryHandler<GetSalesByDateQuery, GetSalesByDateQueryResult>, GetSalesByDateQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetProductsByNameQuery, GetProductsByNameQueryResult>, GetProductsByNameQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetProductByBarCodeQuery, GetProductByBarCodeQueryResult>, GetProductByBarCodeQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult>, GetCustomerByUsernameQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

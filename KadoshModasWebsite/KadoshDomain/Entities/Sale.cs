@@ -197,7 +197,7 @@ namespace KadoshDomain.Entities
             Situation = situation;
         }
 
-        public decimal Total { get { return CalculateTotal(SaleItems, DiscountInPercentage); } }
+        public decimal Total { get { return CalculateTotal(SaleItems, DiscountInPercentage, Situation); } }
 
         public decimal TotalPaid { get { return CalculateTotalPaid(); } }
 
@@ -224,7 +224,7 @@ namespace KadoshDomain.Entities
                 .Requires()
                 .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%")
                 .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
-                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage), nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL)
+                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage, Situation), nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL)
                 .IsNotNull(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
             );
 
@@ -288,7 +288,7 @@ namespace KadoshDomain.Entities
             StoreId = store.Id;
         }
 
-        public static decimal CalculateTotal(IEnumerable<SaleItem> saleItems, decimal discountInPercentage)
+        public static decimal CalculateTotal(IEnumerable<SaleItem> saleItems, decimal discountInPercentage, ESaleSituation saleSituation)
         {
             if(saleItems is null)
                 return decimal.Zero;
@@ -297,7 +297,12 @@ namespace KadoshDomain.Entities
 
             foreach (var item in saleItems)
             {
-                if (item.Situation is not ESaleItemSituation.Canceled and not ESaleItemSituation.Exchanged)
+                if(saleSituation is not ESaleSituation.Canceled)
+                {
+                    if (item.Situation is not ESaleItemSituation.Canceled and not ESaleItemSituation.Exchanged)
+                        total += (item.Price - item.Price * (item.DiscountInPercentage / 100)) * item.Amount;
+                }
+                else
                     total += (item.Price - item.Price * (item.DiscountInPercentage / 100)) * item.Amount;
             }
 

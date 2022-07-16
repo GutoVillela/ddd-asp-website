@@ -1,6 +1,8 @@
 ﻿using KadoshShared.Constants.ErrorCodes;
+using KadoshShared.Constants.QueriesMessages;
 using KadoshShared.ValueObjects;
 using KadoshWebsite.Infrastructure;
+using KadoshWebsite.Infrastructure.Authentication;
 using KadoshWebsite.Infrastructure.Authorization;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
@@ -10,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KadoshWebsite.Controllers
 {
-    [Authorize(Policy = nameof(LoggedInAuthorization))]
     public class CustomerController : BaseController
     {
         private readonly ICustomerApplicationService _service;
@@ -21,6 +22,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> IndexAsync(int? page, string? queryByName)
         {
             PaginatedListViewModel<CustomerViewModel> customers;
@@ -35,6 +37,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public IActionResult Create()
         {
             return View();
@@ -42,6 +45,7 @@ namespace KadoshWebsite.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> CreateAsync(CustomerViewModel model)
         {
             if (ModelState.IsValid)
@@ -64,6 +68,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> EditAsync(int? id)
         {
             if (!id.HasValue)
@@ -76,6 +81,7 @@ namespace KadoshWebsite.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> EditAsync(CustomerViewModel model)
         {
             if (ModelState.IsValid)
@@ -98,6 +104,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (!id.HasValue)
@@ -110,6 +117,7 @@ namespace KadoshWebsite.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> DeleteAsync(StoreViewModel model)
         {
             if (!model.Id.HasValue)
@@ -128,6 +136,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (!id.HasValue)
@@ -140,6 +149,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<decimal> GetCustomerTotalDebtAsync(int? customerId)
         {
             ArgumentNullException.ThrowIfNull(customerId);
@@ -150,6 +160,7 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> InformPaymentAsync(int? customerId, decimal? amountToInform)
         {
             ArgumentNullException.ThrowIfNull(customerId);
@@ -161,6 +172,77 @@ namespace KadoshWebsite.Controllers
                 return Ok(result.Message);
 
             return BadRequest(result.Message);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.CUSTOMER_ROLE)]
+        public async Task<IActionResult> GetCustomerByUsernameAsync([FromQuery] string username)
+        {
+            try
+            {
+                var customer = await _service.GetCustomerUserByUsernameAsync(username);
+
+                if (customer is null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new
+                {
+                    customer
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomerByIdAsync([FromQuery] int id)
+        {
+            try
+            {
+                var model = await _service.GetCustomerAsync(id);
+                model.TotalDebt = await GetCustomerTotalDebtAsync(id);
+
+                return Ok(model);
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message.Contains(CustomerQueriesMessages.ERROR_CUSTOMER_ID_NOT_FOUND))
+                    return NotFound(ex.Message);
+
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCustomerUserAsync([FromBody] CustomerUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                if (model.CustomerId<= 0 || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
+                    return BadRequest();
+
+                var result = await _service.CreateCustomerUserAsync(model.CustomerId, model.Username, model.Password);
+
+                if (!result.Success)
+                {
+                    return Conflict(result.Message);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         protected override void AddErrorsToModelState(ICollection<Error> errors)

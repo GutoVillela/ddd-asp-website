@@ -24,6 +24,9 @@ namespace KadoshWebsite.Models
         [Display(Name = "Documento")]
         public string? DocumentNumber { get; set; }
 
+        [Display(Name = "Nome de usuário")]
+        public string? Username { get; set; }
+
         #region Address
         [MaxLength(255, ErrorMessage = "O tamanho máximo de caracteres é 255 para o campo Rua")]
         [Display(Name = "Rua")]

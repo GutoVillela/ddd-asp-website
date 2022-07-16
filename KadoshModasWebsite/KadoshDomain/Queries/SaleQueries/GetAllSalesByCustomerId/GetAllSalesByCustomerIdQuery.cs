@@ -19,6 +19,8 @@ namespace KadoshDomain.Queries.SaleQueries.GetAllSalesByCustomerId
         /// </summary>
         public int PageSize { get; set; }
 
+        public bool IncludeProductsInfo { get; set; } = false;
+
         public void Validate()
         {
             AddNotifications(new Contract<Notification>()

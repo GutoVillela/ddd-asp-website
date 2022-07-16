@@ -1,9 +1,11 @@
-﻿using KadoshShared.Constants.ErrorCodes;
+﻿using KadoshDomain.Enums;
+using KadoshShared.Constants.ErrorCodes;
 using KadoshShared.ValueObjects;
 using KadoshWebsite.Infrastructure.Authentication;
 using KadoshWebsite.Models;
 using KadoshWebsite.Services.Interfaces;
 using KadoshWebsite.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -81,7 +83,8 @@ namespace KadoshWebsite.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userService.AuthenticateUserAsync(model.UserName, model.Password);
+                // TODO: Also authenticate user role
+                var result = await _userService.AuthenticateCustomerUserAsync(model.UserName, model.Password);
 
                 if (!result.Success)
                 {
@@ -94,13 +97,13 @@ namespace KadoshWebsite.Controllers
                 var token = _tokenService.GenerateToken(model.UserName, Roles.CUSTOMER_ROLE);//Authenticate Customer Role
                 var refreshToken = _tokenService.GenerateRefreshToken();
                 _tokenService.SaveRefreshToken(new RefreshToken(model.UserName, token));
+                
 
                 model.Password = string.Empty;
                 return Ok(new
                 {
                     token,
-                    refreshToken,
-                    user = model
+                    refreshToken
                 });
             }
             else

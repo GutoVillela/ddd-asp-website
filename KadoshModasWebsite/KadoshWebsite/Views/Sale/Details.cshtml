@@ -62,7 +62,14 @@
                                                     @if (Model.Status != KadoshDomain.Enums.ESaleSituation.Completed)
                                                     {
                                                         <span class="mb-0 font-w-600 h1" title="Valor em aberto da venda @Model.Id">
-                                                            @Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)
+                                                            @if(Model.Status == KadoshDomain.Enums.ESaleSituation.Canceled)
+                                                            {
+                                                                @Model.SaleTotalFormatted
+                                                            }
+                                                            else
+                                                            {    
+                                                                @Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)
+                                                            }
                                                         </span>
                                                         <br>
                                                     }
@@ -81,11 +88,18 @@
                                                         <i class="uil uil-bill icon-size-1-5"></i>
                                                     </div>
                                                     <div class="content px-md-3 my-3 my-md-0">
-                                                        <span class="mb-0 font-w-600 h5">Saldo já pago pelo cliente: @Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span><br>
+                                                        @if(Model.Status == KadoshDomain.Enums.ESaleSituation.Canceled)
+                                                        {
+                                                            <span class="mb-0 font-w-600 h5">Valor estornado ao cliente: @Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span><br>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="mb-0 font-w-600 h5">Saldo já pago pelo cliente: @Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span><br>
+                                                        }
                                                         <p class="mb-0 font-w-500 tx-s-12">Consulte os lançamentos da venda para saber os detalhes do saldo.</p>
 
                                                     </div>
-                                                    @if (Model.PaymentType != KadoshWebsite.Models.Enums.ESalePaymentType.InStallments)
+                                                    @if (Model.PaymentType != KadoshWebsite.Models.Enums.ESalePaymentType.InStallments && Model.Status != KadoshDomain.Enums.ESaleSituation.Canceled)
                                                     {
                                                         <div class="my-auto ms-auto">
                                                             <button class="btn btn-outline-primary font-w-600 my-auto text-nowrap sweet-4" onclick="InformCustomerPayment(@Model.Id)" title="Informar pagamento na venda">
@@ -292,27 +306,31 @@
                         <hr />
                     </div>
 
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <span class="text-start">Valor pago</span>
+                    @if (Model.Status != KadoshDomain.Enums.ESaleSituation.Canceled)
+                    {
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <span class="text-start">Valor pago</span>
 
+                            </div>
+                            <div class="col-6 mb-3 text-end">
+                                <span id="saleSubtotal" class="fw-bold">@Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span>
+                            </div>
+                            <hr />
                         </div>
-                        <div class="col-6 mb-3 text-end">
-                            <span id="saleSubtotal" class="fw-bold">@Model.TotalPaid.ToString("C", FormatProviderManager.CultureInfo)</span>
-                        </div>
-                        <hr />
-                    </div>
 
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <span class="text-start">Valor a pagar</span>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <span class="text-start">Valor a pagar</span>
 
+                            </div>
+                            <div class="col-6 mb-3 text-end">
+                                <span id="saleSubtotal" class="fw-bold">@Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)</span>
+                            </div>
+                            <hr />
                         </div>
-                        <div class="col-6 mb-3 text-end">
-                            <span id="saleSubtotal" class="fw-bold">@Model.TotalToPay.ToString("C", FormatProviderManager.CultureInfo)</span>
-                        </div>
-                        <hr />
-                    </div>
+                        <a class="btn btn-danger" onclick="CancelSale(@Model.Id);">Estornar venda</a>
+                    }
                 </div>
             </div>
         </div>
@@ -323,6 +341,7 @@
 @section scripts{
 <script>
     let informPaymentUrl = '@Url.Action("InformPayment", "Sale")';
+    let cancelSaleUrl = '@Url.Action("CancelSale", "Sale")';
     let payOffInstallmentUrl = '@Url.Action("PayOffInstallment", "Sale")';
 </script>
 <script src="~/js/toastMessage.js"></script>

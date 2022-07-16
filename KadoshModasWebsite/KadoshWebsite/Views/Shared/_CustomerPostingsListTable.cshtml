@@ -25,7 +25,7 @@
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <td>@item.SaleId</td>
+                    <td><a asp-action="Details" asp-route-id="@item.SaleId" asp-controller="Sale">@item.SaleId</a></td>
                     <td>@TimeZoneInfo.ConvertTimeFromUtc(item.PostingDate, FormatProviderManager.TimeZone).ToString(FormatProviderManager.DateTimeFormat)</td>
                     <td>@item.Value.ToString("C", FormatProviderManager.CultureInfo)</td>
                     <td>

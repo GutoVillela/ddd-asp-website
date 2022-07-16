@@ -92,3 +92,38 @@ function GetValueFromInputAsFloat(inputText) {
 
     return parseFloat(value === '' ? 0 : value);
 }
+
+function CancelSale(saleId) {
+
+    swal({
+        icon: 'warning',
+        text: 'Tem certeza que deseja estornar a venda?',
+        buttons: {
+            cancel: "Cancelar",
+            ok: {
+                text: "Estornar venda",
+                closeModal: false,
+            }
+        },
+    })
+    .then(buttonClicked => {
+        if (!buttonClicked) throw null;
+        $.ajax({
+            method: 'POST',
+            url: cancelSaleUrl,
+            data: { saleId: saleId }
+        }).done(function (response) {
+            swal("Venda estornada!", response + ". A página será recarregada.", "success").then(() => location.reload());
+        }).fail(function (error) {
+            swal("Oops!", "Aconteceu um erro e não foi possível estornar a venda! Mensagem de erro: " + error.responseText, "error");
+        });
+    })
+    .catch(error => {
+        if (error) {
+            swal("Oops!", "Aconteceu um erro e não foi possível estornar a venda! Mensagem de erro: " + error, "error");
+        } else {
+            swal.stopLoading();
+            swal.close();
+        }
+    });
+}
