@@ -211,6 +211,22 @@ namespace KadoshWebsite.Controllers
 
         [HttpPost]
         [Authorize(Policy = nameof(LoggedInAuthorization))]
+        public async Task<IActionResult> CancelSaleItemAsync(int? saleId, int? productId, int? amountToCancel)
+        {
+            ArgumentNullException.ThrowIfNull(saleId);
+            ArgumentNullException.ThrowIfNull(productId);
+            ArgumentNullException.ThrowIfNull(amountToCancel);
+
+            var result = await _saleService.CancelSaleItemAsync(saleId.Value, productId.Value, amountToCancel.Value);
+
+            if (result.Success)
+                return Ok(result.Message);
+
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
         public async Task<IActionResult> PayOffInstallmentAsync(int? saleId, int? installmentId)
         {
             ArgumentNullException.ThrowIfNull(saleId);

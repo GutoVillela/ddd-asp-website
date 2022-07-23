@@ -36,5 +36,11 @@
         public const string INVALID_CANCEL_SALE_COMMAND = "O comando para cancelar a venda está inválido";
         public const string ERROR_COULD_NOT_CREATE_CASHBACK_POSTING = "Não foi possível realizar o lançamento de estorno da venda";
         public const string SUCCESS_ON_CANCEL_SALE_COMMAND = "Venda estornada com sucesso";
+        public const string INVALID_CANCEL_SALE_ITEM_COMMAND = "O comando para cancelar o item da venda está inválido";
+        public const string SUCCESS_ON_CANCEL_SALE_ITEM_COMMAND = "Item cancelado com sucesso. Foi gerado o estorno de R${0} para o cliente";
+        public const string INVALID_SALE_SITUATION_ON_CANCEL_ITEM_COMMAND = "A venda está cancelada. Só é possível cancelar itens da venda para vendas em aberto";
+        public const string PRODUCT_NOT_FOUND_ON_CANCEL_ITEM_COMMAND = "O ID de produto fornecido não existe na venda";
+        public const string INVALID_PRODUCT_SITUATION_ON_CANCEL_ITEM_COMMAND = "O produto indicado já está cancelado";
+        public const string INVALID_ITEMS_AMOUNT_ON_CANCEL_ITEM_COMMAND = "Não existem items suficientes para serem cancelados nesta operação";
     }
 }

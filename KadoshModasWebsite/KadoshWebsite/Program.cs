@@ -15,6 +15,7 @@ using KadoshDomain.Commands.ProductCommands.CreateProduct;
 using KadoshDomain.Commands.ProductCommands.DeleteProduct;
 using KadoshDomain.Commands.ProductCommands.UpdateProduct;
 using KadoshDomain.Commands.SaleCommands.CancelSale;
+using KadoshDomain.Commands.SaleCommands.CancelSaleItem;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
@@ -154,6 +155,7 @@ builder.Services.AddScoped<ICommandHandler<ImportDataFromLegacyCommand>, ImportD
 builder.Services.AddScoped<ICommandHandler<AuthenticateCustomerUserCommand>, AuthenticateCustomerUserHandler>();
 builder.Services.AddScoped<ICommandHandler<CreateCustomerUserCommand>, CreateCustomerUserHandler>();
 builder.Services.AddScoped<ICommandHandler<CancelSaleCommand>, CancelSaleHandler>();
+builder.Services.AddScoped<ICommandHandler<CancelSaleItemCommand>, CancelSaleItemHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();

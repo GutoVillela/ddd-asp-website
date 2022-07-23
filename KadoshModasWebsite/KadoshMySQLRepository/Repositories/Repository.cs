@@ -43,7 +43,7 @@ namespace KadoshRepository.Repositories
         {
             return await _dbSet
                 .AsNoTracking()
-                .Where(QueriableBase<TEntity>.GetIfActive())
+                //.Where(QueriableBase<TEntity>.GetIfActive()) // TODO Think if that was really needed
                 .ToListAsync();
         }
 

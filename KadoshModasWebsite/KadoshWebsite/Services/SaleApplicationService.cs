@@ -1,4 +1,5 @@
 ﻿using KadoshDomain.Commands.SaleCommands.CancelSale;
+using KadoshDomain.Commands.SaleCommands.CancelSaleItem;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInCash;
 using KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments;
 using KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit;
@@ -31,6 +32,7 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<InformSalePaymentCommand> _informSalePaymentHandler;
         private readonly ICommandHandler<PayOffInstallmentCommand> _payOffInstallmentHandler;
         private readonly ICommandHandler<CancelSaleCommand> _cancelSaleHandler;
+        private readonly ICommandHandler<CancelSaleItemCommand> _cancelSaleItemHandler;
 
         private readonly IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> _getAllSalesQueryHandler;
         private readonly IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> _getAllSalesByCustomerIdQueryHandler;
@@ -47,6 +49,7 @@ namespace KadoshWebsite.Services
             ICommandHandler<InformSalePaymentCommand> informSalePaymentHandler,
             ICommandHandler<PayOffInstallmentCommand> payOffInstallmentHandler,
             ICommandHandler<CancelSaleCommand> cancelSaleHandler,
+            ICommandHandler<CancelSaleItemCommand> cancelSaleItemHandler,
 
             IQueryHandler<GetAllSalesQuery, GetAllSalesQueryResult> getAllSalesQueryHandler,
             IQueryHandler<GetAllSalesByCustomerIdQuery, GetAllSalesByCustomerIdQueryResult> getAllSalesByCustomerIdQueryHandler,
@@ -59,6 +62,7 @@ namespace KadoshWebsite.Services
             _payOffSaleHandler = payOffSaleHandler;
             _informSalePaymentHandler = informSalePaymentHandler;
             _cancelSaleHandler = cancelSaleHandler;
+            _cancelSaleItemHandler = cancelSaleItemHandler;
             _payOffInstallmentHandler = payOffInstallmentHandler;
             _getAllSalesQueryHandler = getAllSalesQueryHandler;
             _getAllSalesByCustomerIdQueryHandler = getAllSalesByCustomerIdQueryHandler;
@@ -308,6 +312,16 @@ namespace KadoshWebsite.Services
             return await _cancelSaleHandler.HandleAsync(command);
         }
 
+        public async Task<ICommandResult> CancelSaleItemAsync(int saleId, int productId, int amountToCancel)
+        {
+            CancelSaleItemCommand command = new();
+            command.SaleId = saleId;
+            command.ProductId = productId;
+            command.AmountToCancel = amountToCancel;
+
+            return await _cancelSaleItemHandler.HandleAsync(command);
+        }
+
         #region Private methods
         private SaleViewModel GetViewModelFromDTO(SaleBaseDTO sale)
         {
@@ -390,7 +404,6 @@ namespace KadoshWebsite.Services
 
             return saleInstallmentsVM;
         }
-
         #endregion Private methods
     }
 }

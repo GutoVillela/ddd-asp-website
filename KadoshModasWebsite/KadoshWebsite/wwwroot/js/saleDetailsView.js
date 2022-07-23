@@ -127,3 +127,52 @@ function CancelSale(saleId) {
         }
     });
 }
+
+function CancelSaleItem(saleId, productId, maxAmountToCancel) {
+    var inputId = "sale-item-cancelation-input";
+    swal({
+        icon: 'warning',
+        content: CreateInputForAmountMasked(1, maxAmountToCancel, inputId),
+        text: 'Quantas unidades do item você deseja cancelar?',
+        buttons: {
+            cancel: "Cancelar",
+            ok: {
+                text: "Cancelar item da venda",
+                closeModal: false,
+            }
+        },
+    })
+    .then(buttonClicked => {
+        if (!buttonClicked) throw null;
+        let amountToCancel = $('#' + inputId).val();
+        $.ajax({
+            method: 'POST',
+            url: cancelSaleItemUrl,
+            data: { saleId: saleId, productId: productId, amountToCancel: amountToCancel }
+        }).done(function (response) {
+            swal("Item cancelado!", response + ". A página será recarregada.", "success").then(() => location.reload());
+        }).fail(function (error) {
+            swal("Oops!", "Aconteceu um erro e não foi possível cancelar o item! Mensagem de erro: " + error.responseText, "error");
+        });
+    })
+    .catch(error => {
+        if (error) {
+            swal("Oops!", "Aconteceu um erro e não foi possível cancelar o item! Mensagem de erro: " + error, "error");
+        } else {
+            swal.stopLoading();
+            swal.close();
+        }
+    });
+}
+
+function CreateInputForAmountMasked(minValue, maxValue, inputId) {
+    var valueInput = document.createElement("input");
+    valueInput.type = "number";
+    valueInput.id = inputId;
+    valueInput.className = "form-control";
+    valueInput.min = minValue;
+    valueInput.max = maxValue;
+    valueInput.value = minValue;
+
+    return valueInput;
+}

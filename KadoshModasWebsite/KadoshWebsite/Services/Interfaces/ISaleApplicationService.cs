@@ -16,5 +16,6 @@ namespace KadoshWebsite.Services.Interfaces
         Task<ICommandResult> InformPaymentAsync(int saleId, decimal amountToInform);
         Task<ICommandResult> PayOffInstallmentAsync(int saleId, int installmentId);
         Task<ICommandResult> CancelSaleAsync(int saleId);
+        Task<ICommandResult> CancelSaleItemAsync(int saleId, int productId, int amountToCancel);
     }
 }

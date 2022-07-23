@@ -73,14 +73,20 @@ namespace KadoshDomain.Entities
             Situation = itemSituation;
         }
 
-        private void ValidateSaleItem()
+        public void DecreaseAmount(int amountToDecrease)
         {
-            AddNotifications(new Contract<Notification>()
-               .Requires()
-               .IsGreaterThan(Amount, 0, nameof(Amount), "A quantidade de itens da venda não pode ser menor do que 1!")
-               .IsGreaterOrEqualsThan(Price, 0, nameof(Price), "O preço do item da venda não pode ser negativo!")
-               .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto do item da venda deve estar entre 0 e 100%!")
-           );
+            if (amountToDecrease < 0 || amountToDecrease > Amount)
+                throw new ArgumentException("Invalid amount to decrease. AmountToDecrease must be lower or equals item amount");
+
+            Amount -= amountToDecrease;
+        }
+
+        public void SetAmount(int amount)
+        {
+            if (amount < 1)
+                throw new ArgumentException("Invalid amount for sale item");
+
+            Amount = amount;
         }
 
         public object Clone()
@@ -95,5 +101,22 @@ namespace KadoshDomain.Entities
                 sale: Sale,
                 product: Product);
         }
+
+        public decimal CalculateSaleItemTotal()
+        {
+            return (Price * (DiscountInPercentage/100)) * Amount;
+        }
+
+        private void ValidateSaleItem()
+        {
+            AddNotifications(new Contract<Notification>()
+               .Requires()
+               .IsGreaterThan(Amount, 0, nameof(Amount), "A quantidade de itens da venda não pode ser menor do que 1!")
+               .IsGreaterOrEqualsThan(Price, 0, nameof(Price), "O preço do item da venda não pode ser negativo!")
+               .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto do item da venda deve estar entre 0 e 100%!")
+           );
+        }
+
+        
     }
 }

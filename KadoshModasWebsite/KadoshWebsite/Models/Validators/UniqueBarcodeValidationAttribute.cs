@@ -15,6 +15,9 @@ namespace KadoshWebsite.Models.Validators
             IServiceProvider serviceProvider = ServiceProviderManager.ServiceProvider;
             var getProductByBarCodeQueryHandler = serviceProvider.GetService<IQueryHandler<GetProductByBarCodeQuery, GetProductByBarCodeQueryResult>>();
 
+            if(value is null)
+                return ValidationResult.Success;
+
             GetProductByBarCodeQuery query = new();
             query.BarCode = value.ToString();
 

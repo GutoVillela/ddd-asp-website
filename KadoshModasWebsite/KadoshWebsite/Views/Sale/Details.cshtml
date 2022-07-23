@@ -141,6 +141,7 @@
                                     <th scope="col">Desconto</th>
                                     <th scope="col">Subtotal</th>
                                     <th scope="col">Situação</th>
+                                    <th scope="col">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,6 +166,15 @@
                                             else
                                             {
                                                 <span>Cancelado</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if(@Model.SaleItems.ToArray()[i].Status != KadoshDomain.Enums.ESaleItemSituation.Canceled && @Model.Status != KadoshDomain.Enums.ESaleSituation.Canceled)
+                                            {
+                                                <a class="btn btn-danger" title="Cancelar item" onclick="CancelSaleItem(@Model.Id, @Model.SaleItems.ToArray()[i].ProductId, @Model.SaleItems.ToArray()[i].Quantity);">
+                                                    <i class="uil uil-times"></i>
+                                                </a>
+
                                             }
                                         </td>
                                     </tr>
@@ -343,6 +353,7 @@
     let informPaymentUrl = '@Url.Action("InformPayment", "Sale")';
     let cancelSaleUrl = '@Url.Action("CancelSale", "Sale")';
     let payOffInstallmentUrl = '@Url.Action("PayOffInstallment", "Sale")';
+    let cancelSaleItemUrl = '@Url.Action("CancelSaleItem", "Sale")';
 </script>
 <script src="~/js/toastMessage.js"></script>
 <script src="~/js/customerPostingList.js"></script>

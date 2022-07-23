@@ -9,6 +9,7 @@ namespace KadoshDomain.LegacyEntities
         public SaleLegacy(
             int customerId,
             ESaleLegacyType saleType,
+            decimal total,
             decimal discount,
             decimal downPayment,
             ESaleLegacySituation situation, 
@@ -19,6 +20,7 @@ namespace KadoshDomain.LegacyEntities
             SaleType = saleType;
             Situation = situation;
             FormOfPayment = formOfPayment;
+            Total = total;
             Discount = discount;
             DownPayment = downPayment;
             SaleDate = saleDate;
@@ -32,6 +34,7 @@ namespace KadoshDomain.LegacyEntities
         public ESaleLegacySituation Situation { get; set; }
         public DateTime SaleDate { get; set; }
         public decimal Paid { get; set; } = 0;
+        public decimal Total { get; set; } = 0;
         public DateTime? SettlementDate { get; set; }
         public IEnumerable<SaleItemLegacy> SaleItems { get; set; } = new List<SaleItemLegacy>();
         public IEnumerable<InstallmentLegacy>? SaleInstallments { get; set; }

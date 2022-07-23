@@ -31,6 +31,7 @@ namespace Kadosh.LegacyRepository.DAL
                     customerId: int.Parse(dataReader["CLIENTE"].ToString()),
                     saleType: (ESaleLegacyType)int.Parse(dataReader["TIPO_PAGAMENTO"].ToString()),
                     discount: decimal.Parse(dataReader["DESCONTO"].ToString()),
+                    total: decimal.Parse(dataReader["TOTAL"].ToString()),
                     downPayment: decimal.Parse(dataReader["ENTRADA"].ToString()),
                     situation: (ESaleLegacySituation)int.Parse(dataReader["SITUACAO"].ToString()),
                     formOfPayment: (ELegacyFormOfPayment)int.Parse(dataReader["FORMA_DE_PAGAMENTO"].ToString()),

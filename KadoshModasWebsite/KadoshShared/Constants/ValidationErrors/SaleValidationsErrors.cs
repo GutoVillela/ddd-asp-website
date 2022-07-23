@@ -25,5 +25,8 @@
         public const string NULL_QUERY_END_DATE = "A data final deve ser fornecida para buscar as vendas";
         public const string QUERY_START_DATE_GREATHER_THAN_END_DATE = "A data inicial não pode estar a frente da data final";
         public const string NULL_INSTALLMENT_ID = "O ID da parcela é obrigatório para informar pagamento de parcela";
+        public const string NULL_PRODUCT_ID = "O ID do produto é obrigatório";
+        public const string NULL_AMOUNT_TO_CANCEL = "A quantidade de itens a cancelar é obrigatório";
+        public const string AMOUNT_TO_CANCEL_LOWER_THAN_ONE = "A quantidade de itens a cancelar deve ser pelo menos 1";
     }
 }

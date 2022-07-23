@@ -139,7 +139,7 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
                 var importedCustomers = await ImportCustomersFromLegacyAsync(legacyConnectionString);
 
                 // Import all Sales (with Installments AND Sale Items)
-                var importedSales = await ImportSalesFromLegacyAsync(legacyConnectionString, importedCustomers, importedProducts, store, defaultSeller);
+                var importedSales = await ImportSalesFromLegacyAsync(legacyConnectionString, importedCustomers, importedProducts, store, defaultSeller, defaultCategory, defaultBrand);
 
                 // TODO Import all Customer Postings
                 var importedCustomerPostings = await ImportCustomerPostingsFromLegacyAsync(legacyConnectionString, importedSales);
@@ -262,7 +262,9 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
             IList<ImportFromLegacyMap<Customer, CustomerLegacy>> importedCustomers,
             IList<ImportFromLegacyMap<Product, ProductLegacy>> importedProducts,
             Store defaultStore,
-            User defaultSeller
+            User defaultSeller, 
+            Category defaultCategory,
+            Brand defaultBrand
             )
         {
             List<ImportFromLegacyMap<Sale, SaleLegacy>> importMapList = new();
@@ -284,7 +286,7 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
                 sale.ImportedEntity.SetCustomer(customer);
                 sale.ImportedEntity.SetSeller(defaultSeller);
                 sale.ImportedEntity.SetStore(defaultStore);
-                sale.ImportedEntity.SetSaleItems(FixSaleItemsProduct(sale.LegacyEntity.SaleItems, importedProducts));
+                sale.ImportedEntity.SetSaleItems(await FixSaleItemsProductAsync(sale.LegacyEntity.SaleItems, importedProducts, sale.LegacyEntity, defaultCategory, defaultBrand));
                 sale.ImportedEntity.Activate();// Set IsActive to true for every sale
                 sale.ImportedEntity.FixSaleSituationBasedOnTotalAndItems();
                 await _saleRepository.CreateAsync(sale.ImportedEntity);
@@ -293,7 +295,7 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
             return importMapList;
         }
 
-        private IEnumerable<SaleItem> FixSaleItemsProduct(IEnumerable<SaleItemLegacy> saleItemsLegacy, IList<ImportFromLegacyMap<Product, ProductLegacy>> importedProducts)
+        private async Task<IEnumerable<SaleItem>> FixSaleItemsProductAsync(IEnumerable<SaleItemLegacy> saleItemsLegacy, IList<ImportFromLegacyMap<Product, ProductLegacy>> importedProducts, SaleLegacy saleLegacy, Category defaultCategory, Brand defaultBrand)
         {
             List<SaleItem> saleItems = new();
             foreach(var item in saleItemsLegacy)
@@ -305,6 +307,17 @@ namespace KadoshDomain.Commands.SettingsCommands.ImportDataFromLegacy
                 SaleItem saleItem = item;
                 saleItems.Add(new SaleItem(product, saleItem.Amount, saleItem.Price, saleItem.DiscountInPercentage, saleItem.Situation));
             }
+
+            // Fix sales with no items in it
+            if(saleItemsLegacy is null || !saleItemsLegacy.Any())
+            {
+                Product saleExclusiveItem = new($"Item da venda {saleLegacy.Id}", null, saleLegacy.Total, defaultCategory.Id, defaultBrand.Id);
+                await _productRepository.CreateAsync(saleExclusiveItem);
+
+                SaleItem saleItem = new(saleExclusiveItem, 1, saleExclusiveItem.Price, 0, ESaleItemSituation.AcquiredOnPurchase);
+                saleItems.Add(saleItem);
+            }
+
             return saleItems;
         }
 
