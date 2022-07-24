@@ -11,7 +11,7 @@
                 <a class="page-link" asp-controller="@ViewData["Controller"]" asp-controller="@ViewData["Action"]" asp-route-page="@i" asp-route-queryByName="@ViewData["QueryByName"]">@i</a>
             </li>
         }
-        <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : string.Empty)">
+        <li class="page-item @(Model.CurrentPage == Model.TotalPages || Model.TotalPages == 0 ? "disabled" : string.Empty)">
             <a class="page-link" asp-controller="@ViewData["Controller"]" asp-controller="@ViewData["Action"]" asp-route-page="@(Model.CurrentPage + 1)"  asp-route-queryByName="@ViewData["QueryByName"]">Próximo</a>
         </li>
     </ul>

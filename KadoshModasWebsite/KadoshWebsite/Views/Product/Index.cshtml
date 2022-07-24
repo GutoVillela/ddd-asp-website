@@ -28,7 +28,15 @@
         <div class="card-body row">
             <div class="container">
                 <div class="row">
-                    <div class="col-12 mb-3">
+                    <div class="col-md-10 mb-3">
+                        <form asp-action="Index" method="GET">
+                            <div class="input-group mb-3">
+                                <input name="queryByName" type="text" value="@ViewData["QueryByName"]" class="form-control" placeholder="Buscar por nome" aria-label="Buscar por nome" aria-describedby="buscar-produto">
+                                <button class="btn btn-outline-secondary" type="submit"><i class="uil uil-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-2 mb-3">
                         <a class="btn btn-success  float-end" asp-action="Create" title="Cadastrar um novo produto no sistema">Novo produto <i class="uil uil-plus"></i></a>
                     </div>
                     <div class="col-md-12">
@@ -57,7 +65,7 @@
                                     {
                                         <tr>
                                             <td>@item.Name</td>
-                                            <td>@item.Price.ToString("C",FormatProviderManager.CultureInfo)</td>
+                                            <td>@item.Price.ToString("C", FormatProviderManager.CultureInfo)</td>
                                             <td>
                                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary text-white" title="Editar produto @item.Name">
                                                     <i class="uil uil-edit-alt"></i>
@@ -71,7 +79,7 @@
                                 }
                             </tbody>
                         </table>
-                        @Html.Partial("_Pagination", new ViewDataDictionary(ViewData) { { "Controller", "Product"}, { "Action", "Index" } })
+                        @Html.Partial("_Pagination", new ViewDataDictionary(ViewData) { { "Controller", "Product" }, { "Action", "Index" } })
                     </div>
                 </div>
             </div>

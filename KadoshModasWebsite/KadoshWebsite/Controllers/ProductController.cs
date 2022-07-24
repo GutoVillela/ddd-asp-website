@@ -25,9 +25,15 @@ namespace KadoshWebsite.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync(int? page)
+        public async Task<IActionResult> IndexAsync(int? page, string? queryByName)
         {
-            var products = await _productService.GetAllProductsPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            PaginatedListViewModel<ProductViewModel> products;
+
+            if (string.IsNullOrEmpty(queryByName))
+                products = await _productService.GetAllProductsPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+            else
+                products = await _productService.GetProductsByNamePaginatedAsync(queryByName, page ?? 1, PaginationManager.PAGE_SIZE);
+
             return View(products);
         }
 
