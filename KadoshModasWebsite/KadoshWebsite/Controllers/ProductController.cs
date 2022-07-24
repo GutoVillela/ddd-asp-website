@@ -34,6 +34,7 @@ namespace KadoshWebsite.Controllers
             else
                 products = await _productService.GetProductsByNamePaginatedAsync(queryByName, page ?? 1, PaginationManager.PAGE_SIZE);
 
+            ViewData["QueryByName"] = queryByName;
             return View(products);
         }
 
