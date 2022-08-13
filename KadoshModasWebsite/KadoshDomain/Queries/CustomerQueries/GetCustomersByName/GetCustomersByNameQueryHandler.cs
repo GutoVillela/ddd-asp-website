@@ -30,9 +30,9 @@ namespace KadoshDomain.Queries.CustomerQueries.GetCustomersByName
             bool isQueryPaginated = query.PageSize != 0 && query.CurrentPage != 0;
 
             if (isQueryPaginated)
-                customers = await _customerRepository.ReadAllByNamePaginatedAsync(query.CustomerName!, query.CurrentPage, query.PageSize);
+                customers = await _customerRepository.ReadAllByNamePaginatedAsync(query.CustomerName!, query.CurrentPage, query.PageSize, query.IncludeInactives);
             else
-                customers = await _customerRepository.ReadAllByNameAsync(query.CustomerName!);
+                customers = await _customerRepository.ReadAllByNameAsync(query.CustomerName!, query.IncludeInactives);
 
             HashSet<CustomerDTO> customersDTO = new();
 
@@ -47,7 +47,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetCustomersByName
             };
 
             if (isQueryPaginated)
-                result.CustomersCount = await _customerRepository.CountAllByNameAsync(query.CustomerName!);
+                result.CustomersCount = await _customerRepository.CountAllByNameAsync(query.CustomerName!, query.IncludeInactives);
             else
                 result.CustomersCount = customersDTO.Count;
 

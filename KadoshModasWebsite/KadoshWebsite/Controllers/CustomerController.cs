@@ -23,16 +23,17 @@ namespace KadoshWebsite.Controllers
 
         [HttpGet]
         [Authorize(Policy = nameof(LoggedInAuthorization))]
-        public async Task<IActionResult> IndexAsync(int? page, string? queryByName)
+        public async Task<IActionResult> IndexAsync(int? page, string? queryByName, bool? includeInactive)
         {
             PaginatedListViewModel<CustomerViewModel> customers;
             
             if(string.IsNullOrEmpty(queryByName))
-                customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE);
+                customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE, includeInactive ?? false);
             else
-                customers = await _service.GetAllCustomersByNamePaginatedAsync(queryByName, page ?? 1, PaginationManager.PAGE_SIZE);
+                customers = await _service.GetAllCustomersByNamePaginatedAsync(queryByName, page ?? 1, PaginationManager.PAGE_SIZE, includeInactive ?? false);
 
             ViewData["QueryByName"] = queryByName;
+            ViewData["IncludeInactive"] = includeInactive ?? false;
             return View(customers);
         }
 

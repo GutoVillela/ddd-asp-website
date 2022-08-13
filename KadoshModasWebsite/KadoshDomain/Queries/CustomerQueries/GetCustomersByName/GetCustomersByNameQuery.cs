@@ -19,6 +19,8 @@ namespace KadoshDomain.Queries.CustomerQueries.GetCustomersByName
         /// </summary>
         public int PageSize { get; set; }
 
+        public bool IncludeInactives { get; set; }
+
         public void Validate()
         {
             AddNotifications(new Contract<Notification>()

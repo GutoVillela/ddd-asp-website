@@ -15,23 +15,23 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
             _customerRepository = customerRepository;
         }
 
-        public override async Task<GetAllCustomersQueryResult> HandleAsync(GetAllCustomersQuery command)
+        public override async Task<GetAllCustomersQueryResult> HandleAsync(GetAllCustomersQuery query)
         {
             // Fail Fast Validations
-            command.Validate();
-            if (!command.IsValid)
+            query.Validate();
+            if (!query.IsValid)
             {
-                AddNotifications(command);
+                AddNotifications(query);
                 var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_INVALID_GET_ALL_CUSTOMERS_QUERY);
                 return new GetAllCustomersQueryResult(errors);
             }
 
             IEnumerable<Customer> customers;
 
-            if (command.PageSize == 0 || command.CurrentPage == 0)
-                customers = await _customerRepository.ReadAllAsync();
+            if (query.PageSize == 0 || query.CurrentPage == 0)
+                customers = await _customerRepository.ReadAllAsync(query.IncludeInactives);
             else
-                customers = await _customerRepository.ReadAllPagedAsync(command.CurrentPage, command.PageSize);
+                customers = await _customerRepository.ReadAllPagedAsync(query.CurrentPage, query.PageSize, query.IncludeInactives);
 
             HashSet<CustomerDTO> customersDTO = new();
 
@@ -44,7 +44,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
             {
                 Customers = customersDTO
             };
-            result.CustomersCount = await _customerRepository.CountAllAsync();
+            result.CustomersCount = await _customerRepository.CountAllAsync(query.IncludeInactives);
 
             return result;
         }

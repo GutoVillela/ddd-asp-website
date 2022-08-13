@@ -32,6 +32,15 @@
                                 <input name="queryByName" type="text" value="@ViewData["QueryByName"]" class="form-control" placeholder="Buscar por nome" aria-label="Buscar por nome" aria-describedby="buscar-cliente">
                                 <button class="btn btn-outline-secondary" type="submit"><i class="uil uil-search"></i></button>
                             </div>
+                            <div class="input-group mb-3">
+                                <div class="form-check">
+                                    @Html.CheckBox("includeInactive", Convert.ToBoolean(@ViewData["IncludeInactive"] ?? false), new { Class = "form-check-input" })
+                                  @*<input class="form-check-input" name="includeInactive" type="checkbox" value="@ViewData["IncludeInactive"]">*@
+                                  <label class="form-check-label" for="includeInactive">
+                                    Incluir apagados
+                                  </label>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="col-md-2 mb-3">

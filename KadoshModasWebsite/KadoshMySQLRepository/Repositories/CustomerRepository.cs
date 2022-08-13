@@ -14,31 +14,54 @@ namespace KadoshRepository.Repositories
             
         }
 
-        public async Task<int> CountAllByNameAsync(string customerName)
+        public async Task<int> CountAllByNameAsync(string customerName, bool includeInactive = false)
         {
+            if(includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .CountAsync();
+
             return await _dbSet
-                .AsNoTracking()
-                .Where(CustomerQueriable.GetCustomerByName(customerName))
-                .CountAsync();
+                    .AsNoTracking()
+                    .Where(QueriableBase<Customer>.GetIfActive())
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .CountAsync();
         }
 
-        public async Task<IEnumerable<Customer>> ReadAllByNameAsync(string customerName)
+        public async Task<IEnumerable<Customer>> ReadAllByNameAsync(string customerName, bool includeInactive = false)
         {
+            if (includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .ToListAsync();
+
             return await _dbSet
-                .AsNoTracking()
-                .Where(CustomerQueriable.GetCustomerByName(customerName))
-                .ToListAsync();
+                    .AsNoTracking()
+                    .Where(QueriableBase<Customer>.GetIfActive())
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .ToListAsync();
         }
 
-        public async Task<IEnumerable<Customer>> ReadAllByNamePaginatedAsync(string customerName, int currentPage, int pageSize)
+        public async Task<IEnumerable<Customer>> ReadAllByNamePaginatedAsync(string customerName, int currentPage, int pageSize, bool includeInactive = false)
         {
             int amountToTake = (currentPage - 1) * pageSize;
+            if (includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Skip(amountToTake)
+                    .Take(pageSize)
+                    .ToListAsync();
+
             return await _dbSet
-                .AsNoTracking()
-                .Where(CustomerQueriable.GetCustomerByName(customerName))
-                .Skip(amountToTake)
-                .Take(pageSize)
-                .ToListAsync();
+                    .AsNoTracking()
+                    .Where(QueriableBase<Customer>.GetIfActive())
+                    .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Skip(amountToTake)
+                    .Take(pageSize)
+                    .ToListAsync();
         }
 
         public async Task<Customer?> GetCustomerByUsernameAsync(string username)

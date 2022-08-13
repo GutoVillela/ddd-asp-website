@@ -114,11 +114,12 @@ namespace KadoshWebsite.Services
             return customerViewModels;
         }
 
-        public async Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersPaginatedAsync(int currentPage, int pageSize)
+        public async Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersPaginatedAsync(int currentPage, int pageSize, bool includeInactive)
         {
             GetAllCustomersQuery query = new();
             query.CurrentPage = currentPage;
             query.PageSize = pageSize;
+            query.IncludeInactives = includeInactive;
 
             var result = await _getAllCustomersQueryHandler.HandleAsync(query);
 
@@ -213,12 +214,13 @@ namespace KadoshWebsite.Services
             return await _informPaymentHandler.HandleAsync(command);
         }
 
-        public async Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersByNamePaginatedAsync(string customerName, int currentPage, int pageSize)
+        public async Task<PaginatedListViewModel<CustomerViewModel>> GetAllCustomersByNamePaginatedAsync(string customerName, int currentPage, int pageSize, bool includeInactive)
         {
             GetCustomersByNameQuery query = new();
             query.CurrentPage = currentPage;
             query.PageSize = pageSize;
             query.CustomerName = customerName;
+            query.IncludeInactives = includeInactive;
 
             var result = await _getCustomersByNameQueryHandler.HandleAsync(query);
 

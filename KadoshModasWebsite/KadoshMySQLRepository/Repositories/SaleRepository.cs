@@ -14,8 +14,9 @@ namespace KadoshRepository.Repositories
             
         }
 
-        public override async Task<IEnumerable<Sale>> ReadAllAsync()
+        public override async Task<IEnumerable<Sale>> ReadAllAsync(bool includeInactive = true)
         {
+            // TODO: Review includeInactive param
             return await _dbSet
                 .AsNoTracking()
                 .Include(SaleQueriable.IncludeSaleItems())
@@ -27,8 +28,9 @@ namespace KadoshRepository.Repositories
         }
 
 
-        public override async Task<IEnumerable<Sale>> ReadAllPagedAsync(int currentPage, int pageSize)
+        public override async Task<IEnumerable<Sale>> ReadAllPagedAsync(int currentPage, int pageSize, bool includeInactive = true)
         {
+            // TODO: Review includeInactive param
             int amountToTake = (currentPage - 1) * pageSize;
             return await _dbSet
                 .AsNoTracking()

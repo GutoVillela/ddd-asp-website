@@ -39,18 +39,30 @@ namespace KadoshRepository.Repositories
             return entity;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> ReadAllAsync()
+        public virtual async Task<IEnumerable<TEntity>> ReadAllAsync(bool includeInactive = false)
         {
+            if (includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .ToListAsync();
+
             return await _dbSet
-                .AsNoTracking()
-                //.Where(QueriableBase<TEntity>.GetIfActive()) // TODO Think if that was really needed
-                .ToListAsync();
+                    .AsNoTracking()
+                    .Where(QueriableBase<TEntity>.GetIfActive()) // TODO Think if that was really needed
+                    .ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> ReadAllPagedAsync(int currentPage, int pageSize)
+        public virtual async Task<IEnumerable<TEntity>> ReadAllPagedAsync(int currentPage, int pageSize, bool includeInactive = false)
         {
             int amountToTake = (currentPage - 1) * pageSize;
-            return await _dbSet
+            if(includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .Skip(amountToTake)
+                    .Take(pageSize)
+                    .ToListAsync();
+            else
+                return await _dbSet
                 .AsNoTracking()
                 .Where(QueriableBase<TEntity>.GetIfActive())
                 .Skip(amountToTake)
@@ -64,11 +76,15 @@ namespace KadoshRepository.Repositories
             _context.Update(entity);
         }
 
-        public virtual async Task<int> CountAllAsync()
+        public virtual async Task<int> CountAllAsync(bool includeInactive = false)
         {
+            if(includeInactive)
+                return await _dbSet
+                    .CountAsync();
+
             return await _dbSet
-                .Where(QueriableBase<TEntity>.GetIfActive())
-                .CountAsync();
+                    .Where(QueriableBase<TEntity>.GetIfActive())
+                    .CountAsync();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
     {
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
+        public bool IncludeInactives { get; set; }
 
         public void Validate()
         {
