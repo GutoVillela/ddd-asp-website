@@ -73,7 +73,6 @@ namespace KadoshDomain.Queries.CustomerQueries.DTOs
             foreach(var customer in customers)
             {
                 customerDTOs.Add(customer);
-                return customerDTOs;
             }
             return customerDTOs;
         }
