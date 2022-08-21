@@ -265,7 +265,12 @@ namespace KadoshWebsite.Controllers
         {
             try
             {
-                Thread.Sleep(2000);
+                var result = await _service.MergeCustomersAsync(currentCustomerId, customersToMerge);
+
+                if (!result.Success)
+                {
+                    return Conflict(result.Message);
+                }
 
                 return Ok();
             }

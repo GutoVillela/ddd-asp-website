@@ -142,6 +142,11 @@ namespace KadoshDomain.Entities
 
         public int CustomerId { get; protected set; }
 
+
+        public Customer? OriginalCustomer { get; protected set; }
+
+        public int? OriginalCustomerId { get; protected set; }
+
         [Required]
         public EFormOfPayment FormOfPayment { get; protected set; }
 
@@ -262,6 +267,20 @@ namespace KadoshDomain.Entities
 
             Customer = customer;
             CustomerId = customer.Id;
+        }
+
+        public void MergeSaleInCustomer(Customer newCustomer)
+        {
+            if (newCustomer == null)
+                throw new ArgumentNullException(nameof(newCustomer));
+
+            if (!newCustomer.IsValid)
+                throw new ArgumentException("Cliente para mesclar inválido");
+
+            //OriginalCustomer = Customer?.Clone() as Customer;
+            OriginalCustomerId = CustomerId;
+            //Customer = newCustomer;
+            CustomerId = newCustomer.Id;
         }
 
         public void SetSeller(User seller)

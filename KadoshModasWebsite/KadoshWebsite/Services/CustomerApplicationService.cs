@@ -18,6 +18,7 @@ using KadoshDomain.Queries.CustomerQueries.GetCustomersByName;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerByUsername;
 using KadoshShared.Constants.ErrorCodes;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomerUser;
+using KadoshDomain.Commands.CustomerCommands.MergeCustomer;
 
 namespace KadoshWebsite.Services
 {
@@ -28,6 +29,7 @@ namespace KadoshWebsite.Services
         private readonly ICommandHandler<UpdateCustomerCommand> _updateCustomerHandler;
         private readonly ICommandHandler<InformPaymentCommand> _informPaymentHandler;
         private readonly ICommandHandler<CreateCustomerUserCommand> _createCustomerUserHandler;
+        private readonly ICommandHandler<MergeCustomerCommand> _mergeCustomerHandler;
         private readonly IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> _getAllCustomersQueryHandler;
         private readonly IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> _getCustomerByIdQueryHandler;
         private readonly IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> _getCustomerTotalDebtQueryHandler;
@@ -40,6 +42,7 @@ namespace KadoshWebsite.Services
             ICommandHandler<UpdateCustomerCommand> updateCustomerHandler,
             ICommandHandler<InformPaymentCommand> informPaymentHandler,
             ICommandHandler<CreateCustomerUserCommand> createCustomerUserHandler,
+            ICommandHandler<MergeCustomerCommand> mergeCustomerHandler,
             IQueryHandler<GetAllCustomersQuery, GetAllCustomersQueryResult> getAllCustomersQueryHandler,
             IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> getCustomerByIdQueryHandler,
             IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> getCustomerTotalDebtQueryHandler,
@@ -51,6 +54,7 @@ namespace KadoshWebsite.Services
             _updateCustomerHandler = updateCustomerHandler;
             _informPaymentHandler = informPaymentHandler;
             _createCustomerUserHandler = createCustomerUserHandler;
+            _mergeCustomerHandler = mergeCustomerHandler;
             _getAllCustomersQueryHandler = getAllCustomersQueryHandler;
             _getCustomerByIdQueryHandler = getCustomerByIdQueryHandler;
             _getCustomerTotalDebtQueryHandler = getCustomerTotalDebtQueryHandler;
@@ -277,6 +281,15 @@ namespace KadoshWebsite.Services
             return await _createCustomerUserHandler.HandleAsync(command);
         }
 
+        public async Task<ICommandResult> MergeCustomersAsync(int mainCustomerId, IList<int> customersToMerge)
+        {
+            MergeCustomerCommand command = new();
+            command.MainCustomerId = mainCustomerId;
+            command.CustomersToMerge = customersToMerge;
+
+            return await _mergeCustomerHandler.HandleAsync(command);
+        }
+
         private CustomerViewModel GetCustomerViewModelFromDTO(CustomerDTO customerDTO)
         {
             return new()
@@ -295,6 +308,7 @@ namespace KadoshWebsite.Services
                 ZipCode = customerDTO.ZipCode,
                 Complement = customerDTO.Complement,
                 Username = customerDTO.Username,
+                BoundedCustomers = customerDTO.BoundedCustomers?.Select(x => GetCustomerViewModelFromDTO(x).Name).ToList()
             };
         }
 

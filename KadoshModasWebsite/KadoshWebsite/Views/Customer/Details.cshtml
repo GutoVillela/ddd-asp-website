@@ -10,7 +10,10 @@
 <div class="row">
     <div class="col-12  align-self-center">
         <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-            <div class="w-sm-100 me-auto"><h4 class="mb-0">@ViewData["Title"]</h4> <p>Sistema de administração da Kadosh Modas</p></div>
+            <div class="w-sm-100 me-auto">
+                <h4 class="mb-0">@ViewData["Title"] @if(Model.BoundedCustomers is not null && Model.BoundedCustomers.Any()) { <span class="badge rounded-pill bg-primary">Mesclado</span> }</h4>
+                <p>Sistema de administração da Kadosh Modas</p>
+            </div>
 
             <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Customer" asp-action="Index">Clientes</a></li>
@@ -108,6 +111,27 @@
                                 </div>
                             </div>
                         </div>
+                        @if (Model.BoundedCustomers is not null && Model.BoundedCustomers.Any())
+                        {
+                            <div class="row mt-5 mb-5">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Clientes mesclados com @Model.Name</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">Esses clientes fazem parte desta ficha</h6>
+                                            <ul class="list-group">
+                                                @foreach (var boundedCustomerName in Model.BoundedCustomers)
+                                                {
+                                                    <li class="list-group-item">@boundedCustomerName</li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        }
                         <div class="row">
                             <div class="col">
                                 <a class="btn btn-success" title="Buscar cliente" data-bs-toggle="modal" data-bs-target="#mergeCustomerModal"><i class="uil uil-plus"></i> Buscar cliente para mesclar</a>
@@ -135,7 +159,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <a class="btn btn-info" id="mergeCustomerButton" title="Mesclar ficha" onclick="MergeCustomer();"><i class="uil uil-users-alt icon-size-1-5"></i> Mesclar fichas</a>
+                                <a class="btn btn-primary" id="mergeCustomerButton" title="Mesclar ficha" onclick="MergeCustomer();"><i class="uil uil-users-alt icon-size-1-5"></i> Mesclar fichas</a>
                             </div>
                         </div>
                     </div>

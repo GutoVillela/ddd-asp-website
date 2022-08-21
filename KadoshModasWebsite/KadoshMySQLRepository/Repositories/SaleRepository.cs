@@ -70,7 +70,7 @@ namespace KadoshRepository.Repositories
         public async Task<IEnumerable<Sale>> ReadAllFromCustomerAsync(int customerId)
         {
             return await _dbSet
-                .AsNoTracking()
+                //.AsNoTracking()
                 .Include(SaleQueriable.IncludeCustomer())
                 .Include(SaleQueriable.IncludeSaleItems())
                 .Include(SaleQueriable.IncludePostings())

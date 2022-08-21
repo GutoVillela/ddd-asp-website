@@ -57,7 +57,7 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit
                 (bool isCustomerSellerAndStoreValid, int errorCode, string errorMessage) = await ValidateSaleCustomerSellerAndStore(command.CustomerId, command.SellerId, command.StoreId);
                 if (!isCustomerSellerAndStoreValid)
                 {
-                    AddNotifications(command);
+                    AddNotification(nameof(command), errorMessage);
                     var errors = GetErrorsFromNotifications(errorCode);
                     return new CommandResult(false, errorMessage, errors);
                 }
@@ -182,6 +182,9 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleOnCredit
             Customer? customer = await _customerRepository.ReadAsync(customerId.Value);
             if (customer is null)
                 return (false, ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
+
+            if (customer.BoundedToCustomerId is not null)
+                return (false, ErrorCodes.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER, SaleCommandMessages.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER);
 
             // Validate Seller
             User? seller = await _userRepository.ReadAsync(sellerId.Value);

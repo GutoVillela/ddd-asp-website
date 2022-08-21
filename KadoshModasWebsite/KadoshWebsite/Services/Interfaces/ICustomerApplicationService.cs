@@ -16,5 +16,6 @@ namespace KadoshWebsite.Services.Interfaces
         Task<ICommandResult> InformCustomerPaymentAsync(int customerId,decimal amountToInform);
         Task<CustomerViewModel?> GetCustomerUserByUsernameAsync(string username);
         Task<ICommandResult> CreateCustomerUserAsync(int customerId, string username, string password);
+        Task<ICommandResult> MergeCustomersAsync(int mainCustomerId, IList<int> customersToMerge);
     }
 }

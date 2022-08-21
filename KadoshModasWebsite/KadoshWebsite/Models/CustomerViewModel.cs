@@ -55,6 +55,8 @@ namespace KadoshWebsite.Models
         [MaxLength(255, ErrorMessage = "O tamanho máximo de caracteres é 255 para o campo Complemento")]
         [Display(Name = "Complemento")]
         public string? Complement { get; set; }
+
+        public IList<string>? BoundedCustomers { get; set; } = new List<string>();
         #endregion Address
 
         public IEnumerable<PhoneViewModel> Phones { get; set; } = new List<PhoneViewModel>();

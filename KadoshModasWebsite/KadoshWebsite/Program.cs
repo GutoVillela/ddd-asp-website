@@ -10,6 +10,7 @@ using KadoshDomain.Commands.CustomerCommands.CreateCustomer;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomerUser;
 using KadoshDomain.Commands.CustomerCommands.DeleteCustomer;
 using KadoshDomain.Commands.CustomerCommands.InformPayment;
+using KadoshDomain.Commands.CustomerCommands.MergeCustomer;
 using KadoshDomain.Commands.CustomerCommands.UpdateCustomer;
 using KadoshDomain.Commands.ProductCommands.CreateProduct;
 using KadoshDomain.Commands.ProductCommands.DeleteProduct;
@@ -156,6 +157,7 @@ builder.Services.AddScoped<ICommandHandler<AuthenticateCustomerUserCommand>, Aut
 builder.Services.AddScoped<ICommandHandler<CreateCustomerUserCommand>, CreateCustomerUserHandler>();
 builder.Services.AddScoped<ICommandHandler<CancelSaleCommand>, CancelSaleHandler>();
 builder.Services.AddScoped<ICommandHandler<CancelSaleItemCommand>, CancelSaleItemHandler>();
+builder.Services.AddScoped<ICommandHandler<MergeCustomerCommand>, MergeCustomerHandler>();
 
 // Query Handlers
 builder.Services.AddScoped<IQueryHandler<GetAllBrandsQuery, GetAllBrandsQueryResult>, GetAllBrandsQueryHandler>();

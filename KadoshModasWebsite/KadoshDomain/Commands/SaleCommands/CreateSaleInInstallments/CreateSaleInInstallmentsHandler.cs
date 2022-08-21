@@ -54,14 +54,23 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments
                 Customer? customer = await _customerRepository.ReadAsync(command.CustomerId!.Value);
                 if (customer is null)
                 {
+                    AddNotification(nameof(command), SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_CUSTOMER);
                     return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_CUSTOMER, errors);
+                }
+
+                if (customer.BoundedToCustomerId is not null)
+                {
+                    AddNotification(nameof(command), SaleCommandMessages.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER);
+                    var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER);
+                    return new CommandResult(false, SaleCommandMessages.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER, errors);
                 }
 
                 // Validate Seller
                 User? seller = await _userRepository.ReadAsync(command.SellerId!.Value);
                 if (seller is null)
                 {
+                    AddNotification(nameof(command), SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_SELLER);
                     return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_SELLER, errors);
                 }
@@ -70,6 +79,7 @@ namespace KadoshDomain.Commands.SaleCommands.CreateSaleInInstallments
                 Store? store = await _storeRepository.ReadAsync(command.StoreId!.Value);
                 if (store is null)
                 {
+                    AddNotification(nameof(command), SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_STORE);
                     var errors = GetErrorsFromNotifications(ErrorCodes.ERROR_COULD_NOT_FIND_SALE_STORE);
                     return new CommandResult(false, SaleCommandMessages.ERROR_COULD_NOT_FIND_SALE_STORE, errors);
                 }

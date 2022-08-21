@@ -1,8 +1,10 @@
-﻿using KadoshDomain.Entities;
+﻿using System.Linq;
+using KadoshDomain.Entities;
 using KadoshDomain.Queriables;
 using KadoshDomain.Repositories;
 using KadoshRepository.Persistence.DataContexts;
 using KadoshRepository.Security;
+using KadoshShared.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace KadoshRepository.Repositories
@@ -11,7 +13,66 @@ namespace KadoshRepository.Repositories
     {
         public CustomerRepository(StoreDataContext dbContext) : base(dbContext)
         {
-            
+        }
+
+        public override async Task<Customer?> ReadAsync(int id)
+        {
+            Customer? entity = await _dbSet
+                .Include(CustomerQueriable.IncludeBoundedCustomers())
+                .SingleOrDefaultAsync(QueriableBase<Customer>.GetById(id));
+            return entity;
+        }
+
+        public override async Task<IEnumerable<Customer>> ReadAllAsync(bool includeInactive = false)
+        {
+            if (includeInactive)
+                return await _dbSet
+                    .AsNoTracking()
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
+                    .ToListAsync();
+
+            return await _dbSet
+            .AsNoTracking()
+                    .Where(QueriableBase<Customer>.GetIfActive()) // TODO Think if that was really needed
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
+            .ToListAsync();
+        }
+
+        public override async Task<IEnumerable<Customer>> ReadAllPagedAsync(int currentPage, int pageSize, bool includeInactive = false)
+        {
+            int amountToTake = (currentPage - 1) * pageSize;
+            if (includeInactive)
+                return await _dbSet
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
+                    .AsNoTracking()
+                    .Skip(amountToTake)
+                    .Take(pageSize)
+                    .ToListAsync();
+            else
+                return await _dbSet
+                .AsNoTracking()
+                .Where(QueriableBase<Customer>.GetIfActive())
+                .Where(CustomerQueriable.CustomerIsNotBounded())
+                .Include(CustomerQueriable.IncludeBoundedCustomers())
+                .Skip(amountToTake)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public override async Task<int> CountAllAsync(bool includeInactive = false)
+        {
+            if (includeInactive)
+                return await _dbSet
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .CountAsync();
+
+            return await _dbSet
+                    .Where(QueriableBase<Customer>.GetIfActive())
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .CountAsync();
         }
 
         public async Task<int> CountAllByNameAsync(string customerName, bool includeInactive = false)
@@ -20,12 +81,14 @@ namespace KadoshRepository.Repositories
                 return await _dbSet
                     .AsNoTracking()
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
                     .CountAsync();
 
             return await _dbSet
                     .AsNoTracking()
                     .Where(QueriableBase<Customer>.GetIfActive())
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
                     .CountAsync();
         }
 
@@ -35,12 +98,16 @@ namespace KadoshRepository.Repositories
                 return await _dbSet
                     .AsNoTracking()
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
                     .ToListAsync();
 
             return await _dbSet
                     .AsNoTracking()
                     .Where(QueriableBase<Customer>.GetIfActive())
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
                     .ToListAsync();
         }
 
@@ -51,6 +118,8 @@ namespace KadoshRepository.Repositories
                 return await _dbSet
                     .AsNoTracking()
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
                     .Skip(amountToTake)
                     .Take(pageSize)
                     .ToListAsync();
@@ -59,6 +128,8 @@ namespace KadoshRepository.Repositories
                     .AsNoTracking()
                     .Where(QueriableBase<Customer>.GetIfActive())
                     .Where(CustomerQueriable.GetCustomerByName(customerName))
+                    .Where(CustomerQueriable.CustomerIsNotBounded())
+                    .Include(CustomerQueriable.IncludeBoundedCustomers())
                     .Skip(amountToTake)
                     .Take(pageSize)
                     .ToListAsync();
@@ -66,7 +137,9 @@ namespace KadoshRepository.Repositories
 
         public async Task<Customer?> GetCustomerByUsernameAsync(string username)
         {
-            return await _dbSet.FirstOrDefaultAsync(CustomerQueriable.GetCustomerByUsername(username));
+            return await _dbSet
+                .Include(CustomerQueriable.IncludeBoundedCustomers())
+                .FirstOrDefaultAsync(CustomerQueriable.GetCustomerByUsername(username));
         }
 
         public (string hash, byte[] salt, int iterations) GetPasswordHashed(string password)

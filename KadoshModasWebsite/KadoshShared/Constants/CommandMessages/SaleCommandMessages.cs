@@ -42,5 +42,6 @@
         public const string PRODUCT_NOT_FOUND_ON_CANCEL_ITEM_COMMAND = "O ID de produto fornecido não existe na venda";
         public const string INVALID_PRODUCT_SITUATION_ON_CANCEL_ITEM_COMMAND = "O produto indicado já está cancelado";
         public const string INVALID_ITEMS_AMOUNT_ON_CANCEL_ITEM_COMMAND = "Não existem items suficientes para serem cancelados nesta operação";
+        public const string ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER = "Não é possível lançar uma venda para um cliente mesclado";
     }
 }

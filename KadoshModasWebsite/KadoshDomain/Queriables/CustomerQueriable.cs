@@ -14,5 +14,15 @@ namespace KadoshDomain.Queriables
         {
             return x => x.Username == username;
         }
+
+        public static Expression<Func<Customer, bool>> CustomerIsNotBounded()
+        {
+            return x => x.BoundedToCustomerId == null;
+        }
+
+        public static Expression<Func<Customer, IReadOnlyCollection<Customer>?>> IncludeBoundedCustomers()
+        {
+            return x => x.BoundedCustomers;
+        }
     }
 }

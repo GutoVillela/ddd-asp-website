@@ -12,5 +12,9 @@
         public const string QUERY_INTERVAL_SINCE_LAST_PAYMENT_LOWER_THAN_OR_EQUALS_ZERO = "O intervalo em dias desde o último pagamento deve ser maior do que zero para buscar os clients inadimplentes";
         public const string INVALID_CUSTOMER_USERNAME = "O campo nome de usuário está inválido";
         public const string INVALID_CUSTOMER_PASSWORD = "O campo senha está inválido";
+        public const string NULL_CUSTOMERS_TO_MERGE = "A coleção de IDs de clientes para mesclar não pode ser nula";
+        public const string EMPTY_CUSTOMERS_TO_MERGE = "A coleção de IDs de clientes para mesclar não pode ser vazia";
+        public const string NULL_MAIN_CUSTOMER_TO_MERGE = "O ID do Cliente principal para mesclar não pode ser nulo";
+        public const string ZERO_MAIN_CUSTOMER_TO_MERGE = "O ID do Cliente principal para mesclar não pode ser zero";
     }
 }

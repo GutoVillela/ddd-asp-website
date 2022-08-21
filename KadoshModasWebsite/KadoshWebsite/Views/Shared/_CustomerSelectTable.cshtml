@@ -7,7 +7,7 @@
         <tr class="table-primary">
             <th scope="col">ID</th>
             <th>Cliente</th>
-            <th>Dívida do cliente</th>
+            <th>Mesclado com outras fichas</th>
         </tr>
     </thead>
     <tbody>
@@ -24,7 +24,16 @@
                 <tr>
                     <th scope="row">@item.Id</th>
                     <td>@item.Name</td>
-                    <td>@item.TotalDebt.ToString("C", FormatProviderManager.CultureInfo)</td>
+                    <td>
+                        @if (item.BoundedCustomers is not null && item.BoundedCustomers.Any())
+                        {
+                            <span class="badge rounded-pill bg-warning">Sim</span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-success">Não</span>
+                        }
+                    </td>
                 </tr>
             }
         }

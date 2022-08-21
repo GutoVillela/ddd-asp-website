@@ -318,6 +318,9 @@ namespace KadoshWebsite.Controllers
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND))
                 ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_INVALID_SALE_ON_CREDIT_CREATE_COMMAND));
 
+            if (errors.Any(x => x.Code == ErrorCodes.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER))
+                ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER));
+
             if (errors.Any(x => x.Code == ErrorCodes.UNEXPECTED_EXCEPTION))
                 ModelState.AddModelError(nameof(SaleViewModel.CustomerId), GetErrorMessagesFromSpecificErrorCode(errors, ErrorCodes.UNEXPECTED_EXCEPTION));
         }

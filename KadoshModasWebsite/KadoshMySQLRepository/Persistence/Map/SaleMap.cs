@@ -20,6 +20,7 @@ namespace KadoshRepository.Persistence.Map
             builder.HasMany(x => x.Postings).WithOne(x => x.Sale).HasForeignKey(x => x.SaleId);
             builder.HasOne(x => x.Seller).WithMany(x => x.Sales).HasForeignKey(x => x.SellerId).IsRequired();
             builder.HasOne(x => x.Store).WithMany(x => x.Sales).HasForeignKey(x => x.StoreId).IsRequired();
+            builder.HasOne(x => x.OriginalCustomer).WithMany(x => x.OriginalSales).HasForeignKey(x => x.OriginalCustomerId);
             builder.Ignore(x => x.Notifications);
 
         }

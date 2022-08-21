@@ -14,4 +14,10 @@
     <ProjectReference Include="..\KadoshShared\KadoshShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Commands\CustomerCommands\MergeCustomer\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\CustomerCommands\MergeCustomer\" />
+  </ItemGroup>
 </Project>

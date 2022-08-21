@@ -188,7 +188,7 @@ function MergeCustomer() {
         }).fail(function (error) {
             swal("Oops!", "Aconteceu um erro e não foi possível mesclar os clientes! Mensagem de erro: " + error.responseText, "error");
         }).always(function () {
-            $('#mergeCustomerButton').removelass(`disabled`);
+            $('#mergeCustomerButton').removeClass(`disabled`);
         });
     })
     .catch(error => {

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace KadoshDomain.Entities
 {
-    public class Customer : Entity
+    public class Customer : Entity, ICloneable
     {
         #region Constructors
         public Customer(string name)
@@ -74,6 +74,38 @@ namespace KadoshDomain.Entities
             PasswordSalt = passwordSalt;
             PasswordSaltIterations = passwordSaltIterations;
         }
+
+        private Customer(
+            int id,
+            string name,
+            Email? email,
+            Document? document,
+            EGender? gender,
+            Address? address,
+            string? username,
+            string? passwordHash,
+            byte[]? passwordSalt,
+            int? passwordSaltIterations,
+            Customer? isBoundedTo,
+            IReadOnlyCollection<Phone>? phones,
+            IReadOnlyCollection<Sale> sales,
+            IReadOnlyCollection<Customer>? boundedCustomers,
+            IReadOnlyCollection<Sale> originalSales
+            ) : this(name, email, document, gender, address)
+        {
+            Id = id;
+            Username = username;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
+            PasswordSaltIterations = passwordSaltIterations;
+            IsBoundedTo = isBoundedTo;
+            BoundedToCustomerId = isBoundedTo?.Id;
+            Phones = phones;
+            Sales = sales;
+            BoundedCustomers = boundedCustomers;
+            OriginalSales = originalSales;
+
+        }
         #endregion Constructors
 
         [Required]
@@ -103,6 +135,8 @@ namespace KadoshDomain.Entities
         public IReadOnlyCollection<Sale> Sales { get; private set; } =  new List<Sale>();
 
         public IReadOnlyCollection<Customer>? BoundedCustomers { get; private set; }
+
+        public IReadOnlyCollection<Sale> OriginalSales { get; private set; } = new List<Sale>();
 
         public void UpdateCustomerInfo(
             string name,
@@ -137,12 +171,43 @@ namespace KadoshDomain.Entities
             PasswordSaltIterations = passwordSaltIterations;
         }
 
+        public void MergeToCustomer(Customer mainCustomer)
+        {
+            IsBoundedTo = mainCustomer;
+            foreach(var sale in Sales)
+            {
+                sale.MergeSaleInCustomer(mainCustomer);
+            }
+        }
+
         private void ValidateCustomer()
         {
             AddNotifications(new Contract<Notification>()
                 .Requires()
                 .IsNotNullOrEmpty(Name, nameof(Name), "Nome do cliente inválido")
             );
+        }
+
+        public object Clone()
+        {
+            Customer clone = new(
+                Id,
+                Name,
+                Email,
+                Document,
+                Gender,
+                Address,
+                Username,
+                PasswordHash,
+                PasswordSalt,
+                PasswordSaltIterations,
+                IsBoundedTo,
+                Phones,
+                Sales,
+                BoundedCustomers,
+                OriginalSales
+                );
+            return clone;
         }
     }
 }

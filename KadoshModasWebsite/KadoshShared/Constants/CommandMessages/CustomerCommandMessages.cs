@@ -23,5 +23,9 @@
         public const string SUCCESS_ON_CREATE_CUSTOMER_USER_COMMAND = "Usuário cadastrado com sucesso";
         public const string ERROR_USERNAME_ALREADY_TAKEN = "O nome de usuário já está sendo usado";
         public const string ERROR_CUSTOMER_USER_ALREADY_CREATED = "Usuário já criado para o cliente";
+        public const string INVALID_MERGE_CUSTOMERS_COMMAND = "O comando de mesclar clientes está inválido";
+        public const string SUCCESS_ON_MERGE_CUSTOMER_COMMAND = "Clientes mesclados com sucesso";
+        public const string ERROR_CUSTOMER_ALREADY_BOUNDED = "O cliente já está mesclado";
+        public const string ERROR_CUSTOMER_HAS_BOUNDED_CUSTOMERS = "O cliente {0} (#{1}) possui clientes mesclados. Não é possível mesclá-lo a outra ficha";
     }
 }
