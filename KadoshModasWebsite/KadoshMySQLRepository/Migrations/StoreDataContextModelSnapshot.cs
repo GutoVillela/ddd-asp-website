@@ -75,6 +75,9 @@ namespace KadoshRepository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int?>("BoundedToCustomerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime(6)");
 
@@ -106,6 +109,8 @@ namespace KadoshRepository.Migrations
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BoundedToCustomerId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -465,6 +470,10 @@ namespace KadoshRepository.Migrations
 
             modelBuilder.Entity("KadoshDomain.Entities.Customer", b =>
                 {
+                    b.HasOne("KadoshDomain.Entities.Customer", "IsBoundedTo")
+                        .WithMany("BoundedCustomers")
+                        .HasForeignKey("BoundedToCustomerId");
+
                     b.OwnsOne("KadoshDomain.ValueObjects.Address", "Address", b1 =>
                         {
                             b1.Property<int>("CustomerId")
@@ -583,6 +592,8 @@ namespace KadoshRepository.Migrations
                     b.Navigation("Document");
 
                     b.Navigation("Email");
+
+                    b.Navigation("IsBoundedTo");
 
                     b.Navigation("Phones");
                 });
@@ -763,6 +774,8 @@ namespace KadoshRepository.Migrations
 
             modelBuilder.Entity("KadoshDomain.Entities.Customer", b =>
                 {
+                    b.Navigation("BoundedCustomers");
+
                     b.Navigation("Sales");
                 });
 

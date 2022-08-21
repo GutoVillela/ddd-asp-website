@@ -94,9 +94,15 @@ namespace KadoshDomain.Entities
 
         public int? PasswordSaltIterations { get; private set; }
 
+        public int? BoundedToCustomerId { get; private set; }
+
+        public Customer? IsBoundedTo { get; private set; }
+
         public IReadOnlyCollection<Phone>? Phones { get; private set; }
 
         public IReadOnlyCollection<Sale> Sales { get; private set; } =  new List<Sale>();
+
+        public IReadOnlyCollection<Customer>? BoundedCustomers { get; private set; }
 
         public void UpdateCustomerInfo(
             string name,

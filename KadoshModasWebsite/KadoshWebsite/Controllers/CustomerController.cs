@@ -246,6 +246,35 @@ namespace KadoshWebsite.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<PartialViewResult> GetCustomersPaginatedAsync(int? page, string? customerName, bool? includeInactive)
+        {
+            PaginatedListViewModel<CustomerViewModel> customers;
+
+            if (string.IsNullOrEmpty(customerName))
+                customers = await _service.GetAllCustomersPaginatedAsync(page ?? 1, PaginationManager.PAGE_SIZE, includeInactive ?? false);
+            else
+                customers = await _service.GetAllCustomersByNamePaginatedAsync(customerName, page ?? 1, PaginationManager.PAGE_SIZE, includeInactive ?? false);
+
+
+            return PartialView("_CustomerSelectTable", customers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MergeCustomersAsync(int currentCustomerId, IList<int> customersToMerge)
+        {
+            try
+            {
+                Thread.Sleep(2000);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_CUSTOMER_CREATE_COMMAND))

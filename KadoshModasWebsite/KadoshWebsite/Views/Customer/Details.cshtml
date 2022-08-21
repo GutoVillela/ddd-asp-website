@@ -37,7 +37,10 @@
                         <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#postings" type="button" role="tab" aria-controls="postings" aria-selected="false">Lançamentos</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="postings-tab" data-bs-toggle="tab" data-bs-target="#appLogin" type="button" role="tab" aria-controls="postings" aria-selected="false">Acesso ao APP Kadosh</button>
+                        <button class="nav-link" id="app-login-tab" data-bs-toggle="tab" data-bs-target="#appLogin" type="button" role="tab" aria-controls="appLogin" aria-selected="false">Acesso ao APP Kadosh</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="merge-customer-tab" data-bs-toggle="tab" data-bs-target="#mergeCustomer" type="button" role="tab" aria-controls="mergeCustomer" aria-selected="false">Mesclar com outros clientes</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="customerTabsContent">
@@ -88,7 +91,81 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fade p-3" id="mergeCustomer" role="tabpanel" aria-labelledby="merge-customer-tab">
+                        <div class="card outline-badge-primary mb-3">
+                            <div class="card-content">
+                                <div class="card-body p-4">
+                                    <div class="d-md-flex">
+                                        <div class="my-auto">
+                                            <i class="uil uil-files-landscapes-alt icon-size-1-5"></i>
+                                        </div>
+                                        <div class="content px-md-3 my-3 my-md-0">
+                                            <span class="mb-0 font-w-600 h5">Mesclar ficha com outros clientes</span><br>
+                                            <p class="mb-0 font-w-500 tx-s-12">Você pode mesclar a ficha do cliente @Model.Name com outros clientes. Fazer isso vai mover todas as compras e lançamentos para esta ficha e desativar os clientes que foram mesclados.</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-success" title="Buscar cliente" data-bs-toggle="modal" data-bs-target="#mergeCustomerModal"><i class="uil uil-plus"></i> Buscar cliente para mesclar</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col mt-5">
+                                <table class="table table-responsive" id="customerMergeTable">
+                                    <caption>Clientes selecionados para mesclar</caption>
+                                    <thead>
+                                        <tr class="table-primary">
+                                            <th scope="col">ID</th>
+                                            <th>Cliente</th>
+                                            <th>Dívida do cliente</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="4" class="text-center">Nenhum cliente selecionado</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn btn-info" id="mergeCustomerButton" title="Mesclar ficha" onclick="MergeCustomer();"><i class="uil uil-users-alt icon-size-1-5"></i> Mesclar fichas</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Merge Customer Modal -->
+<div class="modal fade" id="mergeCustomerModal" tabindex="-1" aria-labelledby="mergeCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Buscar produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            @await Component.InvokeAsync(nameof(CustomerSelectViewComponent).Replace("ViewComponent", ""))
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnDismissMergeCustomerModal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="AddSelectedCustomer()">Selecionar cliente</button>
             </div>
         </div>
     </div>
@@ -97,9 +174,12 @@
 @section scripts{
     <script>
         let informPaymentUrl = '@Url.Action("InformPayment", "Customer")';
+        let mergeCustomersUrl = '@Url.Action("MergeCustomers", "Customer")';
+        let currentCustomerId = '@Model.Id';
     </script>
     <script src="~/js/saleList.js"></script>
     <script src="~/js/customerPostingList.js"></script>
     <script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
     <script src="~/js/customerDetailsView.js"></script>
+    <script src="~/js/customerSelectTable.js"></script>
 }
