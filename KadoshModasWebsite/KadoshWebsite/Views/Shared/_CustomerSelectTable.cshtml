@@ -1,0 +1,37 @@
+﻿@using KadoshWebsite.Infrastructure
+@model PaginatedListViewModel<CustomerViewModel>
+
+<table class="table table-responsive" id="customerSelectTable">
+    <caption>Listando @Model.Items.Count() produtos de um total de @Model.TotalItemsCount</caption>
+    <thead>
+        <tr class="table-primary">
+            <th scope="col">ID</th>
+            <th>Cliente</th>
+            <th>Dívida do cliente</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || !Model.Items.Any())
+        {
+            <tr>
+                <td colspan="3" class="text-center">Nenhum cliente cadastrado</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <th scope="row">@item.Id</th>
+                    <td>@item.Name</td>
+                    <td>@item.TotalDebt.ToString("C", FormatProviderManager.CultureInfo)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@if (Model is not null && Model.Items.Any())
+{
+    await Html.RenderPartialAsync("_PaginationAsync", new ViewDataDictionary(ViewData) { { "PaginationJSMethod", "LoadCustomersPaginated" } });
+}

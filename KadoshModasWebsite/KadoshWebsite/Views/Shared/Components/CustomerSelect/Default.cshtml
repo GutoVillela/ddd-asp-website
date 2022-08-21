@@ -1,0 +1,35 @@
+﻿<div class="col-md-12 mb-3">
+    <div class="card">
+        <div class="card-header">
+            <i class="uil uil-user icon-size-1-5"></i> Selecione um cliente
+        </div>
+        <div class="card-body row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="customerSelectLoadingSpinner">
+                            @{ await Html.RenderPartialAsync("_LoadingSpinner"); }
+                        </div>
+                        <div class="input-group mb-3">
+                            <input name="queryCustomerByName" id="queryCustomerByName" type="text" class="form-control" placeholder="Buscar por nome do cliente" aria-label="Buscar por nome do cliente" aria-describedby="buscar-cliente">
+                            <a class="btn btn-outline-secondary" onclick="LoadCustomersPaginated(1);"><i class="uil uil-search"></i></a>
+                        </div>
+                        <div id="customersList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let getCustomersPaginatedUrl = '@Url.Action("GetCustomersPaginated", "Customer")';
+
+    window.addEventListener("load", function() {
+        if (typeof LoadCustomersPaginated != "function")
+            console.error('The script "customerSelectTable.js" is missing on the parent View.');
+        else
+            LoadCustomersPaginated(1);
+    });
+</script>
