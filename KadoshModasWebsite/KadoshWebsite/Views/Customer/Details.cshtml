@@ -11,7 +11,11 @@
     <div class="col-12  align-self-center">
         <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
             <div class="w-sm-100 me-auto">
-                <h4 class="mb-0">@ViewData["Title"] @if(Model.BoundedCustomers is not null && Model.BoundedCustomers.Any()) { <span class="badge rounded-pill bg-primary">Mesclado</span> }</h4>
+                <h4 class="mb-0">
+                    @ViewData["Title"] 
+                    @if(Model.BoundedCustomers is not null && Model.BoundedCustomers.Any()) { <span class="badge rounded-pill bg-primary">Mesclado</span> }
+                    @{ await Html.RenderPartialAsync("_DelinquentCustomerBadge", Model.Id); }
+                </h4>
                 <p>Sistema de administração da Kadosh Modas</p>
             </div>
 
@@ -206,4 +210,5 @@
     <script src="~/lib/jquery-maskmoney/jquery.maskMoney.min.js"></script>
     <script src="~/js/customerDetailsView.js"></script>
     <script src="~/js/customerSelectTable.js"></script>
+    <script src="~/js/delinquentCustomerBadge.js"></script>
 }

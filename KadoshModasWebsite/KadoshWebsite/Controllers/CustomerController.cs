@@ -280,6 +280,22 @@ namespace KadoshWebsite.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Policy = nameof(LoggedInAuthorization))]
+        public async Task<IActionResult> CheckIfCustomerIsDelinquentAsync(int customerId)
+        {
+            try
+            {
+                var isDelinquent = await _service.IsCustomerDelinquent(customerId, FormatProviderManager.INTERVAL_BEFORE_DELINQUENT_IN_DAYS);
+
+                return Ok(isDelinquent);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         protected override void AddErrorsToModelState(ICollection<Error> errors)
         {
             if (errors.Any(x => x.Code == ErrorCodes.ERROR_INVALID_CUSTOMER_CREATE_COMMAND))

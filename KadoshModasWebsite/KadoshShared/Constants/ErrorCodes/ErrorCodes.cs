@@ -109,5 +109,6 @@
         public const int ERROR_CUSTOMER_IS_BOUNDED_CUSTOMER = 102;
         public const int ERROR_CUSTOMER_ALREADY_BOUNDED = 103;
         public const int ERROR_CUSTOMER_HAS_BOUNDED_CUSTOMERS = 104;
+        public const int ERROR_INVALID_CHECK_IF_CUSTOMER_IS_DELINQUENT_QUERY = 105;
     }
 }

@@ -19,6 +19,7 @@ using KadoshDomain.Queries.CustomerQueries.GetCustomerByUsername;
 using KadoshShared.Constants.ErrorCodes;
 using KadoshDomain.Commands.CustomerCommands.CreateCustomerUser;
 using KadoshDomain.Commands.CustomerCommands.MergeCustomer;
+using KadoshDomain.Queries.CustomerQueries.CheckIfCustomerIsDelinquent;
 
 namespace KadoshWebsite.Services
 {
@@ -35,6 +36,7 @@ namespace KadoshWebsite.Services
         private readonly IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> _getCustomerTotalDebtQueryHandler;
         private readonly IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult> _getCustomersByNameQueryHandler;
         private readonly IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult> _getCustomerByUsernameQueryHandler;
+        private readonly IQueryHandler<CheckIfCustomerIsDelinquentQuery, CheckIfCustomerIsDelinquentQueryResult> _checkIfCustomerIsDelinquentQueryHandler;
 
         public CustomerApplicationService(
             ICommandHandler<CreateCustomerCommand> createCustomerHandler,
@@ -47,7 +49,9 @@ namespace KadoshWebsite.Services
             IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdQueryResult> getCustomerByIdQueryHandler,
             IQueryHandler<GetCustomerTotalDebtQuery, GetCustomerTotalDebtQueryResult> getCustomerTotalDebtQueryHandler,
             IQueryHandler<GetCustomersByNameQuery, GetCustomersByNameQueryResult> getCustomersByNameQueryHandler,
-            IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult> getCustomerByUsernameQueryHandler)
+            IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult> getCustomerByUsernameQueryHandler,
+            IQueryHandler<CheckIfCustomerIsDelinquentQuery, CheckIfCustomerIsDelinquentQueryResult> checkIfCustomerIsDelinquentQueryHandler
+            )
         {
             _createCustomerHandler = createCustomerHandler;
             _deleteCustomerHandler = deleteCustomerHandler;
@@ -60,6 +64,7 @@ namespace KadoshWebsite.Services
             _getCustomerTotalDebtQueryHandler = getCustomerTotalDebtQueryHandler;
             _getCustomersByNameQueryHandler = getCustomersByNameQueryHandler;
             _getCustomerByUsernameQueryHandler = getCustomerByUsernameQueryHandler;
+            _checkIfCustomerIsDelinquentQueryHandler = checkIfCustomerIsDelinquentQueryHandler;
         }
 
         public async Task<ICommandResult> CreateCustomerAsync(CustomerViewModel customer)
@@ -288,6 +293,18 @@ namespace KadoshWebsite.Services
             command.CustomersToMerge = customersToMerge;
 
             return await _mergeCustomerHandler.HandleAsync(command);
+        }
+
+        public async Task<bool> IsCustomerDelinquent(int customerId, int intervalSinceLastPaymentInDays)
+        {
+            CheckIfCustomerIsDelinquentQuery query = new();
+            query.CustomerId = customerId;
+            query.IntervalSinceLastPaymentInDays = intervalSinceLastPaymentInDays;
+
+            var result = await _checkIfCustomerIsDelinquentQueryHandler.HandleAsync(query);
+
+            // TODO Handle errors
+            return result.IsDelinquent;
         }
 
         private CustomerViewModel GetCustomerViewModelFromDTO(CustomerDTO customerDTO)

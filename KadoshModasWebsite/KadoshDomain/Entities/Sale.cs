@@ -223,40 +223,6 @@ namespace KadoshDomain.Entities
                 Situation = ESaleSituation.Canceled;
         }
 
-        protected void ValidateSale()
-        {
-            AddNotifications(new Contract<Notification>()
-                .Requires()
-                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%")
-                .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
-                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage, Situation), nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL)
-                .IsNotNull(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
-            );
-
-            ValidateSaleItems();
-            ValidateSettlementDate();
-        }
-
-        private void ValidateSaleItems()
-        {
-            if (SaleItems is null)
-                AddNotification(nameof(SaleItems), "Os itens da venda não podem ser nulos para esta venda!");
-            else
-                AddNotifications(new Contract<Notification>()
-                    .Requires()
-                    .IsTrue(SaleItems.Any(), nameof(SaleItems), "É obrigatório pelo menos um item da venda!")
-                );
-        }
-
-        private void ValidateSettlementDate()
-        {
-            if (SettlementDate.HasValue)
-                AddNotifications(new Contract<Notification>()
-                    .Requires()
-                    .IsGreaterOrEqualsThan(SettlementDate.Value, SaleDate, nameof(SettlementDate), "A data de conclusão da venda não pode ser anterior à data da venda!")
-                );
-        }
-
         public void SetCustomer(Customer customer)
         {
             if (customer == null)
@@ -307,16 +273,35 @@ namespace KadoshDomain.Entities
             StoreId = store.Id;
         }
 
+        /// <summary>
+        /// Checks if this sale has late payments.
+        /// </summary>
+        /// <param name="allowedPaymentDelayInDays">Maximum delay since last payment in days.</param>
+        /// <returns>True if this sale has late payments and False otherwise.</returns>
+        public bool IsLatePaymentSale(int allowedPaymentDelayInDays)
+        {
+            DateTime lastCreditPostingDate;
+
+            if (Postings.Any(x => x.Type.IsCreditType()))
+                lastCreditPostingDate = Postings.Where(x => x.Type.IsCreditType()).Max(x => x.PostingDate);
+            else
+                lastCreditPostingDate = SaleDate;
+
+            TimeSpan differenceFromToday = DateTime.UtcNow.Subtract(lastCreditPostingDate);
+
+            return differenceFromToday.TotalDays >= allowedPaymentDelayInDays;
+        }
+
         public static decimal CalculateTotal(IEnumerable<SaleItem> saleItems, decimal discountInPercentage, ESaleSituation saleSituation)
         {
-            if(saleItems is null)
+            if (saleItems is null)
                 return decimal.Zero;
 
             decimal total = decimal.Zero;
 
             foreach (var item in saleItems)
             {
-                if(saleSituation is not ESaleSituation.Canceled)
+                if (saleSituation is not ESaleSituation.Canceled)
                 {
                     if (item.Situation is not ESaleItemSituation.Canceled and not ESaleItemSituation.Exchanged)
                         total += (item.Price - item.Price * (item.DiscountInPercentage / 100)) * item.Amount;
@@ -328,6 +313,40 @@ namespace KadoshDomain.Entities
             total -= total * (discountInPercentage / 100);
 
             return total;
+        }
+
+        protected void ValidateSale()
+        {
+            AddNotifications(new Contract<Notification>()
+                .Requires()
+                .IsBetween(DiscountInPercentage, 0, 100, nameof(DiscountInPercentage), "O desconto da venda precisa estar entre 0 e 100%")
+                .IsGreaterOrEqualsThan(DownPayment, 0, nameof(DownPayment), "O valor da entrada não pode ser menor do que 0")
+                .IsLowerThan(DownPayment, CalculateTotal(SaleItems, DiscountInPercentage, Situation), nameof(DownPayment), SaleValidationsErrors.DOWN_PAYMENT_GREATER_OR_EQUALS_THAN_TOTAL)
+                .IsNotNull(SellerId, nameof(SellerId), "É obrigatório informar o vendedor da venda")
+            );
+
+            ValidateSaleItems();
+            ValidateSettlementDate();
+        }
+
+        private void ValidateSaleItems()
+        {
+            if (SaleItems is null)
+                AddNotification(nameof(SaleItems), "Os itens da venda não podem ser nulos para esta venda!");
+            else
+                AddNotifications(new Contract<Notification>()
+                    .Requires()
+                    .IsTrue(SaleItems.Any(), nameof(SaleItems), "É obrigatório pelo menos um item da venda!")
+                );
+        }
+
+        private void ValidateSettlementDate()
+        {
+            if (SettlementDate.HasValue)
+                AddNotifications(new Contract<Notification>()
+                    .Requires()
+                    .IsGreaterOrEqualsThan(SettlementDate.Value, SaleDate, nameof(SettlementDate), "A data de conclusão da venda não pode ser anterior à data da venda!")
+                );
         }
 
         protected decimal CalculateTotalPaid()

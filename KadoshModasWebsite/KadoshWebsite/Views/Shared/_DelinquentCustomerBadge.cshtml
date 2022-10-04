@@ -1,0 +1,25 @@
+﻿@model int
+<div class="row">
+    <div class="col" id="@("delinquentCustomerLoadingSpinner" + Model)">
+        @{
+            await Html.RenderPartialAsync("_LoadingSpinner");
+        }
+    </div>
+    <div id="@("delinquentCustomerBadgeResult" + Model)" style="display: none;">
+        <span class="badge outline-badge-danger">Inadimplente</span>
+    </div>
+    <div id="@("notDelinquentCustomerBadgeResult" + Model)" style="display: none;">
+        <span class="badge outline-badge-success">Adimplente</span>
+    </div>
+</div>
+
+<script>
+    var checkIfCustomerIsDelinquentAUrl = '@Url.Action("CheckIfCustomerIsDelinquent", "Customer")';
+
+    window.addEventListener("load", function() {
+        if(typeof GetCustomerDelinquentAndRenderBadge != "function")
+            console.error('The script "delinquentCustomerBadge.js.js" is missing on the parent View.');
+        else
+            GetCustomerDelinquentAndRenderBadge(@Model);
+    });
+</script>

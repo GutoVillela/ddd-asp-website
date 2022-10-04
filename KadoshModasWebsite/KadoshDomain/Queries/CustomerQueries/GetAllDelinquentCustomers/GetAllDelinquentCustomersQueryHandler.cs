@@ -37,17 +37,8 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllDelinquentCustomers
 
             foreach (var sale in openSales)
             {
-                DateTime lastCreditPostingDate;
-
-                if (sale.Postings.Any(x => x.Type.IsCreditType()))
-                    lastCreditPostingDate = sale.Postings.Where(x => x.Type.IsCreditType()).Max(x => x.PostingDate);
-                else
-                    lastCreditPostingDate = sale.SaleDate;
-
-                TimeSpan differenceFromToday = DateTime.UtcNow.Subtract(lastCreditPostingDate);
-
-                if (differenceFromToday.TotalDays >= query.IntervalSinceLastPaymentInDays)
-                    customersDTO.Add(sale.Customer!);
+                if (sale.IsLatePaymentSale(query.IntervalSinceLastPaymentInDays))
+                    customersDTO.Add(sale.Customer!);// A Hash Set doesn't allow duplicates if the object has implemented the Equals and GetHashCode methods.
             }
 
             GetAllDelinquentCustomersQueryResult result = new()

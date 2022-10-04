@@ -9,7 +9,16 @@
             <div class="d-flex">
                 <div class="circle-50 outline-badge-@ViewData["BootstrapColorClass"]"> <span class="cf card-liner-icon cf-xlm mt-2"><i class="@ViewData["IconClass"] icon-size-1-5"></i></span></div>
                 <div class="media-body align-self-center ps-3">
-                    <span class="mb-0 h6 font-w-600">@ViewData["CardTitle"]</span><br>
+                    @if (ViewData.ContainsKey("OnClickAction"))
+                    {
+                        <a asp-controller="@ViewData["OnClickController"]" asp-action="@ViewData["OnClickAction"]">
+                            <span class="mb-0 h6 font-w-600">@ViewData["CardTitle"]</span><br>
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="mb-0 h6 font-w-600">@ViewData["CardTitle"]</span><br>
+                    }
                     <p class="mb-0 font-w-500 h6">
                         <span id="@ViewData["ElementInfoId"]"></span>
                     </p>

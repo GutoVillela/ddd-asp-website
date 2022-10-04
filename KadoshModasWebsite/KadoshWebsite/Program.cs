@@ -40,6 +40,7 @@ using KadoshDomain.Queries.CategoryQueries.GetCategoryById;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromCustomer;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromDate;
 using KadoshDomain.Queries.CustomerPostingQueries.GetAllPostingsFromSale;
+using KadoshDomain.Queries.CustomerQueries.CheckIfCustomerIsDelinquent;
 using KadoshDomain.Queries.CustomerQueries.GetAllCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetAllDelinquentCustomers;
 using KadoshDomain.Queries.CustomerQueries.GetCustomerById;
@@ -187,6 +188,7 @@ builder.Services.AddScoped<IQueryHandler<GetSalesByDateQuery, GetSalesByDateQuer
 builder.Services.AddScoped<IQueryHandler<GetProductsByNameQuery, GetProductsByNameQueryResult>, GetProductsByNameQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetProductByBarCodeQuery, GetProductByBarCodeQueryResult>, GetProductByBarCodeQueryHandler>();
 builder.Services.AddScoped<IQueryHandler<GetCustomerByUsernameQuery, GetCustomerByUsernameQueryResult>, GetCustomerByUsernameQueryHandler>();
+builder.Services.AddScoped<IQueryHandler<CheckIfCustomerIsDelinquentQuery, CheckIfCustomerIsDelinquentQueryResult>, CheckIfCustomerIsDelinquentQueryHandler>();
 
 // HttpContext
 builder.Services.AddHttpContextAccessor();

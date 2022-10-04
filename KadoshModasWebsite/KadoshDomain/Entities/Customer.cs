@@ -180,6 +180,14 @@ namespace KadoshDomain.Entities
             }
         }
 
+        public bool IsDelinquentCustomer(int allowedPaymentDelayInDays)
+        {
+            if(!Sales.Any())
+                return false;
+
+            return Sales.Any(x => x.IsLatePaymentSale(allowedPaymentDelayInDays));
+        }
+
         private void ValidateCustomer()
         {
             AddNotifications(new Contract<Notification>()

@@ -46,7 +46,7 @@ namespace KadoshDomain.Queries.CustomerQueries.GetAllCustomers
             };
             result.CustomersCount = await _customerRepository.CountAllAsync(query.IncludeInactives);
 
-            return result;
+                return result;
         }
     }
 }
