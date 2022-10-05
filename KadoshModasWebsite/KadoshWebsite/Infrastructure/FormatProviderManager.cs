@@ -11,6 +11,6 @@ namespace KadoshWebsite.Infrastructure
         public static readonly TimeZoneInfo TimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
 
         // TODO Move this to AppSettings file
-        public const int INTERVAL_BEFORE_DELINQUENT_IN_DAYS = 10;
+        public const int INTERVAL_BEFORE_DELINQUENT_IN_DAYS = 30;
     }
 }
